@@ -55,20 +55,23 @@ function showScreen(name) {
 }
 
 // ===== データ読み込み =====
+let lastLoadTime = 0;
+
 async function loadIndex() {
-  const res = await fetch(DATA_DIR + 'index.json');
+  const res = await fetch(DATA_DIR + 'index.json?t=' + Date.now());
   if (!res.ok) throw new Error('index.json が読み込めません');
   return (await res.json()).exams;
 }
 
 async function loadExam(id) {
-  const res = await fetch(DATA_DIR + encodeURIComponent(id) + '.json');
+  const res = await fetch(DATA_DIR + encodeURIComponent(id) + '.json?t=' + Date.now());
   if (!res.ok) throw new Error(id + '.json が読み込めません');
   return res.json();
 }
 
 async function initApp() {
   try {
+    lastLoadTime = Date.now();
     const metas = await loadIndex();
     const exams = await Promise.all(metas.map(m => loadExam(m.id)));
     state.allExams = exams;
@@ -78,6 +81,16 @@ async function initApp() {
     $('exam-list').innerHTML = '<div style="color:red">読み込み失敗: ' + e.message + '</div>';
   }
 }
+
+// フォーカス復帰時に自動リロード（セットアップ画面のみ・5分以上経過時）
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    const active = document.querySelector('.screen.active');
+    if (active && active.id === 'screen-setup' && Date.now() - lastLoadTime > 5 * 60 * 1000) {
+      initApp();
+    }
+  }
+});
 
 // ===== 設定画面 =====
 function renderExamList() {
@@ -847,19 +860,30 @@ document.querySelectorAll('.correction-btn').forEach(btn => {
   btn.addEventListener('click', () => applyCorrection(parseInt(btn.dataset.num)));
 });
 
-// GitHub トークン設定
-$('btn-gh-token-setup').addEventListener('click', () => {
-  const current = getGHToken();
-  const token = prompt(
-    'GitHub Personal Access Token を入力\n\n取得方法: GitHub → Settings → Developer settings\n→ Personal access tokens → Fine-grained tokens\n→ Contents: Read and write',
-    current
-  );
-  if (token === null) return;
-  if (token.trim()) {
-    localStorage.setItem(GH_TOKEN_KEY, token.trim());
+// GitHub トークンモーダル
+function openTokenModal() {
+  $('gh-token-input').value = getGHToken();
+  $('gh-token-modal').style.display = 'flex';
+}
+function closeTokenModal() { $('gh-token-modal').style.display = 'none'; }
+
+$('btn-gh-token-setup').addEventListener('click', openTokenModal);
+$('gh-token-modal-close').addEventListener('click', closeTokenModal);
+$('gh-token-backdrop').addEventListener('click', closeTokenModal);
+$('gh-token-save').addEventListener('click', () => {
+  const token = $('gh-token-input').value.trim();
+  if (token) {
+    localStorage.setItem(GH_TOKEN_KEY, token);
+    closeTokenModal();
+    updateTokenStatus();
   } else {
-    localStorage.removeItem(GH_TOKEN_KEY);
+    alert('トークンを入力してください');
   }
+});
+$('gh-token-delete').addEventListener('click', () => {
+  localStorage.removeItem(GH_TOKEN_KEY);
+  $('gh-token-input').value = '';
+  closeTokenModal();
   updateTokenStatus();
 });
 $('btn-apply-github').addEventListener('click', applyToGitHub);
@@ -871,16 +895,7 @@ $('correction-exam-select').addEventListener('change', e => {
   if (e.target.value) renderCorrectionList(e.target.value);
   else $('correction-list').innerHTML = '';
 });
-$('btn-export-corrections').addEventListener('click', () => {
-  const ov = getOverrides();
-  if (!Object.keys(ov).length) { alert('修正データがありません'); return; }
-  const blob = new Blob([JSON.stringify(ov, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'corrections.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
+
 $('btn-clear-overrides').addEventListener('click', () => {
   if (confirm('全ての解答修正をリセットしますか？')) {
     localStorage.removeItem(LS.OVERRIDES);

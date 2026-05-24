@@ -241,6 +241,36 @@
     </div>
   </div>
 
+  <!-- GitHubトークン設定モーダル -->
+  <div id="gh-token-modal" class="page-modal" style="display:none">
+    <div class="page-modal-backdrop" id="gh-token-backdrop"></div>
+    <div class="page-modal-box" style="max-width:420px">
+      <div class="page-modal-header">
+        <span class="page-modal-title">🔑 GitHubトークン設定</span>
+        <button id="gh-token-modal-close" class="page-modal-close-btn">✕</button>
+      </div>
+      <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:13px;line-height:1.8">
+          <b>① 下のリンクを開く</b><br>
+          <a href="https://github.com/settings/tokens/new" target="_blank"
+             style="color:var(--primary);word-break:break-all">
+            https://github.com/settings/tokens/new
+          </a><br><br>
+          <b>② Note</b>（名前）に何でも入力<br>
+          <b>③ Expiration</b> → <code>No expiration</code><br>
+          <b>④ repo</b> の左のチェックボックス ✓<br>
+          <b>⑤ Generate token</b> をクリック<br>
+          <b>⑥ 表示されたトークンをコピー</b>
+        </div>
+        <input id="gh-token-input" type="password"
+               placeholder="ghp_xxxxxxxxxxxxxxxxxxxx を貼り付け"
+               style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px">
+        <button id="gh-token-save" class="btn-primary">保存</button>
+        <button id="gh-token-delete" class="btn-outline" style="color:var(--danger);border-color:var(--danger);font-size:13px">設定済みトークンを削除</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ページビューアーモーダル -->
   <div id="page-modal" class="page-modal" style="display:none">
     <div class="page-modal-backdrop" id="page-modal-backdrop"></div>
