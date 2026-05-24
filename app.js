@@ -753,6 +753,16 @@ $('correction-exam-select').addEventListener('change', e => {
   if (e.target.value) renderCorrectionList(e.target.value);
   else $('correction-list').innerHTML = '';
 });
+$('btn-export-corrections').addEventListener('click', () => {
+  const ov = getOverrides();
+  if (!Object.keys(ov).length) { alert('修正データがありません'); return; }
+  const blob = new Blob([JSON.stringify(ov, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'corrections.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
 $('btn-clear-overrides').addEventListener('click', () => {
   if (confirm('全ての解答修正をリセットしますか？')) {
     localStorage.removeItem(LS.OVERRIDES);
