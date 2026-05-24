@@ -1,0 +1,94 @@
+{
+  "exams": [
+    {
+      "id": "R7後期",
+      "title": "令和7年度第一次検定（後期）",
+      "year": "令和7",
+      "period": "後期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 288,
+      "total_questions": 66
+    },
+    {
+      "id": "R7前期",
+      "title": "令和7年度第一次検定（前期）",
+      "year": "令和7",
+      "period": "前期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 289,
+      "total_questions": 65
+    },
+    {
+      "id": "R6後期",
+      "title": "令和6年度第一次検定（後期）",
+      "year": "令和6",
+      "period": "後期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 290,
+      "total_questions": 65
+    },
+    {
+      "id": "R6前期",
+      "title": "令和6年度第一次検定（前期）",
+      "year": "令和6",
+      "period": "前期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 291,
+      "total_questions": 65
+    },
+    {
+      "id": "R5後期",
+      "title": "令和5年度第一次検定（後期）",
+      "year": "令和5",
+      "period": "後期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 292,
+      "total_questions": 60
+    },
+    {
+      "id": "R5前期",
+      "title": "令和5年度第一次検定（前期）",
+      "year": "令和5",
+      "period": "前期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 293,
+      "total_questions": 61
+    },
+    {
+      "id": "R4後期",
+      "title": "令和4年度第一次検定（後期）",
+      "year": "令和4",
+      "period": "後期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 294,
+      "total_questions": 51
+    },
+    {
+      "id": "R4前期",
+      "title": "令和4年度第一次検定（前期）",
+      "year": "令和4",
+      "period": "前期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 295,
+      "total_questions": 0
+    },
+    {
+      "id": "R3後期",
+      "title": "令和3年度第一次検定（後期）",
+      "year": "令和3",
+      "period": "後期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 296,
+      "total_questions": 12
+    },
+    {
+      "id": "R3前期",
+      "title": "令和3年度第一次検定（前期）",
+      "year": "令和3",
+      "period": "前期",
+      "source_pdf": "土木2級1次過去問.pdf",
+      "answer_page": 297,
+      "total_questions": 60
+    }
+  ]
+}

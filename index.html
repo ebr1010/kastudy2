@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>土木2級1次 過去問クイズ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== 設定画面 ========== -->
+  <div id="screen-setup" class="screen active">
+    <div class="setup-container">
+      <h1 class="app-title">🏗️ 土木2級一次検定<br>過去問クイズ</h1>
+
+      <section class="setup-section">
+        <h2>📅 年度・期の選択</h2>
+        <div id="exam-list" class="exam-grid">
+          <div class="loading">データ読込中...</div>
+        </div>
+        <div class="select-all-row">
+          <button id="btn-select-all" class="btn-outline">すべて選択</button>
+          <button id="btn-deselect-all" class="btn-outline">すべて解除</button>
+        </div>
+      </section>
+
+      <section class="setup-section">
+        <h2>⚙️ 出題設定</h2>
+        <div class="options-grid">
+          <label class="option-card">
+            <span class="option-label">出題順</span>
+            <select id="order-select">
+              <option value="sequential">順番通り</option>
+              <option value="random" selected>ランダム</option>
+            </select>
+          </label>
+          <label class="option-card">
+            <span class="option-label">出題数</span>
+            <select id="count-select">
+              <option value="10">10問</option>
+              <option value="20">20問</option>
+              <option value="30">30問</option>
+              <option value="all" selected>全問</option>
+            </select>
+          </label>
+          <label class="option-card">
+            <span class="option-label">解答ありのみ</span>
+            <input type="checkbox" id="only-with-answer" checked>
+          </label>
+        </div>
+      </section>
+
+      <section class="setup-section">
+        <h2>📂 PDFを追加（任意）</h2>
+        <p class="hint-text">別のPDF過去問から抽出したJSONファイルを追加できます</p>
+        <input type="file" id="extra-json" accept=".json" multiple class="file-input">
+        <div id="extra-files-list"></div>
+      </section>
+
+      <div class="start-area">
+        <div id="selected-count" class="selected-info">年度を選択してください</div>
+        <button id="btn-start" class="btn-primary" disabled>クイズ開始</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== クイズ画面 ========== -->
+  <div id="screen-quiz" class="screen">
+    <header class="quiz-header">
+      <button id="btn-back-to-setup" class="btn-icon" title="設定に戻る">←</button>
+      <div class="progress-info">
+        <span id="progress-text">1 / 30</span>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+      <div class="score-badge">
+        <span id="score-display">0</span><span class="score-denom" id="score-denom">/0</span>
+      </div>
+    </header>
+
+    <main class="quiz-main">
+      <div class="question-card" id="question-card">
+
+        <!-- メタ情報 -->
+        <div class="question-meta">
+          <span class="tag tag-year" id="q-year-tag"></span>
+          <span class="tag tag-cat" id="q-cat-tag"></span>
+          <span class="tag tag-no" id="q-no-tag"></span>
+        </div>
+
+        <!-- 問題画像 -->
+        <div class="question-image-wrap" id="question-image-wrap">
+          <img id="question-img" src="" alt="問題" class="question-img">
+          <div id="img-loading" class="img-loading">📄 画像読込中...</div>
+          <div id="img-error" class="img-error" style="display:none">
+            ⚠️ 画像が見つかりません。<br>
+            <span id="img-error-detail"></span>
+          </div>
+        </div>
+
+        <!-- 解答後フィードバック -->
+        <div class="feedback-area" id="feedback-area" style="display:none">
+          <div class="feedback-result" id="feedback-result"></div>
+          <div class="answer-page-info" id="answer-page-info"></div>
+          <div class="textbook-refs" id="textbook-refs"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- 答えボタン＋ナビを常時フッターに固定 -->
+    <footer class="quiz-footer">
+      <!-- 解答後フィードバックバー -->
+      <div class="footer-feedback" id="footer-feedback" style="display:none">
+        <span id="footer-feedback-result"></span>
+        <span id="footer-feedback-ref"></span>
+      </div>
+
+      <div class="footer-top">
+        <span class="answer-label" id="answer-label-text">答えを選択 →</span>
+        <div class="options-container" id="options-container">
+          <button class="option-btn" data-num="1"><span class="option-num">1</span></button>
+          <button class="option-btn" data-num="2"><span class="option-num">2</span></button>
+          <button class="option-btn" data-num="3"><span class="option-num">3</span></button>
+          <button class="option-btn" data-num="4"><span class="option-num">4</span></button>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <button id="btn-prev" class="btn-outline" disabled>◀</button>
+        <button id="btn-skip" class="btn-outline">スキップ</button>
+        <button id="btn-next" class="btn-primary" disabled>次へ ▶</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ========== 結果画面 ========== -->
+  <div id="screen-result" class="screen">
+    <div class="result-container">
+      <div class="result-header">
+        <div class="result-emoji" id="result-emoji">🎉</div>
+        <h2 id="result-title">お疲れ様でした！</h2>
+        <div class="result-score">
+          <span id="result-correct"></span> / <span id="result-total"></span>
+          <div id="result-pct" class="result-pct"></div>
+        </div>
+      </div>
+
+      <div class="result-breakdown" id="result-breakdown"></div>
+      <div class="result-wrong-list" id="result-wrong-list"></div>
+
+      <div class="result-actions">
+        <button id="btn-retry-wrong" class="btn-outline">間違えた問題を再挑戦</button>
+        <button id="btn-retry-all" class="btn-outline">もう一度</button>
+        <button id="btn-to-setup" class="btn-primary">設定に戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ページビューアーモーダル -->
+  <div id="page-modal" class="page-modal" style="display:none">
+    <div class="page-modal-backdrop" id="page-modal-backdrop"></div>
+    <div class="page-modal-box">
+      <div class="page-modal-header">
+        <span id="page-modal-title" class="page-modal-title"></span>
+        <button id="page-modal-close" class="page-modal-close-btn">✕</button>
+      </div>
+      <div id="page-modal-body" class="page-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
