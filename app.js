@@ -499,6 +499,84 @@ function showStats() {
   ).join('') || '<div class="stats-empty">間違いなし</div>';
 }
 
+// ===== 解答一括修正リスト =====
+function showCorrectionList() {
+  showScreen('correction');
+  const select = $('correction-exam-select');
+  select.innerHTML = '<option value="">-- 年度を選択 --</option>';
+  [...state.allExams, ...state.extraExams].forEach(exam => {
+    const opt = document.createElement('option');
+    opt.value = exam.meta.id;
+    opt.textContent = exam.meta.title + '（' + exam.questions.length + '問）';
+    select.appendChild(opt);
+  });
+  $('correction-list').innerHTML = '';
+  updateCorrectionOverrideCount();
+}
+
+function updateCorrectionOverrideCount() {
+  const ov = getOverrides();
+  const n = Object.keys(ov).length;
+  $('correction-override-count').textContent = n ? '修正済み: ' + n + '問' : '';
+}
+
+function renderCorrectionList(examId) {
+  const exam = [...state.allExams, ...state.extraExams].find(e => e.meta.id === examId);
+  const container = $('correction-list');
+  if (!exam) { container.innerHTML = ''; return; }
+
+  const overrides = getOverrides();
+  const wrap = document.createElement('div');
+  wrap.className = 'correction-list-wrap';
+
+  exam.questions.forEach(q => {
+    const fakeQ = Object.assign({}, q, { _meta: exam.meta });
+    const k = qKey(fakeQ);
+    const origAns = q.answer;
+    const overriddenAns = overrides[k];
+    const currentAns = overriddenAns !== undefined ? overriddenAns : origAns;
+    const isOverridden = overriddenAns !== undefined;
+
+    const item = document.createElement('div');
+    item.className = 'correction-item' + (isOverridden ? ' overridden' : '');
+    item.dataset.key = k;
+
+    const info = document.createElement('div');
+    info.className = 'correction-item-info';
+    info.innerHTML =
+      '<div class="correction-item-no">' + exam.meta.year + ' ' + exam.meta.period + ' No.' + q.number + '</div>' +
+      '<div class="correction-item-cat">' + (q.category || 'その他') + '</div>';
+
+    const btns = document.createElement('div');
+    btns.className = 'correction-item-btns';
+
+    if (origAns === null && overriddenAns === undefined) {
+      // 解答なし問題 → 全ボタン表示（設定可能）
+      btns.innerHTML = '<span class="correction-no-answer">解答なし</span>';
+    }
+
+    [1, 2, 3, 4].forEach(n => {
+      const btn = document.createElement('button');
+      btn.className = 'correction-ans-btn' +
+        (currentAns === n ? ' active' + (isOverridden ? ' is-override' : '') : '');
+      btn.textContent = n;
+      btn.addEventListener('click', () => {
+        saveOverride(k, n);
+        renderCorrectionList(examId);
+        updateCorrectionOverrideCount();
+      });
+      btns.appendChild(btn);
+    });
+
+    item.appendChild(info);
+    item.appendChild(btns);
+    wrap.appendChild(item);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(wrap);
+}
+
 function statRow(label, val, cls) {
   return '<div class="stats-row"><span>' + label + '</span>' +
     '<strong' + (cls ? ' class="' + cls + '"' : '') + '>' + val + '</strong></div>';
@@ -666,6 +744,22 @@ $('btn-footer-correction').addEventListener('click', () => {
 });
 document.querySelectorAll('.correction-btn').forEach(btn => {
   btn.addEventListener('click', () => applyCorrection(parseInt(btn.dataset.num)));
+});
+
+// 解答一括修正
+$('btn-correction-list').addEventListener('click', showCorrectionList);
+$('btn-back-from-correction').addEventListener('click', () => showScreen('setup'));
+$('correction-exam-select').addEventListener('change', e => {
+  if (e.target.value) renderCorrectionList(e.target.value);
+  else $('correction-list').innerHTML = '';
+});
+$('btn-clear-overrides').addEventListener('click', () => {
+  if (confirm('全ての解答修正をリセットしますか？')) {
+    localStorage.removeItem(LS.OVERRIDES);
+    const sel = $('correction-exam-select').value;
+    if (sel) renderCorrectionList(sel);
+    updateCorrectionOverrideCount();
+  }
 });
 
 // 分析画面

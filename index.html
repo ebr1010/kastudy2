@@ -61,6 +61,7 @@
         <div id="selected-count" class="selected-info">年度を選択してください</div>
         <button id="btn-start" class="btn-primary" disabled>クイズ開始</button>
         <button id="btn-stats" class="btn-outline" style="margin-top:10px;width:100%">📊 学習分析を見る</button>
+        <button id="btn-correction-list" class="btn-outline" style="margin-top:8px;width:100%">📝 解答一括修正</button>
       </div>
     </div>
   </div>
@@ -173,6 +174,30 @@
         <button id="btn-retry-wrong" class="btn-outline">間違えた問題を再挑戦</button>
         <button id="btn-retry-all" class="btn-outline">もう一度</button>
         <button id="btn-to-setup" class="btn-primary">設定に戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 解答一括修正画面 ========== -->
+  <div id="screen-correction" class="screen">
+    <div class="setup-container">
+      <div class="stats-title-row">
+        <button id="btn-back-from-correction" class="btn-icon">←</button>
+        <h1 class="app-title" style="margin:0;font-size:20px">📝 解答一括修正</h1>
+      </div>
+
+      <section class="setup-section">
+        <h2>年度を選択</h2>
+        <select id="correction-exam-select" class="correction-exam-select">
+          <option value="">-- 年度を選択 --</option>
+        </select>
+        <div id="correction-override-count" style="font-size:13px;color:var(--text-muted);margin-top:8px"></div>
+      </section>
+
+      <div id="correction-list"></div>
+
+      <div style="text-align:center;margin-top:8px;padding-bottom:40px">
+        <button id="btn-clear-overrides" class="btn-outline" style="color:var(--danger);border-color:var(--danger)">🗑 修正をすべてリセット</button>
       </div>
     </div>
   </div>
