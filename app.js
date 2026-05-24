@@ -590,7 +590,12 @@ async function applyToGitHub() {
           sha: fileData.sha,
         })
       });
-      if (!putRes.ok) throw new Error('書込失敗 ' + putRes.status);
+      if (!putRes.ok) {
+        const hint = putRes.status === 403
+          ? '（書き込み権限なし → トークンを削除して再設定：repoにチェック必須）'
+          : putRes.status === 401 ? '（トークンが無効 → 再設定してください）' : '';
+        throw new Error('書込失敗 ' + putRes.status + hint);
+      }
       successCount++;
 
     } catch (err) {

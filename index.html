@@ -250,17 +250,21 @@
         <button id="gh-token-modal-close" class="page-modal-close-btn">✕</button>
       </div>
       <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:13px;line-height:1.8">
-          <b>① 下のリンクを開く</b><br>
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 12px;font-size:12px;color:#92400e;margin-bottom:-4px">
+          ⚠️ 403エラーが出た場合は古いトークンを削除して以下の手順で再作成してください
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:13px;line-height:2">
+          <b>① 下のリンクを開く（クラシック版）</b><br>
           <a href="https://github.com/settings/tokens/new" target="_blank"
              style="color:var(--primary);word-break:break-all">
             https://github.com/settings/tokens/new
-          </a><br><br>
+          </a><br>
           <b>② Note</b>（名前）に何でも入力<br>
           <b>③ Expiration</b> → <code>No expiration</code><br>
-          <b>④ repo</b> の左のチェックボックス ✓<br>
-          <b>⑤ Generate token</b> をクリック<br>
-          <b>⑥ 表示されたトークンをコピー</b>
+          <b>④ Select scopes の「repo」</b>にチェック ✓<br>
+          <span style="padding-left:1em;font-size:12px;color:#555">※「repo」1箇所だけ。その下の細かい項目は不要</span><br>
+          <b>⑤ 一番下の「Generate token」</b>をクリック<br>
+          <b>⑥ 表示された <code>ghp_...</code> をコピー</b>してここに貼る
         </div>
         <input id="gh-token-input" type="password"
                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx を貼り付け"
