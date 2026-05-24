@@ -197,9 +197,12 @@
       <div id="correction-list"></div>
 
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;padding-bottom:40px">
-        <button id="btn-export-corrections" class="btn-primary">📥 修正データをダウンロード（corrections.json）</button>
-        <p class="hint-text" style="margin:0">ダウンロード後に <code>python apply_corrections.py</code> を実行してGitHubに反映できます</p>
-        <button id="btn-clear-overrides" class="btn-outline" style="color:var(--danger);border-color:var(--danger)">🗑 ブラウザの修正キャッシュをリセット</button>
+        <div class="gh-token-row">
+          <span id="gh-token-status" class="gh-token-status">🔑 GitHubトークン: 未設定</span>
+          <button id="btn-gh-token-setup" class="btn-outline" style="font-size:13px;padding:6px 12px">設定</button>
+        </div>
+        <button id="btn-apply-github" class="btn-primary">🚀 GitHubに反映（全デバイスに自動更新）</button>
+        <button id="btn-clear-overrides" class="btn-outline" style="color:var(--danger);border-color:var(--danger)">🗑 ブラウザキャッシュをリセット</button>
       </div>
     </div>
   </div>

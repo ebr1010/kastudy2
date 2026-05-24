@@ -499,9 +499,110 @@ function showStats() {
   ).join('') || '<div class="stats-empty">間違いなし</div>';
 }
 
+// ===== GitHub API 連携 =====
+const GH_REPO = 'ebr1010/kastudy2';
+const GH_TOKEN_KEY = 'kastudy_gh_token';
+
+function getGHToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+
+function updateTokenStatus() {
+  const token = getGHToken();
+  const el = $('gh-token-status');
+  if (token) {
+    el.textContent = '🔑 GitHubトークン: 設定済み';
+    el.className = 'gh-token-status set';
+  } else {
+    el.textContent = '🔑 GitHubトークン: 未設定';
+    el.className = 'gh-token-status';
+  }
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+async function applyToGitHub() {
+  const token = getGHToken();
+  if (!token) {
+    alert('先にGitHubトークンを設定してください');
+    return;
+  }
+  const overrides = getOverrides();
+  if (!Object.keys(overrides).length) {
+    alert('修正データがありません');
+    return;
+  }
+
+  const btn = $('btn-apply-github');
+  btn.disabled = true;
+  btn.textContent = '更新中...';
+
+  const allExams = [...state.allExams, ...state.extraExams];
+  let successCount = 0;
+  const errors = [];
+
+  for (const exam of allExams) {
+    // このexamに修正があるか確認
+    const hasOverride = exam.questions.some(q => {
+      const k = qKey(Object.assign({}, q, { _meta: exam.meta }));
+      return overrides[k] !== undefined;
+    });
+    if (!hasOverride) continue;
+
+    const filePath = 'data/' + exam.meta.id + '.json';
+    const apiUrl = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + encodeURIComponent(filePath);
+
+    try {
+      // 現在のファイルを取得
+      const res = await fetch(apiUrl, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!res.ok) throw new Error('取得失敗 ' + res.status + (res.status === 401 ? '（トークンを確認）' : ''));
+      const fileData = await res.json();
+
+      // 内容をデコードして修正適用
+      const content = JSON.parse(decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, '')))));
+      content.questions.forEach(q => {
+        const k = qKey(Object.assign({}, q, { _meta: exam.meta }));
+        if (overrides[k] !== undefined) q.answer = overrides[k];
+      });
+
+      // 書き戻し
+      const putRes = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: '解答修正: ' + exam.meta.id,
+          content: toBase64(JSON.stringify(content, null, 2)),
+          sha: fileData.sha,
+        })
+      });
+      if (!putRes.ok) throw new Error('書込失敗 ' + putRes.status);
+      successCount++;
+
+    } catch (err) {
+      errors.push(exam.meta.id + ': ' + err.message);
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🚀 GitHubに反映（全デバイスに自動更新）';
+
+  if (errors.length) {
+    alert('エラーが発生しました:\n' + errors.join('\n'));
+  } else {
+    localStorage.removeItem(LS.OVERRIDES);
+    updateCorrectionOverrideCount();
+    const sel = $('correction-exam-select').value;
+    if (sel) renderCorrectionList(sel);
+    alert(successCount + '年度のデータをGitHubに反映しました。\n数分後に全デバイスへ自動更新されます。');
+  }
+}
+
 // ===== 解答一括修正リスト =====
 function showCorrectionList() {
   showScreen('correction');
+  updateTokenStatus();
   const select = $('correction-exam-select');
   select.innerHTML = '<option value="">-- 年度を選択 --</option>';
   [...state.allExams, ...state.extraExams].forEach(exam => {
@@ -745,6 +846,23 @@ $('btn-footer-correction').addEventListener('click', () => {
 document.querySelectorAll('.correction-btn').forEach(btn => {
   btn.addEventListener('click', () => applyCorrection(parseInt(btn.dataset.num)));
 });
+
+// GitHub トークン設定
+$('btn-gh-token-setup').addEventListener('click', () => {
+  const current = getGHToken();
+  const token = prompt(
+    'GitHub Personal Access Token を入力\n\n取得方法: GitHub → Settings → Developer settings\n→ Personal access tokens → Fine-grained tokens\n→ Contents: Read and write',
+    current
+  );
+  if (token === null) return;
+  if (token.trim()) {
+    localStorage.setItem(GH_TOKEN_KEY, token.trim());
+  } else {
+    localStorage.removeItem(GH_TOKEN_KEY);
+  }
+  updateTokenStatus();
+});
+$('btn-apply-github').addEventListener('click', applyToGitHub);
 
 // 解答一括修正
 $('btn-correction-list').addEventListener('click', showCorrectionList);

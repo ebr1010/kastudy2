@@ -382,6 +382,13 @@ body {
   border-color: var(--warning); background: var(--warning); color: #fff;
 }
 .correction-no-answer { color: var(--text-muted); font-size: 12px; }
+.gh-token-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 10px 14px;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+}
+.gh-token-status { font-size: 13px; color: var(--text-muted); }
+.gh-token-status.set { color: var(--success); }
 
 /* ===== ページビューアーモーダル ===== */
 .page-modal {
