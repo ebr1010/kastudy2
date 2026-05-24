@@ -60,6 +60,7 @@
       <div class="start-area">
         <div id="selected-count" class="selected-info">年度を選択してください</div>
         <button id="btn-start" class="btn-primary" disabled>クイズ開始</button>
+        <button id="btn-stats" class="btn-outline" style="margin-top:10px;width:100%">📊 学習分析を見る</button>
       </div>
     </div>
   </div>
@@ -80,14 +81,15 @@
     </header>
 
     <main class="quiz-main">
-      <div class="question-card" id="question-card">
 
-        <!-- メタ情報 -->
-        <div class="question-meta">
-          <span class="tag tag-year" id="q-year-tag"></span>
-          <span class="tag tag-cat" id="q-cat-tag"></span>
-          <span class="tag tag-no" id="q-no-tag"></span>
-        </div>
+      <!-- メタ情報（sticky） -->
+      <div class="question-meta" id="question-meta">
+        <span class="tag tag-year" id="q-year-tag"></span>
+        <span class="tag tag-cat" id="q-cat-tag"></span>
+        <span class="tag tag-no" id="q-no-tag"></span>
+      </div>
+
+      <div class="question-card" id="question-card">
 
         <!-- 問題画像 -->
         <div class="question-image-wrap" id="question-image-wrap">
@@ -103,6 +105,15 @@
         <div class="feedback-area" id="feedback-area" style="display:none">
           <div class="feedback-result" id="feedback-result"></div>
           <div class="answer-page-info" id="answer-page-info"></div>
+          <!-- 解答修正 -->
+          <div id="answer-correction" class="answer-correction" style="display:none">
+            <span class="correction-label">✏️ 正解を変更:</span>
+            <button class="correction-btn" data-num="1">1</button>
+            <button class="correction-btn" data-num="2">2</button>
+            <button class="correction-btn" data-num="3">3</button>
+            <button class="correction-btn" data-num="4">4</button>
+          </div>
+          <button id="btn-correction-toggle" class="btn-correction-toggle">解答が間違ってる場合はここ</button>
           <div class="textbook-refs" id="textbook-refs"></div>
         </div>
 
@@ -115,6 +126,15 @@
       <div class="footer-feedback" id="footer-feedback" style="display:none">
         <span id="footer-feedback-result"></span>
         <span id="footer-feedback-ref"></span>
+        <button id="btn-footer-correction" class="btn-footer-correction" title="解答修正">✏️</button>
+      </div>
+      <!-- 解答修正パネル（フッター内） -->
+      <div id="footer-correction-panel" class="footer-correction-panel" style="display:none">
+        <span class="correction-label">✏️ 正解を変更:</span>
+        <button class="correction-btn" data-num="1">1</button>
+        <button class="correction-btn" data-num="2">2</button>
+        <button class="correction-btn" data-num="3">3</button>
+        <button class="correction-btn" data-num="4">4</button>
       </div>
 
       <div class="footer-top">
@@ -153,6 +173,40 @@
         <button id="btn-retry-wrong" class="btn-outline">間違えた問題を再挑戦</button>
         <button id="btn-retry-all" class="btn-outline">もう一度</button>
         <button id="btn-to-setup" class="btn-primary">設定に戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 分析画面 ========== -->
+  <div id="screen-stats" class="screen">
+    <div class="setup-container">
+      <div class="stats-title-row">
+        <button id="btn-back-from-stats" class="btn-icon">←</button>
+        <h1 class="app-title" style="margin:0;font-size:20px">📊 学習分析</h1>
+      </div>
+
+      <section class="setup-section">
+        <h2>全体サマリー</h2>
+        <div id="stats-summary"></div>
+      </section>
+
+      <section class="setup-section">
+        <h2>年度・期別</h2>
+        <div id="stats-by-exam"></div>
+      </section>
+
+      <section class="setup-section">
+        <h2>カテゴリ別（正答率低い順）</h2>
+        <div id="stats-by-cat"></div>
+      </section>
+
+      <section class="setup-section">
+        <h2>❌ 最近の間違い</h2>
+        <div id="stats-recent-wrong"></div>
+      </section>
+
+      <div style="text-align:center;margin-top:8px;padding-bottom:40px">
+        <button id="btn-clear-history" class="btn-outline" style="color:var(--danger);border-color:var(--danger)">🗑 履歴をリセット</button>
       </div>
     </div>
   </div>

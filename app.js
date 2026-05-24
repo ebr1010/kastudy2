@@ -3,6 +3,37 @@
 const DATA_DIR = 'data/';
 const IMG_DIR = 'images/';
 
+// ===== ローカルストレージ =====
+const LS = { OVERRIDES: 'kastudy_overrides', HISTORY: 'kastudy_history' };
+
+function qKey(q) { return q._meta.year + '_' + q._meta.period + '_No' + q.number; }
+
+function getOverrides() {
+  try { return JSON.parse(localStorage.getItem(LS.OVERRIDES) || '{}'); } catch { return {}; }
+}
+function saveOverride(key, answer) {
+  const ov = getOverrides(); ov[key] = answer;
+  localStorage.setItem(LS.OVERRIDES, JSON.stringify(ov));
+}
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(LS.HISTORY) || '[]'); } catch { return []; }
+}
+function addHistory(q, chosen, isCorrect) {
+  const hist = getHistory();
+  hist.push({
+    date: new Date().toISOString(),
+    key: qKey(q),
+    year: q._meta.year,
+    period: q._meta.period,
+    number: q.number,
+    category: q.category || 'その他',
+    chosen,
+    correct: q.answer,
+    isCorrect,
+  });
+  localStorage.setItem(LS.HISTORY, JSON.stringify(hist));
+}
+
 const state = {
   allExams: [],
   extraExams: [],
@@ -113,6 +144,15 @@ function startQuiz() {
   if (state.settings.order === 'random') pool = shuffle(pool);
   if (state.settings.count !== 'all') pool = pool.slice(0, parseInt(state.settings.count));
 
+  // 解答上書き適用
+  const overrides = getOverrides();
+  pool = pool.map(q => {
+    const k = qKey(q);
+    return overrides[k] !== undefined
+      ? Object.assign({}, q, { answer: overrides[k], _overridden: true })
+      : q;
+  });
+
   state.questions = pool;
   state.currentIndex = 0;
   state.answers = new Array(pool.length).fill(null);
@@ -170,6 +210,7 @@ function renderQuestion() {
     $('feedback-area').style.display = 'none';
     $('footer-feedback').style.display = 'none';
     $('footer-feedback').className = 'footer-feedback';
+    $('footer-correction-panel').style.display = 'none';
   }
 
   $('btn-prev').disabled = idx === 0;
@@ -239,6 +280,7 @@ function onAnswer(chosen) {
     btn.disabled = true;
   });
 
+  addHistory(q, chosen, isCorrect);
   showFeedback(q, chosen);
   $('feedback-area').style.display = '';
   $('score-display').textContent = state.score;
@@ -322,6 +364,7 @@ function showFeedback(q, chosen) {
       'テキスト ' + ps + ' ' + r.topic));
   }
   fb.style.display = '';
+  $('footer-correction-panel').style.display = 'none';
 
   // ---- カード内の詳細フィードバック（スクロールで見える）----
   const res = $('feedback-result');
@@ -332,6 +375,13 @@ function showFeedback(q, chosen) {
   } else {
     res.textContent = '❌ 不正解  正答: ' + correct; res.className = 'feedback-result ng';
   }
+
+  // 修正ボタン表示リセット
+  $('answer-correction').style.display = 'none';
+  const togBtn = $('btn-correction-toggle');
+  togBtn.textContent = q._overridden
+    ? '✏️ 解答修正済み（変更する場合はここ）'
+    : '解答が間違ってる場合はここ';
 
   // 解答ページリンク
   const api = $('answer-page-info');
@@ -359,6 +409,101 @@ function showFeedback(q, chosen) {
   }
 }
 
+// ===== 解答修正 =====
+function applyCorrection(newAnswer) {
+  const idx = state.currentIndex;
+  const q = state.questions[idx];
+  saveOverride(qKey(q), newAnswer);
+  q.answer = newAnswer;
+  q._overridden = true;
+
+  const saved = state.answers[idx];
+  if (saved !== null) {
+    const wasCorrect = saved.isCorrect;
+    const nowCorrect = saved.chosen === newAnswer;
+    saved.correct = newAnswer;
+    saved.isCorrect = nowCorrect;
+    if (!wasCorrect && nowCorrect) state.score++;
+    if (wasCorrect && !nowCorrect) state.score--;
+    $('score-display').textContent = state.score;
+    // ボタン色を更新
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      const n = parseInt(btn.dataset.num);
+      btn.className = 'option-btn';
+      applyStyle(btn, n, saved.chosen, newAnswer);
+    });
+  }
+  showFeedback(q, saved ? saved.chosen : null);
+}
+
+// ===== 分析画面 =====
+function showStats() {
+  showScreen('stats');
+  const rawHist = getHistory();
+  const overrides = getOverrides();
+
+  const hist = rawHist.map(h => {
+    const correct = overrides[h.key] !== undefined ? overrides[h.key] : h.correct;
+    return Object.assign({}, h, { correct, isCorrect: h.chosen === correct });
+  });
+
+  const total = hist.length;
+  const correctCount = hist.filter(h => h.isCorrect).length;
+  const skipCount = hist.filter(h => h.chosen === null).length;
+  const wrongCount = total - correctCount - skipCount;
+  const pct = total ? Math.round(correctCount / total * 100) : 0;
+  const overrideCount = Object.keys(overrides).length;
+
+  $('stats-summary').innerHTML = [
+    statRow('総回答数', total + '問'),
+    statRow('正解', correctCount + '問', 'ok'),
+    statRow('不正解', wrongCount + '問', 'ng'),
+    statRow('スキップ', skipCount + '問'),
+    statRow('正答率', pct + '%', pct >= 60 ? 'ok' : 'ng'),
+    overrideCount ? statRow('解答修正済み', overrideCount + '問') : '',
+  ].join('');
+
+  const byExam = {};
+  hist.forEach(h => {
+    const k = h.year + ' ' + h.period;
+    if (!byExam[k]) byExam[k] = { t: 0, c: 0 };
+    byExam[k].t++;
+    if (h.isCorrect) byExam[k].c++;
+  });
+  $('stats-by-exam').innerHTML = Object.entries(byExam).map(([k, v]) => {
+    const p = Math.round(v.c / v.t * 100);
+    return statRow(k, v.c + '/' + v.t + '問 <strong class="' + (p >= 60 ? 'ok' : 'ng') + '">(' + p + '%)</strong>');
+  }).join('') || '<div class="stats-empty">データなし</div>';
+
+  const byCat = {};
+  hist.forEach(h => {
+    const cat = h.category || 'その他';
+    if (!byCat[cat]) byCat[cat] = { t: 0, c: 0 };
+    byCat[cat].t++;
+    if (h.isCorrect) byCat[cat].c++;
+  });
+  const catSorted = Object.entries(byCat).sort((a, b) => a[1].c / a[1].t - b[1].c / b[1].t);
+  $('stats-by-cat').innerHTML = catSorted.map(([cat, v]) => {
+    const p = Math.round(v.c / v.t * 100);
+    return statRow(cat, v.c + '/' + v.t + '問 <strong class="' + (p >= 60 ? 'ok' : 'ng') + '">(' + p + '%)</strong>');
+  }).join('') || '<div class="stats-empty">データなし</div>';
+
+  const recentWrong = hist.filter(h => !h.isCorrect && h.chosen !== null).slice(-20).reverse();
+  $('stats-recent-wrong').innerHTML = recentWrong.map(h =>
+    '<div class="stats-row">' +
+    '<span class="wrong-no">' + h.year + ' ' + h.period + ' No.' + h.number + '</span>' +
+    '<span style="flex:1;font-size:12px;color:var(--text-muted);padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">' + h.category + '</span>' +
+    '<span class="wrong-ans">→' + h.chosen + '</span>' +
+    '<span class="wrong-correct">　正:' + h.correct + '</span>' +
+    '</div>'
+  ).join('') || '<div class="stats-empty">間違いなし</div>';
+}
+
+function statRow(label, val, cls) {
+  return '<div class="stats-row"><span>' + label + '</span>' +
+    '<strong' + (cls ? ' class="' + cls + '"' : '') + '>' + val + '</strong></div>';
+}
+
 function updateNextBtn() {
   const btn = $('btn-next');
   const answered = state.answers[state.currentIndex] !== null;
@@ -382,6 +527,7 @@ function skipQuestion() {
   state.answers[idx] = { chosen: null, correct: state.questions[idx].answer, isCorrect: false };
   state.wrongQuestions.push(Object.assign({}, state.questions[idx], { chosen: null }));
   document.querySelectorAll('.option-btn').forEach(b => { b.disabled = true; });
+  addHistory(state.questions[idx], null, false);
   showFeedback(state.questions[idx], null);
   $('feedback-area').style.display = '';
   updateNextBtn();
@@ -507,5 +653,29 @@ $('btn-to-setup').addEventListener('click', () => showScreen('setup'));
 $('page-modal-backdrop').addEventListener('click', closePageModal);
 $('page-modal-close').addEventListener('click', closePageModal);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePageModal(); });
+
+// 解答修正（カード内トグル）
+$('btn-correction-toggle').addEventListener('click', () => {
+  const el = $('answer-correction');
+  el.style.display = el.style.display === 'none' ? '' : 'none';
+});
+// 解答修正（フッター✏️ボタン）
+$('btn-footer-correction').addEventListener('click', () => {
+  const panel = $('footer-correction-panel');
+  panel.style.display = panel.style.display === 'none' ? '' : 'none';
+});
+document.querySelectorAll('.correction-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyCorrection(parseInt(btn.dataset.num)));
+});
+
+// 分析画面
+$('btn-stats').addEventListener('click', showStats);
+$('btn-back-from-stats').addEventListener('click', () => showScreen('setup'));
+$('btn-clear-history').addEventListener('click', () => {
+  if (confirm('回答履歴を全て削除しますか？（解答修正は残ります）')) {
+    localStorage.removeItem(LS.HISTORY);
+    showStats();
+  }
+});
 
 initApp();
