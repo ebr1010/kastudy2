@@ -966,6 +966,105 @@ body {
   align-self: flex-start;
 }
 
+/* ===== タイムアタックバー ===== */
+.time-attack-bar {
+  position: relative; height: 30px;
+  background: rgba(59,130,246,.06);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; overflow: hidden;
+  flex-shrink: 0;
+}
+.time-attack-fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: linear-gradient(90deg, #10b981, #3b82f6);
+  transition: width .9s linear, background .3s;
+  border-radius: 0 3px 3px 0;
+}
+.time-attack-fill.warn { background: linear-gradient(90deg, #f59e0b, #f87171); }
+.time-attack-fill.danger {
+  background: linear-gradient(90deg, #f87171, #dc2626);
+  animation: ta-pulse .5s ease-in-out infinite alternate;
+}
+@keyframes ta-pulse { from { opacity: .75; } to { opacity: 1; } }
+.time-attack-text {
+  position: relative; z-index: 1;
+  width: 100%; text-align: center;
+  font-size: 12px; font-weight: 700; color: var(--text);
+  letter-spacing: .5px; text-shadow: 0 1px 4px rgba(0,0,0,.6);
+}
+
+/* ===== 頻出問題タグ ===== */
+.tag-freq {
+  background: rgba(245,158,11,.18);
+  border: 1px solid rgba(245,158,11,.45);
+  color: #fcd34d;
+  font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 8px;
+  animation: freq-glow 2.5s ease-in-out infinite;
+}
+@keyframes freq-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(245,158,11,.25); }
+  50% { box-shadow: 0 0 10px rgba(245,158,11,.60); }
+}
+
+/* ===== ユーザーテキスト参照 ===== */
+.user-ref-section { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.btn-add-user-ref {
+  background: rgba(16,185,129,.08);
+  border: 1.5px dashed rgba(16,185,129,.45);
+  color: var(--success); border-radius: var(--radius-sm);
+  padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: background .15s, border-color .15s; text-align: left;
+}
+.btn-add-user-ref:hover { background: rgba(16,185,129,.16); border-color: rgba(16,185,129,.65); }
+.user-ref-form {
+  background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border-hi); border-radius: var(--radius-sm);
+  padding: 12px; display: flex; flex-direction: column; gap: 8px;
+}
+.ref-input, .ref-page-input {
+  background: rgba(255,255,255,.06); border: 1.5px solid var(--border);
+  color: var(--text); border-radius: 8px; padding: 7px 10px;
+  font-size: 13px; outline: none; transition: border-color .15s;
+}
+.ref-input { width: 100%; }
+.ref-page-input { width: 72px; text-align: center; }
+.ref-input:focus, .ref-page-input:focus { border-color: var(--primary); }
+.ref-page-row { display: flex; align-items: center; gap: 6px; }
+.user-ref-form-btns { display: flex; gap: 8px; }
+.user-ref-item {
+  background: rgba(16,185,129,.07); border: 1px solid rgba(16,185,129,.22);
+  border-radius: 8px; padding: 8px 12px;
+  display: flex; align-items: center; gap: 8px; font-size: 12px;
+}
+.user-ref-item-info { flex: 1; }
+.user-ref-item-topic { font-weight: 700; color: var(--success); }
+.user-ref-item-pages { color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+.user-ref-delete-btn {
+  background: var(--danger-light); border: 1px solid rgba(248,113,113,.35);
+  color: var(--danger); border-radius: 6px; padding: 3px 8px;
+  font-size: 11px; cursor: pointer; flex-shrink: 0; transition: background .12s;
+}
+.user-ref-delete-btn:hover { background: rgba(248,113,113,.28); }
+
+/* ===== テキスト参照管理画面 ===== */
+.textrefs-q-item {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px;
+}
+.textrefs-q-key { font-size: 12px; font-weight: 700; color: #93c5fd; margin-bottom: 8px; }
+.textrefs-add-row {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+  padding-top: 8px; border-top: 1px solid var(--border);
+}
+.textrefs-add-row .ref-input { font-size: 12px; padding: 5px 8px; flex: 1; min-width: 120px; }
+.textrefs-add-row .ref-page-input { font-size: 12px; padding: 5px 6px; width: 60px; }
+.textrefs-add-btn {
+  background: rgba(16,185,129,.15); border: 1px solid rgba(16,185,129,.4);
+  color: var(--success); border-radius: 8px; padding: 5px 12px;
+  font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+
 /* ===== スクロールバー ===== */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }

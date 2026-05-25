@@ -35,6 +35,9 @@ function addHistory(q, chosen, isCorrect) {
   if (chosen !== null) updateSRS(qKey(q), isCorrect);
 }
 
+// ===== 全定数 =====
+const LS_USER_REFS = 'kastudy_user_refs';
+
 // ===== SRS / ストリーク 定数 =====
 const LS_SRS       = 'kastudy_srs';
 const LS_STREAK    = 'kastudy_streak';
@@ -120,6 +123,10 @@ const state = {
   isFlashcardMode: false,
   timeRemaining: 0,
   mockTimer: null,
+  frequentNums: new Set(),
+  timeAttackTimer: null,
+  timeAttackRemaining: 0,
+  timeAttackTotal: 0,
 };
 
 const $ = id => document.getElementById(id);
@@ -156,6 +163,7 @@ async function initApp() {
     updateRepeatWrongBadge();
     updateStreakBadge();
     updateWeakSub();
+    computeFrequentNums();
   } catch (e) {
     $('exam-list').innerHTML = '<div style="color:red">読み込み失敗: ' + e.message + '</div>';
   }
@@ -271,6 +279,9 @@ function renderQuestion() {
   $('q-year-tag').textContent = q._meta.year + '年度 ' + q._meta.period;
   $('q-cat-tag').textContent = q.category || 'その他';
   $('q-no-tag').textContent = 'No.' + q.number + '  (p.' + q.page + ')';
+  // 頻出マーク
+  const freqTag = $('q-freq-tag');
+  if (freqTag) freqTag.style.display = state.frequentNums.has(q.number) ? '' : 'none';
 
   // 画像表示
   loadQuestionImage(q);
@@ -334,6 +345,13 @@ function renderQuestion() {
     $('footer-top-normal').style.display = '';
     $('flashcard-area').style.display = 'none';
   }
+
+  // タイムアタック: 未回答の問題のみ開始
+  if (saved === null) {
+    startTimeAttack();
+  } else {
+    stopTimeAttack();
+  }
 }
 
 function loadQuestionImage(q) {
@@ -385,6 +403,7 @@ function onAnswer(chosen) {
   const correct = q.answer;
   const isCorrect = chosen === correct;
 
+  stopTimeAttack();
   state.answers[state.currentIndex] = { chosen, correct, isCorrect };
   if (isCorrect) state.score++;
   else state.wrongQuestions.push(Object.assign({}, q, { chosen }));
@@ -507,7 +526,7 @@ function showFeedback(q, chosen) {
     api.appendChild(makeRefBtn('✅ 解答 p.' + ap, [ansImgSrc(ap)], '解答ページ p.' + ap));
   }
 
-  // テキスト参照リンク
+  // テキスト参照リンク（元データ）
   const refs = $('textbook-refs');
   refs.innerHTML = '';
   if (q.textbook_refs && q.textbook_refs.length) {
@@ -523,6 +542,27 @@ function showFeedback(q, chosen) {
       refs.appendChild(btn);
     });
   }
+
+  // ユーザー追加テキスト参照
+  const k = qKey(q);
+  const userRefs = getUserRefsForKey(k);
+  userRefs.forEach(r => {
+    const ps = r.pages[0] === r.pages[1] ? r.pages[0] + 'ページ' : r.pages[0] + '〜' + r.pages[1] + 'ページ';
+    const btn = document.createElement('button');
+    btn.className = 'ref-item-btn';
+    btn.innerHTML = '<div class="ref-topic">✏️ ' + r.topic + '（追加）</div>' +
+                    '<div class="ref-pages">土木2級1次テキスト.pdf — ' + ps + ' ▶ タップして表示</div>';
+    btn.addEventListener('click', () =>
+      openPageModal(textImgSrcs(r.pages[0], r.pages[1]),
+        'テキスト p.' + r.pages[0] + (r.pages[0] !== r.pages[1] ? '-' + r.pages[1] : '') + ' ' + r.topic));
+    refs.appendChild(btn);
+  });
+
+  // ユーザー参照追加エリアを更新
+  renderUserRefsDisplay(k);
+  // 参照追加UIは回答後に表示
+  const userRefSection = $('user-ref-section');
+  if (userRefSection) userRefSection.style.display = (chosen !== null) ? '' : 'none';
 }
 
 // ===== 解答修正 =====
@@ -1462,6 +1502,7 @@ function goPrev() {
 function skipQuestion() {
   const idx = state.currentIndex;
   if (state.answers[idx] !== null) return;
+  stopTimeAttack();
   state.answers[idx] = { chosen: null, correct: state.questions[idx].answer, isCorrect: false };
   state.wrongQuestions.push(Object.assign({}, state.questions[idx], { chosen: null }));
   document.querySelectorAll('.option-btn').forEach(b => { b.disabled = true; });
@@ -1474,6 +1515,7 @@ function skipQuestion() {
 // ===== 結果 =====
 function showResult() {
   stopMockTimer();
+  stopTimeAttack();
   showScreen('result');
   const total = state.questions.length;
   const answered = state.answers.filter(Boolean);
@@ -1570,6 +1612,214 @@ function handleExtraFiles(files) {
   });
 }
 
+// ===== タイムアタック =====
+function getTimeAttackSec() {
+  const el = $('time-attack-select');
+  return el ? (parseInt(el.value) || 0) : 0;
+}
+
+function startTimeAttack() {
+  const sec = getTimeAttackSec();
+  if (!sec || state.isMockMode || state.isFlashcardMode) {
+    $('time-attack-bar').style.display = 'none';
+    return;
+  }
+  stopTimeAttack();
+  state.timeAttackRemaining = sec;
+  state.timeAttackTotal = sec;
+  updateTimeAttackDisplay();
+  $('time-attack-bar').style.display = '';
+  state.timeAttackTimer = setInterval(() => {
+    state.timeAttackRemaining--;
+    updateTimeAttackDisplay();
+    if (state.timeAttackRemaining <= 0) {
+      stopTimeAttack();
+      skipQuestion(); // 時間切れ → 自動スキップ（正解を表示）
+    }
+  }, 1000);
+}
+
+function stopTimeAttack() {
+  if (state.timeAttackTimer) { clearInterval(state.timeAttackTimer); state.timeAttackTimer = null; }
+  $('time-attack-bar').style.display = 'none';
+}
+
+function updateTimeAttackDisplay() {
+  const el = $('time-attack-text');
+  const fill = $('time-attack-fill');
+  if (!el || !fill) return;
+  const pct = state.timeAttackTotal > 0
+    ? (state.timeAttackRemaining / state.timeAttackTotal * 100)
+    : 100;
+  const sec = state.timeAttackRemaining;
+  el.textContent = sec + '秒';
+  fill.style.width = Math.max(0, pct) + '%';
+  if (pct > 50)      fill.className = 'time-attack-fill';
+  else if (pct > 25) fill.className = 'time-attack-fill warn';
+  else               fill.className = 'time-attack-fill danger';
+}
+
+// ===== 頻出番号の事前計算 =====
+function computeFrequentNums(threshold) {
+  threshold = threshold || 3;
+  const freq = {};
+  [...state.allExams, ...state.extraExams].forEach(exam => {
+    exam.questions.forEach(q => {
+      freq[q.number] = (freq[q.number] || 0) + 1;
+    });
+  });
+  state.frequentNums = new Set(
+    Object.entries(freq)
+      .filter(([, n]) => n >= threshold)
+      .map(([num]) => parseInt(num))
+  );
+}
+
+// ===== ユーザー追加テキスト参照 =====
+function getUserRefs() {
+  try { return JSON.parse(localStorage.getItem(LS_USER_REFS) || '{}'); } catch { return {}; }
+}
+function getUserRefsForKey(key) { return getUserRefs()[key] || []; }
+
+function saveUserRef(key, ref) {
+  const refs = getUserRefs();
+  if (!refs[key]) refs[key] = [];
+  refs[key].push(ref);
+  localStorage.setItem(LS_USER_REFS, JSON.stringify(refs));
+}
+
+function deleteUserRef(key, index) {
+  const refs = getUserRefs();
+  if (!refs[key]) return;
+  refs[key].splice(index, 1);
+  if (!refs[key].length) delete refs[key];
+  localStorage.setItem(LS_USER_REFS, JSON.stringify(refs));
+}
+
+function renderUserRefsDisplay(key) {
+  const container = $('user-refs-display');
+  if (!container) return;
+  const refs = getUserRefsForKey(key);
+  container.innerHTML = '';
+  refs.forEach((r, i) => {
+    const ps = r.pages[0] === r.pages[1] ? 'p.' + r.pages[0] : 'p.' + r.pages[0] + '-' + r.pages[1];
+    const div = document.createElement('div');
+    div.className = 'user-ref-item';
+    div.innerHTML =
+      '<div class="user-ref-item-info">' +
+        '<div class="user-ref-item-topic">📖 ' + r.topic + '</div>' +
+        '<div class="user-ref-item-pages">' + ps + '</div>' +
+      '</div>' +
+      '<button class="user-ref-delete-btn">削除</button>';
+    div.querySelector('.user-ref-delete-btn').addEventListener('click', () => {
+      deleteUserRef(key, i);
+      const q = state.questions[state.currentIndex];
+      renderUserRefsDisplay(qKey(q));
+      // showFeedback でも反映
+      showFeedback(q, state.answers[state.currentIndex]?.chosen ?? null);
+    });
+    container.appendChild(div);
+  });
+}
+
+// ===== テキスト参照管理画面 =====
+function showTextRefsScreen() {
+  showScreen('textrefs');
+  const select = $('textrefs-exam-select');
+  select.innerHTML = '<option value="">-- 年度を選択 --</option>';
+  [...state.allExams, ...state.extraExams].forEach(exam => {
+    const opt = document.createElement('option');
+    opt.value = exam.meta.id;
+    opt.textContent = exam.meta.title;
+    select.appendChild(opt);
+  });
+  $('textrefs-list').innerHTML = '';
+}
+
+function renderTextRefsList(examId) {
+  const exam = [...state.allExams, ...state.extraExams].find(e => e.meta.id === examId);
+  const container = $('textrefs-list');
+  if (!exam) { container.innerHTML = ''; return; }
+  const userRefs = getUserRefs();
+  container.innerHTML = '';
+
+  exam.questions.forEach(q => {
+    const fakeQ = Object.assign({}, q, { _meta: exam.meta });
+    const k = qKey(fakeQ);
+    const myRefs = userRefs[k] || [];
+    // 既存の textbook_refs + ユーザー追加
+    const hasAny = myRefs.length > 0;
+
+    const div = document.createElement('div');
+    div.className = 'textrefs-q-item';
+    const keyLabel = exam.meta.year + ' ' + exam.meta.period + ' No.' + q.number + (q.category ? '　' + q.category : '');
+    let html = '<div class="textrefs-q-key">' + keyLabel + '</div>';
+
+    // 既存 textbook_refs 表示
+    if (q.textbook_refs && q.textbook_refs.length) {
+      q.textbook_refs.forEach(r => {
+        const ps = r.pages[0] === r.pages[1] ? 'p.' + r.pages[0] : 'p.' + r.pages[0] + '-' + r.pages[1];
+        html += '<div class="user-ref-item" style="margin-bottom:4px">' +
+          '<div class="user-ref-item-info"><div class="user-ref-item-topic">📗 ' + r.topic + '</div>' +
+          '<div class="user-ref-item-pages">' + ps + '（元データ）</div></div></div>';
+      });
+    }
+    div.innerHTML = html;
+    container.appendChild(div);
+
+    // ユーザー追加分
+    const userDiv = document.createElement('div');
+    function refreshUserDiv() {
+      userDiv.innerHTML = '';
+      const latestRefs = getUserRefsForKey(k);
+      latestRefs.forEach((r, i) => {
+        const ps = r.pages[0] === r.pages[1] ? 'p.' + r.pages[0] : 'p.' + r.pages[0] + '-' + r.pages[1];
+        const row = document.createElement('div');
+        row.className = 'user-ref-item';
+        row.style.marginBottom = '4px';
+        row.innerHTML = '<div class="user-ref-item-info">' +
+          '<div class="user-ref-item-topic">✏️ ' + r.topic + '</div>' +
+          '<div class="user-ref-item-pages">' + ps + '（追加済み）</div></div>' +
+          '<button class="user-ref-delete-btn">削除</button>';
+        row.querySelector('.user-ref-delete-btn').addEventListener('click', () => {
+          deleteUserRef(k, i);
+          refreshUserDiv();
+        });
+        userDiv.appendChild(row);
+      });
+    }
+    refreshUserDiv();
+    div.appendChild(userDiv);
+
+    // 追加フォーム
+    const addRow = document.createElement('div');
+    addRow.className = 'textrefs-add-row';
+    const topicIn = document.createElement('input');
+    topicIn.className = 'ref-input'; topicIn.placeholder = 'トピック';
+    const p0In = document.createElement('input');
+    p0In.className = 'ref-page-input'; p0In.type = 'number'; p0In.placeholder = '開始p'; p0In.min = 1;
+    const p1In = document.createElement('input');
+    p1In.className = 'ref-page-input'; p1In.type = 'number'; p1In.placeholder = '終了p'; p1In.min = 1;
+    const addBtn = document.createElement('button');
+    addBtn.className = 'textrefs-add-btn'; addBtn.textContent = '+ 追加';
+    addBtn.addEventListener('click', () => {
+      const topic = topicIn.value.trim();
+      const p0 = parseInt(p0In.value);
+      const p1 = parseInt(p1In.value) || p0;
+      if (!topic || !p0) { alert('トピックと開始ページを入力してください'); return; }
+      saveUserRef(k, { topic, pages: [p0, p1 >= p0 ? p1 : p0] });
+      topicIn.value = ''; p0In.value = ''; p1In.value = '';
+      refreshUserDiv();
+    });
+    addRow.appendChild(topicIn);
+    addRow.appendChild(p0In);
+    addRow.appendChild(document.createTextNode('〜'));
+    addRow.appendChild(p1In);
+    addRow.appendChild(addBtn);
+    div.appendChild(addRow);
+  });
+}
+
 // ===== ユーティリティ =====
 function shuffle(arr) {
   const a = [...arr];
@@ -1597,6 +1847,7 @@ $('btn-start').addEventListener('click', startQuiz);
 $('btn-back-to-setup').addEventListener('click', () => {
   if (confirm('設定に戻りますか？（進捗がリセットされます）')) {
     resetMockMode();
+    stopTimeAttack();
     state._isDailyMode = false;
     showScreen('setup');
   }
@@ -1707,6 +1958,41 @@ $('btn-clear-history').addEventListener('click', () => {
     localStorage.removeItem(LS.HISTORY);
     showStats();
   }
+});
+
+// クイズ中 参照追加フォーム
+$('btn-add-user-ref').addEventListener('click', () => {
+  const form = $('user-ref-form');
+  form.style.display = form.style.display === 'none' ? '' : 'none';
+});
+$('btn-ref-cancel').addEventListener('click', () => {
+  $('user-ref-form').style.display = 'none';
+  $('ref-topic-input').value = '';
+  $('ref-page-start').value = '';
+  $('ref-page-end').value = '';
+});
+$('btn-ref-save').addEventListener('click', () => {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  const topic = $('ref-topic-input').value.trim();
+  const p0 = parseInt($('ref-page-start').value);
+  const p1 = parseInt($('ref-page-end').value) || p0;
+  if (!topic || !p0) { alert('トピックと開始ページを入力してください'); return; }
+  saveUserRef(qKey(q), { topic, pages: [p0, p1 >= p0 ? p1 : p0] });
+  $('ref-topic-input').value = '';
+  $('ref-page-start').value = '';
+  $('ref-page-end').value = '';
+  $('user-ref-form').style.display = 'none';
+  renderUserRefsDisplay(qKey(q));
+  showFeedback(q, state.answers[state.currentIndex]?.chosen ?? null);
+});
+
+// テキスト参照管理画面
+$('btn-manage-refs').addEventListener('click', showTextRefsScreen);
+$('btn-back-from-textrefs').addEventListener('click', () => showScreen('setup'));
+$('textrefs-exam-select').addEventListener('change', e => {
+  if (e.target.value) renderTextRefsList(e.target.value);
+  else $('textrefs-list').innerHTML = '';
 });
 
 // ===== 学習モードボタン =====

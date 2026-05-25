@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>土木2級1次 過去問クイズ</title>
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -46,6 +46,16 @@
           <label class="option-card">
             <span class="option-label">解答ありのみ</span>
             <input type="checkbox" id="only-with-answer" checked>
+          </label>
+          <label class="option-card">
+            <span class="option-label">⏱ タイムアタック</span>
+            <select id="time-attack-select">
+              <option value="0">なし</option>
+              <option value="10">10秒</option>
+              <option value="15">15秒</option>
+              <option value="20">20秒</option>
+              <option value="30">30秒</option>
+            </select>
           </label>
         </div>
       </section>
@@ -100,6 +110,7 @@
           <button id="btn-frequent" class="btn-quick">🔥 頻出問題</button>
           <button id="btn-stats" class="btn-quick">📊 学習分析</button>
           <button id="btn-correction-list" class="btn-quick">📝 解答修正</button>
+          <button id="btn-manage-refs" class="btn-quick">📖 テキスト参照管理</button>
         </div>
       </div>
     </div>
@@ -121,12 +132,19 @@
       </div>
     </header>
 
+    <!-- タイムアタックバー -->
+    <div id="time-attack-bar" class="time-attack-bar" style="display:none">
+      <div id="time-attack-fill" class="time-attack-fill"></div>
+      <span id="time-attack-text" class="time-attack-text">20</span>
+    </div>
+
     <main class="quiz-main">
       <div class="question-meta" id="question-meta">
         <span class="tag tag-year" id="q-year-tag"></span>
         <span class="tag tag-cat" id="q-cat-tag"></span>
         <span class="tag tag-no" id="q-no-tag"></span>
         <span id="q-mode-tag" class="tag tag-mode" style="display:none"></span>
+        <span id="q-freq-tag" class="tag tag-freq" style="display:none">🔥 頻出</span>
       </div>
 
       <div class="question-card" id="question-card">
@@ -151,6 +169,25 @@
           </div>
           <button id="btn-correction-toggle" class="btn-correction-toggle">解答が間違ってる場合はここ</button>
           <div class="textbook-refs" id="textbook-refs"></div>
+
+          <!-- ユーザー追加テキスト参照 -->
+          <div id="user-ref-section" class="user-ref-section">
+            <div id="user-refs-display"></div>
+            <button id="btn-add-user-ref" class="btn-add-user-ref">📖 参照ページを追加</button>
+            <div id="user-ref-form" class="user-ref-form" style="display:none">
+              <input id="ref-topic-input" type="text" placeholder="トピック（例：コンクリートの性質）" class="ref-input">
+              <div class="ref-page-row">
+                <span style="font-size:12px;color:var(--text-muted)">ページ:</span>
+                <input id="ref-page-start" type="number" placeholder="開始" min="1" class="ref-page-input">
+                <span style="font-size:12px;color:var(--text-muted)">〜</span>
+                <input id="ref-page-end" type="number" placeholder="終了" min="1" class="ref-page-input">
+              </div>
+              <div class="user-ref-form-btns">
+                <button id="btn-ref-save" class="btn-primary" style="padding:8px 18px;font-size:13px">保存</button>
+                <button id="btn-ref-cancel" class="btn-outline" style="padding:8px 14px;font-size:13px">キャンセル</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -355,6 +392,24 @@
     </div>
   </div>
 
+  <!-- ========== テキスト参照管理画面 ========== -->
+  <div id="screen-textrefs" class="screen">
+    <div class="setup-container">
+      <div class="stats-title-row">
+        <button id="btn-back-from-textrefs" class="btn-icon">←</button>
+        <h1 class="app-title" style="margin:0;font-size:20px">📖 テキスト参照管理</h1>
+      </div>
+      <section class="setup-section">
+        <h2>年度を選択</h2>
+        <select id="textrefs-exam-select" class="correction-exam-select">
+          <option value="">-- 年度を選択 --</option>
+        </select>
+        <p class="hint-text" style="margin-top:6px">クイズ中の問題ごとに参照ページを追加できます。ここでは一括管理できます。</p>
+      </section>
+      <div id="textrefs-list"></div>
+    </div>
+  </div>
+
   <!-- GitHubトークン設定モーダル -->
   <div id="gh-token-modal" class="page-modal" style="display:none">
     <div class="page-modal-backdrop" id="gh-token-backdrop"></div>
@@ -397,6 +452,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
