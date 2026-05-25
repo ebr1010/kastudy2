@@ -6,9 +6,499 @@
     "period": "後期",
     "source_pdf": "土木2級1次過去問.pdf",
     "answer_page": 296,
-    "total_questions": 12
+    "total_questions": 61
   },
   "questions": [
+    {
+      "id": "R3後期-1",
+      "number": 1,
+      "page": 228,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-2",
+      "number": 2,
+      "page": 228,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-3",
+      "number": 3,
+      "page": 228,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-4",
+      "number": 4,
+      "page": 229,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-5",
+      "number": 5,
+      "page": 229,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-6",
+      "number": 6,
+      "page": 229,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-7",
+      "number": 7,
+      "page": 230,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-8",
+      "number": 8,
+      "page": 230,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-9",
+      "number": 9,
+      "page": 230,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-10",
+      "number": 10,
+      "page": 231,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-11",
+      "number": 11,
+      "page": 231,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-12",
+      "number": 12,
+      "page": 232,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-13",
+      "number": 13,
+      "page": 232,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-14",
+      "number": 14,
+      "page": 232,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-15",
+      "number": 15,
+      "page": 233,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-16",
+      "number": 16,
+      "page": 233,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-17",
+      "number": 17,
+      "page": 233,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-18",
+      "number": 18,
+      "page": 234,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-19",
+      "number": 19,
+      "page": 234,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-20",
+      "number": 20,
+      "page": 234,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-21",
+      "number": 21,
+      "page": 235,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-22",
+      "number": 22,
+      "page": 235,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-23",
+      "number": 23,
+      "page": 235,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-24",
+      "number": 24,
+      "page": 236,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-25",
+      "number": 25,
+      "page": 236,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-26",
+      "number": 26,
+      "page": 236,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-27",
+      "number": 27,
+      "page": 237,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-28",
+      "number": 28,
+      "page": 237,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-29",
+      "number": 29,
+      "page": 237,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-30",
+      "number": 30,
+      "page": 238,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-31",
+      "number": 31,
+      "page": 238,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-32",
+      "number": 32,
+      "page": 239,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-33",
+      "number": 33,
+      "page": 239,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-34",
+      "number": 34,
+      "page": 239,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-35",
+      "number": 35,
+      "page": 240,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-36",
+      "number": 36,
+      "page": 240,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-37",
+      "number": 37,
+      "page": 240,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-38",
+      "number": 38,
+      "page": 241,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-39",
+      "number": 39,
+      "page": 241,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-40",
+      "number": 40,
+      "page": 241,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-41",
+      "number": 41,
+      "page": 242,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-42",
+      "number": 42,
+      "page": 242,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-43",
+      "number": 43,
+      "page": 243,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-44",
+      "number": 44,
+      "page": 243,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-45",
+      "number": 45,
+      "page": 243,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-46",
+      "number": 46,
+      "page": 244,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-47",
+      "number": 47,
+      "page": 244,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-48",
+      "number": 48,
+      "page": 244,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R3後期-49",
+      "number": 49,
+      "page": 245,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
     {
       "id": "R3後期-50",
       "number": 50,
@@ -54,7 +544,7 @@
           "text": ".. ぇ人かよつが人ゆうりょう え人かふつ りょう Ifんそく"
         }
       ],
-      "answer": null,
+      "answer": 3,
       "textbook_refs": [
         {
           "topic": "フレッシュコンクリートの性質",
@@ -84,7 +574,7 @@
           "text": ","
         }
       ],
-      "answer": null,
+      "answer": 2,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -212,7 +702,7 @@
       "page": 256,
       "text": "疇かずの A工こう区く， Bエこう区くの管か理人図りずについて記載し3 さていいる―カド記の笈冷巧悩うの［ニニニ|の（イ） ～（二）あに当てはまこる・語＜句くみのあ組わ合せとして，て適さと当う なものは次つyのうちどれか。 こう＜ こう＜ A工区 Bエ区 40 40 u~r CL UCL 3 ゜ 一 ｷ ' f ら ’ (cid:157) 一 し 心 ． ん ‘蒻 30 |ｷｷ ｷｷ ｷ ｷ - - - ---ｷｷ-- - --------- ち - 中 - ● - う - 心 - し - ん • 線 せ 人 20 20 LCL 0ー 10 L . ---------------•- --------------ｷ ．符曲函は，じ上刃fの［ロロニl を筵めた函に・図械なデータをプロットしてイ｝治ぅ呈i如吋和伯を信与 ものであり， A呈区ぷ上喩［三こ］は［三こ］である。 こうく らゅうしんせ人 じょう99う きに●う かずら●うしんせん か99う さにゅう ·Bエ区では中心線より上方に記入されたデータの数が中心線より下方に記入されたデータの 伍ょりも仁三二］。 ・ひ品人し烈つか管人り理に",
       "options": [],
-      "answer": null,
+      "answer": 1,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -222,7 +712,7 @@
       "page": 257,
       "text": "篠王の械碕めにおける儲好符向叶砿するfiもが定ぷ店うの［こここl の（イ）～（二）に:1ては まる廂ー句（（のみ組あ合わせとして，適てさ当とうなものは次つのS うちどれか。 ・も盛りど士のし締めか固ためのひ品人し質つか行人り理の9よ方うし式5のうちこエう9よ法う規S て定い9方ようし式3は，使しよJう『するしめ締かた固め5 か機い械の［口［コゃ締しめ固かた めか圃いす数う等などを規さて定いするもので，品ひ人質しつ規さて定い方はう式し3は，；品士の［三こ］録を瓜蓋する芳闊である。 ・も盛りど土のし締めか同た めのこ効うか果やせ性いし質つ は，つ七ち のし種●る類い やが含んす水いひ比，せ施こう工9方”'よ法う によって［］ここl 。 ．筵tが硲もよく条惰まる笞尿此は［］三二］篠砿寄瓜が詢られる笞尿孔；では誡答尿庄である。 （ィ) 回 い （二) 玄\" す 科3 ] 2 3 4 . . . . . ~ . . . . ' ~ ＂ 玄 さ 機 1 1 数 ” 数 種 3 .. 立 ” 蹂 加 蹂 釉 固 吐 固 W 5 め め ~ ど B t ど 度 . . . . 盆 変 添 久 添 ， ",
       "options": [],
-      "answer": null,
+      "answer": 3,
       "textbook_refs": [],
       "category": "その他"
     }

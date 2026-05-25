@@ -6,9 +6,19 @@
     "period": "後期",
     "source_pdf": "土木2級1次過去問.pdf",
     "answer_page": 294,
-    "total_questions": 51
+    "total_questions": 61
   },
   "questions": [
+    {
+      "id": "R4後期-1",
+      "number": 1,
+      "page": 185,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
     {
       "id": "R4後期-2",
       "number": 2,
@@ -240,6 +250,16 @@
       "category": "単純梁の曲げモーメント及びせん断力"
     },
     {
+      "id": "R4後期-11",
+      "number": 11,
+      "page": 187,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
       "id": "R4後期-12",
       "number": 12,
       "page": 188,
@@ -434,7 +454,7 @@
           "text": "にじて人あつ い91£人 おこな し人どう もら"
         }
       ],
-      "answer": null,
+      "answer": 2,
       "textbook_refs": [
         {
           "topic": "土の締固め",
@@ -461,7 +481,7 @@
           "text": ".. せっさくこう1よう"
         }
       ],
-      "answer": null,
+      "answer": 4,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -724,7 +744,7 @@
           "text": "使しよ川うし者では，や雁と＼ヽ入＼ヽれのHひから 6 箇かげ月つか1人：\"\\り•ぞ継く続3ん勤U務しぜ全人ろ労う働どうHびの8わ割り以9ヽじ上ょう出し●勤つ3し人た労ろ働うど者うしにでは，"
         }
       ],
-      "answer": null,
+      "answer": 3,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -747,7 +767,7 @@
           "text": "y業ょう務しし上ょうの負ふ傷しょ，う 疾しっ病ぺし又・または死し亡ぼうの認1ツし定てい等とうにか1紺んして異い¥議のあるも者のは，y行ょうせ政いか官人ら庁ょうに対たいして，審し人査さ"
         }
       ],
-      "answer": null,
+      "answer": 2,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -762,7 +782,7 @@
           "text": ". 掘削面の,•,':jさが2m以上となる地山の掘削の作業"
         }
       ],
-      "answer": null,
+      "answer": 3,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -785,7 +805,7 @@
           "text": "公こう共Sょ性うせいのある施し設せにつ関か人する重じ●要うよなう工こ事うでじ ある楊合99あ，い請う負\"代おい金だいのさ額んがにくかかわらず，工＇こうµじ現91A場 9｣ ご"
         }
       ],
-      "answer": null,
+      "answer": 4,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -804,7 +824,7 @@
           "text": "4. 車しゃ両りょうの軸じく直じ●のう最さ高いこ限うIf度人どは， 10tである。"
         }
       ],
-      "answer": null,
+      "answer": 2,
       "textbook_refs": [
         {
           "topic": "コンクリートの運搬・打込み・養生",
@@ -827,7 +847,7 @@
           "text": ".. . 1 ) 級• 9及および2 さ級●河うか川せ人以い外が9のヽ 準じ●J人よTIう河かせ川人のか管人理り は，市しち町ょう村そ長人らがょう行おこうな。"
         }
       ],
-      "answer": null,
+      "answer": 2,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -850,7 +870,7 @@
           "text": "1建9A笑らく物ふつの建けん築ちく面めん積せさの敷し5地ら而めん梢せさに対た1すヽ る割わり合あ1をヽ 建19んぺい率りとつ いう。"
         }
       ],
-      "answer": null,
+      "answer": 3,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -873,7 +893,7 @@
           "text": "火かや楽くる類いの取とり扱あついか には，盗とう難な予人よ防ぼうに留り•慈ぅ 9すヽ る。"
         }
       ],
-      "answer": null,
+      "answer": 2,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -933,7 +953,7 @@
           "text": "せ船人舶99くは，航こう路ろ1内'9ヽにおいては，原9fん則そくとしてえい航こうしている船せ人舶I!をくは放なしてはならない。"
         }
       ],
-      "answer": null,
+      "answer": 2,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -1093,7 +1113,7 @@
       "page": 200,
       "text": "1知燿瓜24, スランプ12cm, 空（う気さり砒ょう5.0 %と指し定てじしたJIS A 5308 レディーミクス トコンクリートの試 19A 99っ について， か各くこ項うし目くの判は人定てい基〇じ禅•んを満2人足ぞくしないものは次つSのうち どれか。 かい ク2し●くさょうどし99J... 91つか ]. . ~~~ 1 回のJ土縮強度試験の結果は， 21.0N/mm2であった。 かい あっし●<sょうどし\"'-\"っか へい3人ら 3~•~ .. 3回の圧縮強度試験結果の平均値は， 24.0N/mm2であった。 4 し 19A 99っか スランプ試験の結果は， 10.0cm であった。 .~・~ . くうさりょうしけん 99つか ,. 空気紐試験の結果は， 3.0 %であった。",
       "options": [],
-      "answer": null,
+      "answer": 4,
       "textbook_refs": [
         {
           "topic": "フレッシュコンクリートの性質",
@@ -1127,7 +1147,7 @@
           "text": "作さy業ょう待2ち時じは，建tt設人せ機つさ械かい等などのエンジンをアイドリング状じょ態うたにい しておく。"
         }
       ],
-      "answer": null,
+      "answer": 3,
       "textbook_refs": [],
       "category": "その他"
     },
@@ -1145,6 +1165,86 @@
       "answer": 4,
       "textbook_refs": [],
       "category": "その他"
+    },
+    {
+      "id": "R4後期-54",
+      "number": 54,
+      "page": 201,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4後期-55",
+      "number": 55,
+      "page": 201,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4後期-56",
+      "number": 56,
+      "page": 201,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4後期-57",
+      "number": 57,
+      "page": 202,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4後期-58",
+      "number": 58,
+      "page": 202,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4後期-59",
+      "number": 59,
+      "page": 202,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4後期-60",
+      "number": 60,
+      "page": 203,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4後期-61",
+      "number": 61,
+      "page": 203,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
     }
   ]
 }

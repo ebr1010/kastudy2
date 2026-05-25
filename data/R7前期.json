@@ -6,7 +6,7 @@
     "period": "前期",
     "source_pdf": "土木2級1次過去問.pdf",
     "answer_page": 289,
-    "total_questions": 65
+    "total_questions": 66
   },
   "questions": [
     {
@@ -306,6 +306,16 @@
         }
       ],
       "category": "セメントの種類と特徴"
+    },
+    {
+      "id": "R7前期-11",
+      "number": 11,
+      "page": 34,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
     },
     {
       "id": "R7前期-12",

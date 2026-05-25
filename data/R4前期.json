@@ -6,7 +6,618 @@
     "period": "前期",
     "source_pdf": "土木2級1次過去問.pdf",
     "answer_page": 295,
-    "total_questions": 0
+    "total_questions": 61
   },
-  "questions": []
+  "questions": [
+    {
+      "id": "R4前期-1",
+      "number": 1,
+      "page": 204,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-2",
+      "number": 2,
+      "page": 204,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-3",
+      "number": 3,
+      "page": 204,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-4",
+      "number": 4,
+      "page": 205,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-5",
+      "number": 5,
+      "page": 205,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-6",
+      "number": 6,
+      "page": 205,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-7",
+      "number": 7,
+      "page": 206,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-8",
+      "number": 8,
+      "page": 206,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-9",
+      "number": 9,
+      "page": 206,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-10",
+      "number": 10,
+      "page": 207,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-11",
+      "number": 11,
+      "page": 207,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-12",
+      "number": 12,
+      "page": 207,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-13",
+      "number": 13,
+      "page": 207,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-14",
+      "number": 14,
+      "page": 207,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-15",
+      "number": 15,
+      "page": 208,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-16",
+      "number": 16,
+      "page": 208,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-17",
+      "number": 17,
+      "page": 208,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-18",
+      "number": 18,
+      "page": 209,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-19",
+      "number": 19,
+      "page": 209,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-20",
+      "number": 20,
+      "page": 209,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-21",
+      "number": 21,
+      "page": 210,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-22",
+      "number": 22,
+      "page": 210,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-23",
+      "number": 23,
+      "page": 210,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-24",
+      "number": 24,
+      "page": 211,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-25",
+      "number": 25,
+      "page": 211,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-26",
+      "number": 26,
+      "page": 211,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-27",
+      "number": 27,
+      "page": 212,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-28",
+      "number": 28,
+      "page": 212,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-29",
+      "number": 29,
+      "page": 212,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-30",
+      "number": 30,
+      "page": 213,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-31",
+      "number": 31,
+      "page": 213,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-32",
+      "number": 32,
+      "page": 216,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-33",
+      "number": 33,
+      "page": 216,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-34",
+      "number": 34,
+      "page": 216,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-35",
+      "number": 35,
+      "page": 217,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-36",
+      "number": 36,
+      "page": 217,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-37",
+      "number": 37,
+      "page": 217,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-38",
+      "number": 38,
+      "page": 218,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-39",
+      "number": 39,
+      "page": 218,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-40",
+      "number": 40,
+      "page": 218,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-41",
+      "number": 41,
+      "page": 219,
+      "text": "",
+      "options": [],
+      "answer": null,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-42",
+      "number": 42,
+      "page": 219,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-43",
+      "number": 43,
+      "page": 220,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-44",
+      "number": 44,
+      "page": 220,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-45",
+      "number": 45,
+      "page": 220,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-46",
+      "number": 46,
+      "page": 221,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-47",
+      "number": 47,
+      "page": 221,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-48",
+      "number": 48,
+      "page": 221,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-49",
+      "number": 49,
+      "page": 222,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-50",
+      "number": 50,
+      "page": 222,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-51",
+      "number": 51,
+      "page": 222,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-52",
+      "number": 52,
+      "page": 223,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-53",
+      "number": 53,
+      "page": 223,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-54",
+      "number": 54,
+      "page": 223,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-55",
+      "number": 55,
+      "page": 224,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-56",
+      "number": 56,
+      "page": 224,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-57",
+      "number": 57,
+      "page": 224,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-58",
+      "number": 58,
+      "page": 225,
+      "text": "",
+      "options": [],
+      "answer": 4,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-59",
+      "number": 59,
+      "page": 225,
+      "text": "",
+      "options": [],
+      "answer": 1,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-60",
+      "number": 60,
+      "page": 225,
+      "text": "",
+      "options": [],
+      "answer": 3,
+      "textbook_refs": [],
+      "category": ""
+    },
+    {
+      "id": "R4前期-61",
+      "number": 61,
+      "page": 226,
+      "text": "",
+      "options": [],
+      "answer": 2,
+      "textbook_refs": [],
+      "category": ""
+    }
+  ]
 }
