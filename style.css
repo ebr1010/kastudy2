@@ -393,8 +393,12 @@ body {
 .score-denom { font-size: 12px; font-weight: 400; color: var(--text-muted); }
 
 .quiz-main {
-  flex: 1; overflow-y: auto; overflow-x: hidden;
-  max-width: 800px; width: 100%; margin: 0 auto; padding: 0 8px 8px;
+  flex: 1;
+  min-height: 0; /* flexboxでスクロールを有効にするために必須 */
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-width: 800px; width: 100%; margin: 0 auto;
+  padding: 0 8px 180px; /* フッター分の余白 */
 }
 
 /* メタタグ (flex固定行) */
@@ -425,7 +429,7 @@ body {
   border-bottom: 1px solid var(--glass-border-bottom);
   border-top: none;
   border-radius: 0 0 var(--radius) var(--radius);
-  overflow: hidden;
+  overflow: visible; /* hiddenにするとフィードバックがクリップされる */
   animation: fadeSlide .25s ease;
   box-shadow:
     0 12px 56px rgba(0,0,0,.58),
@@ -453,6 +457,11 @@ body {
   border-bottom: 1px solid var(--border);
   min-height: 120px; overflow-y: auto;
   max-height: calc(100vh - 200px);
+  transition: max-height 0.3s ease;
+}
+/* 回答後は画像を縮小して解説スペースを確保 */
+.feedback-visible .question-image-wrap {
+  max-height: 35vh;
 }
 .question-img {
   display: block; width: 100%; max-width: 100%; height: auto;

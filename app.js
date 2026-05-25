@@ -327,6 +327,8 @@ function renderQuestion() {
     $('footer-feedback').style.display = 'none';
     $('footer-feedback').className = 'footer-feedback';
     $('footer-correction-panel').style.display = 'none';
+    const qc = $('question-card');
+    if (qc) qc.classList.remove('feedback-visible');
   }
 
   $('btn-prev').disabled = idx === 0;
@@ -477,6 +479,13 @@ function showFeedback(q, chosen) {
   const correct = q.answer;
   const ap = q._meta.answer_page;
 
+  // 回答後は画像を縮小するクラスを付与
+  const qCard = $('question-card');
+  if (qCard) {
+    if (chosen !== null) qCard.classList.add('feedback-visible');
+    else qCard.classList.remove('feedback-visible');
+  }
+
   // ---- フッターフィードバックバー ----
   const fb = $('footer-feedback');
   const fbRes = $('footer-feedback-result');
@@ -603,6 +612,15 @@ function showFeedback(q, chosen) {
         const isCorrect = num === q.answer;
         const isSelected = num === chosen && chosen !== 0;
         const expTxt = q.choice_explanations[i] || '';
+        // 解説テキストのフォールバック
+        let displayTxt = expTxt;
+        if (!displayTxt && isCorrect && q.explanation) {
+          displayTxt = q.explanation; // 正解には必ず全体解説を表示
+        }
+        if (!displayTxt && !isCorrect) {
+          displayTxt = ''; // 不正解で解説なしは空
+        }
+
         const card = document.createElement('div');
         let cls = 'choice-exp-card';
         if (isCorrect) cls += ' ce-correct';
@@ -613,7 +631,7 @@ function showFeedback(q, chosen) {
         const yourMark = isSelected ? '<span class="ce-yours">あなたの回答</span>' : '';
         card.innerHTML =
           '<div class="ce-header"><span class="ce-num">選択肢 ' + num + '</span>' + badge + yourMark + '</div>' +
-          (expTxt ? '<div class="ce-text">' + expTxt + '</div>' : '');
+          (displayTxt ? '<div class="ce-text">' + displayTxt + '</div>' : '');
         ceArea.appendChild(card);
       }
     }
