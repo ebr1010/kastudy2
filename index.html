@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 
@@ -187,6 +187,10 @@
           </div>
           <button id="btn-correction-toggle" class="btn-correction-toggle">解答が間違ってる場合はここ</button>
           <div class="textbook-refs" id="textbook-refs"></div>
+          <div id="explanation-area" class="explanation-area" style="display:none">
+            <div class="explanation-label">💡 解説</div>
+            <div id="explanation-text" class="explanation-text"></div>
+          </div>
 
           <!-- ユーザー追加テキスト参照 -->
           <div id="user-ref-section" class="user-ref-section">
@@ -489,6 +493,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>

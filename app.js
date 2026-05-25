@@ -576,6 +576,18 @@ function showFeedback(q, chosen) {
     refs.appendChild(btn);
   });
 
+  // 解説
+  const expArea = $('explanation-area');
+  const expText = $('explanation-text');
+  if (expArea && expText) {
+    if (q.explanation && chosen !== null) {
+      expText.textContent = q.explanation;
+      expArea.style.display = '';
+    } else {
+      expArea.style.display = 'none';
+    }
+  }
+
   // ユーザー参照追加エリアを更新
   renderUserRefsDisplay(k);
   // 参照追加UIは回答後に表示

@@ -1494,3 +1494,26 @@ input[type=file]::file-selector-button:hover {
   .result-score { font-size: 38px; }
   .quick-actions { grid-template-columns: 1fr 1fr; }
 }
+
+/* ===== 解説エリア ===== */
+.explanation-area {
+  margin-top: 14px;
+  background: var(--card-bg, #1e2a3a);
+  border: 1px solid var(--primary, #4fc3f7);
+  border-left: 4px solid var(--primary, #4fc3f7);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.explanation-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary, #4fc3f7);
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+.explanation-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-main, #e0e0e0);
+  white-space: pre-wrap;
+}
