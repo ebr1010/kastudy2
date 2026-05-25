@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>土木2級1次 過去問クイズ</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -60,8 +60,43 @@
       <div class="start-area">
         <div id="selected-count" class="selected-info">年度を選択してください</div>
         <button id="btn-start" class="btn-primary" disabled>クイズ開始</button>
+
+        <!-- 学習モードグリッド -->
+        <div class="mode-grid">
+          <button id="btn-daily" class="mode-card mode-daily">
+            <div class="mode-icon">📅</div>
+            <div class="mode-label">デイリー<br>10問</div>
+            <div id="streak-badge" class="streak-badge">🔥 0日連続</div>
+          </button>
+          <button id="btn-mock" class="mode-card mode-mock">
+            <div class="mode-icon">🏆</div>
+            <div class="mode-label">模擬試験</div>
+            <div class="mode-sub">60問・100分</div>
+          </button>
+          <button id="btn-weak" class="mode-card mode-weak">
+            <div class="mode-icon">🎯</div>
+            <div class="mode-label">弱点集中</div>
+            <div class="mode-sub" id="weak-sub">正答率低いカテゴリ</div>
+          </button>
+          <button id="btn-quick" class="mode-card mode-quick">
+            <div class="mode-icon">⚡</div>
+            <div class="mode-label">5分クイック</div>
+            <div class="mode-sub">SRS優先5問</div>
+          </button>
+          <button id="btn-flashcard-mode" class="mode-card mode-fc">
+            <div class="mode-icon">🃏</div>
+            <div class="mode-label">フラッシュ<br>カード</div>
+            <div class="mode-sub">自己採点</div>
+          </button>
+          <button id="btn-plan" class="mode-card mode-plan">
+            <div class="mode-icon">📋</div>
+            <div class="mode-label">直前プラン</div>
+            <div class="mode-sub">5日間計画</div>
+          </button>
+        </div>
+
         <div class="quick-actions">
-          <button id="btn-repeat-wrong" class="btn-quick">🔁 繰り返し間違えた問題<span id="repeat-wrong-badge" class="badge" style="display:none"></span></button>
+          <button id="btn-repeat-wrong" class="btn-quick">🔁 繰り返し間違い<span id="repeat-wrong-badge" class="badge" style="display:none"></span></button>
           <button id="btn-frequent" class="btn-quick">🔥 頻出問題</button>
           <button id="btn-stats" class="btn-quick">📊 学習分析</button>
           <button id="btn-correction-list" class="btn-quick">📝 解答修正</button>
@@ -80,7 +115,8 @@
           <div id="progress-fill" class="progress-fill"></div>
         </div>
       </div>
-      <div class="score-badge">
+      <div id="mock-timer" class="mock-timer" style="display:none">100:00</div>
+      <div class="score-badge" id="score-badge-wrap">
         <span id="score-display">0</span><span class="score-denom" id="score-denom">/0</span>
       </div>
     </header>
@@ -90,6 +126,7 @@
         <span class="tag tag-year" id="q-year-tag"></span>
         <span class="tag tag-cat" id="q-cat-tag"></span>
         <span class="tag tag-no" id="q-no-tag"></span>
+        <span id="q-mode-tag" class="tag tag-mode" style="display:none"></span>
       </div>
 
       <div class="question-card" id="question-card">
@@ -131,7 +168,20 @@
         <button class="correction-btn" data-num="3">3</button>
         <button class="correction-btn" data-num="4">4</button>
       </div>
-      <div class="footer-top">
+
+      <!-- フラッシュカードモード用 -->
+      <div id="flashcard-area" style="display:none">
+        <button id="btn-flashcard-reveal" class="btn-flashcard-reveal">👁 答えを確認する</button>
+        <div id="flashcard-revealed" style="display:none">
+          <div class="flashcard-judge-row">
+            <span id="flashcard-answer-text" class="flashcard-answer-text"></span>
+            <button id="btn-fc-correct" class="btn-fc ok">○ 正解</button>
+            <button id="btn-fc-wrong" class="btn-fc ng">✕ 不正解</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-top" id="footer-top-normal">
         <span class="answer-label" id="answer-label-text">答えを選択 →</span>
         <div class="options-container" id="options-container">
           <button class="option-btn" data-num="1"><span class="option-num">1</span></button>
@@ -158,6 +208,8 @@
           <span id="result-correct"></span> / <span id="result-total"></span>
           <div id="result-pct" class="result-pct"></div>
         </div>
+        <!-- 模擬試験合否判定 -->
+        <div id="mock-result-badge" style="display:none" class="mock-result-badge"></div>
       </div>
       <div class="result-breakdown" id="result-breakdown"></div>
       <div class="result-wrong-list" id="result-wrong-list"></div>
@@ -202,6 +254,11 @@
         <button id="btn-back-from-stats" class="btn-icon">←</button>
         <h1 class="app-title" style="margin:0;font-size:20px">📊 学習分析</h1>
       </div>
+
+      <section class="setup-section">
+        <h2>🎯 合格予測</h2>
+        <div id="stats-pass-prediction"></div>
+      </section>
 
       <section class="setup-section">
         <h2>🗓 日時を指定して削除</h2>
@@ -257,7 +314,6 @@
         <button id="btn-back-from-frequent" class="btn-icon">←</button>
         <h1 class="app-title" style="margin:0;font-size:20px">🔥 頻出問題</h1>
       </div>
-
       <section class="setup-section">
         <h2>複数年度で出題された問題</h2>
         <p class="hint-text">3年度以上で繰り返し出題されている重要問題です。根拠として各年度のページを確認できます。</p>
@@ -278,6 +334,27 @@
     </div>
   </div>
 
+  <!-- ========== 直前プラン画面 ========== -->
+  <div id="screen-plan" class="screen">
+    <div class="setup-container">
+      <div class="stats-title-row">
+        <button id="btn-back-from-plan" class="btn-icon">←</button>
+        <h1 class="app-title" style="margin:0;font-size:20px">📋 直前5日間プラン</h1>
+      </div>
+
+      <section class="setup-section">
+        <h2>試験日を設定</h2>
+        <div class="date-filter-row">
+          <input type="date" id="exam-date-input" class="date-input">
+          <button id="btn-set-exam-date" class="btn-primary" style="padding:8px 16px;font-size:14px">設定</button>
+        </div>
+        <div id="exam-date-info" style="margin-top:8px;font-size:13px;color:var(--text-muted)"></div>
+      </section>
+
+      <div id="plan-list"></div>
+    </div>
+  </div>
+
   <!-- GitHubトークン設定モーダル -->
   <div id="gh-token-modal" class="page-modal" style="display:none">
     <div class="page-modal-backdrop" id="gh-token-backdrop"></div>
@@ -292,10 +369,7 @@
         </div>
         <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:12px;font-size:13px;line-height:2;color:var(--text)">
           <b>① 下のリンクを開く（クラシック版）</b><br>
-          <a href="https://github.com/settings/tokens/new" target="_blank"
-             style="color:var(--accent);word-break:break-all">
-            https://github.com/settings/tokens/new
-          </a><br>
+          <a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--accent);word-break:break-all">https://github.com/settings/tokens/new</a><br>
           <b>② Note</b>（名前）に何でも入力<br>
           <b>③ Expiration</b> → <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px">No expiration</code><br>
           <b>④ Select scopes の「repo」</b>にチェック ✓<br>
@@ -303,8 +377,7 @@
           <b>⑤ 一番下の「Generate token」</b>をクリック<br>
           <b>⑥ 表示された <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px">ghp_...</code> をコピー</b>してここに貼る
         </div>
-        <input id="gh-token-input" type="password"
-               placeholder="ghp_xxxxxxxxxxxxxxxxxxxx を貼り付け"
+        <input id="gh-token-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx を貼り付け"
                style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:rgba(255,255,255,.06);color:var(--text)">
         <button id="gh-token-save" class="btn-primary">保存</button>
         <button id="gh-token-delete" class="btn-outline" style="color:var(--danger);border-color:var(--danger);font-size:13px">設定済みトークンを削除</button>
@@ -324,6 +397,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

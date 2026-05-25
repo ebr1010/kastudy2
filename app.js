@@ -32,6 +32,78 @@ function addHistory(q, chosen, isCorrect) {
     isCorrect,
   });
   localStorage.setItem(LS.HISTORY, JSON.stringify(hist));
+  if (chosen !== null) updateSRS(qKey(q), isCorrect);
+}
+
+// ===== SRS / ストリーク 定数 =====
+const LS_SRS       = 'kastudy_srs';
+const LS_STREAK    = 'kastudy_streak';
+const LS_EXAM_DATE = 'kastudy_exam_date';
+const SRS_INTERVALS = [1, 3, 7, 14, 30]; // level 0-4
+
+// ===== SRS（間隔反復）=====
+function getSRS() { try { return JSON.parse(localStorage.getItem(LS_SRS) || '{}'); } catch { return {}; } }
+
+function updateSRS(key, isCorrect) {
+  const srs = getSRS();
+  const entry = srs[key] || { level: 0 };
+  entry.level = isCorrect
+    ? Math.min(entry.level + 1, SRS_INTERVALS.length)
+    : Math.max(0, entry.level - 1);
+  const days = entry.level < SRS_INTERVALS.length ? SRS_INTERVALS[entry.level] : 999;
+  const next = new Date();
+  next.setDate(next.getDate() + days);
+  entry.nextDate = next.toISOString().slice(0, 10);
+  entry.lastDate = new Date().toISOString().slice(0, 10);
+  srs[key] = entry;
+  localStorage.setItem(LS_SRS, JSON.stringify(srs));
+}
+
+function getSRSDue(pool) {
+  const srs = getSRS();
+  const today = new Date().toISOString().slice(0, 10);
+  return pool.filter(q => {
+    const e = srs[qKey(q)];
+    if (!e) return true;
+    if (e.level >= SRS_INTERVALS.length) return false;
+    return !e.nextDate || e.nextDate <= today;
+  });
+}
+
+function getSRSStats() {
+  const srs = getSRS();
+  const today = new Date().toISOString().slice(0, 10);
+  let due = 0, graduated = 0, total = Object.keys(srs).length;
+  Object.values(srs).forEach(e => {
+    if (e.level >= SRS_INTERVALS.length) graduated++;
+    else if (!e.nextDate || e.nextDate <= today) due++;
+  });
+  return { due, graduated, total };
+}
+
+// ===== ストリーク =====
+function getStreak() { try { return JSON.parse(localStorage.getItem(LS_STREAK) || '{"count":0,"lastDate":"","todayDone":false}'); } catch { return {count:0,lastDate:'',todayDone:false}; } }
+
+function markDailyDone() {
+  const streak = getStreak();
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  const yest = yesterday.toISOString().slice(0, 10);
+  if (streak.lastDate === today) { streak.todayDone = true; }
+  else if (streak.lastDate === yest) { streak.count++; streak.lastDate = today; streak.todayDone = true; }
+  else { streak.count = 1; streak.lastDate = today; streak.todayDone = true; }
+  localStorage.setItem(LS_STREAK, JSON.stringify(streak));
+  return streak;
+}
+
+function updateStreakBadge() {
+  const streak = getStreak();
+  const today = new Date().toISOString().slice(0, 10);
+  const badge = $('streak-badge');
+  if (!badge) return;
+  const done = streak.lastDate === today && streak.todayDone;
+  badge.textContent = done ? '✅ ' + streak.count + '日連続' : '🔥 ' + streak.count + '日連続';
+  badge.className = 'streak-badge' + (streak.count >= 3 ? ' active' : '');
 }
 
 const state = {
@@ -44,6 +116,10 @@ const state = {
   score: 0,
   wrongQuestions: [],
   settings: { order: 'random', count: 'all', onlyWithAnswer: true },
+  isMockMode: false,
+  isFlashcardMode: false,
+  timeRemaining: 0,
+  mockTimer: null,
 };
 
 const $ = id => document.getElementById(id);
@@ -78,6 +154,8 @@ async function initApp() {
     renderExamList();
     updateStartButton();
     updateRepeatWrongBadge();
+    updateStreakBadge();
+    updateWeakSub();
   } catch (e) {
     $('exam-list').innerHTML = '<div style="color:red">読み込み失敗: ' + e.message + '</div>';
   }
@@ -234,6 +312,28 @@ function renderQuestion() {
   const card = $('question-card');
   card.style.animation = 'none';
   requestAnimationFrame(() => { card.style.animation = ''; });
+
+  // モック試験: フィードバック非表示
+  if (state.isMockMode) {
+    $('feedback-area').style.display = 'none';
+    $('footer-feedback').style.display = 'none';
+    $('footer-feedback').className = 'footer-feedback';
+    $('footer-correction-panel').style.display = 'none';
+  }
+
+  // フラッシュカードモード: 選択肢ボタン非表示 → フラッシュカードUI表示
+  if (state.isFlashcardMode) {
+    $('footer-top-normal').style.display = 'none';
+    if (saved === null) {
+      $('flashcard-area').style.display = '';
+      $('flashcard-revealed').style.display = 'none';
+    } else {
+      $('flashcard-area').style.display = 'none';
+    }
+  } else {
+    $('footer-top-normal').style.display = '';
+    $('flashcard-area').style.display = 'none';
+  }
 }
 
 function loadQuestionImage(q) {
@@ -295,8 +395,10 @@ function onAnswer(chosen) {
   });
 
   addHistory(q, chosen, isCorrect);
-  showFeedback(q, chosen);
-  $('feedback-area').style.display = '';
+  if (!state.isMockMode) {
+    showFeedback(q, chosen);
+    $('feedback-area').style.display = '';
+  }
   $('score-display').textContent = state.score;
   $('score-denom').textContent = '/' + (state.currentIndex + 1);
   updateNextBtn();
@@ -557,6 +659,9 @@ function showStats() {
   const hist = applyHistOverrides(getHistory());
   const overrides = getOverrides();
 
+  // 合格予測
+  renderPassPrediction(hist);
+
   // 30日グラフ
   $('stats-daily-chart').innerHTML = renderDailyChart(hist);
 
@@ -617,6 +722,352 @@ function showStats() {
     '<span class="wrong-correct">　正:' + h.correct + '</span>' +
     '</div>'
   ).join('') || '<div class="stats-empty">間違いなし</div>';
+}
+
+// ===== 全問プールを取得（オーバーライド適用済み）=====
+function getAllPool(onlyWithAnswer) {
+  const overrides = getOverrides();
+  let pool = [];
+  [...state.allExams, ...state.extraExams].forEach(exam => {
+    const qs = onlyWithAnswer
+      ? exam.questions.filter(q => q.answer || overrides[qKey(Object.assign({}, q, { _meta: exam.meta }))] !== undefined)
+      : exam.questions;
+    qs.forEach(q => {
+      const fakeQ = Object.assign({}, q, { _meta: exam.meta });
+      const k = qKey(fakeQ);
+      pool.push(overrides[k] !== undefined
+        ? Object.assign({}, fakeQ, { answer: overrides[k], _overridden: true })
+        : fakeQ);
+    });
+  });
+  return pool;
+}
+
+// ===== 模擬試験モード =====
+const MOCK_Q = 60, MOCK_SEC = 100 * 60;
+
+function startMockExam() {
+  let pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+  pool = shuffle(pool).slice(0, Math.min(MOCK_Q, pool.length));
+
+  state.questions = pool;
+  state.currentIndex = 0;
+  state.answers = new Array(pool.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = true; state.isFlashcardMode = false;
+  state.timeRemaining = MOCK_SEC;
+
+  showScreen('quiz');
+  $('mock-timer').style.display = '';
+  $('score-badge-wrap').style.display = 'none';
+  $('q-mode-tag').style.display = '';
+  $('q-mode-tag').textContent = '🏆 模擬試験';
+  renderQuestion();
+  startMockTimer();
+}
+
+function startMockTimer() {
+  if (state.mockTimer) clearInterval(state.mockTimer);
+  state.mockTimer = setInterval(() => {
+    state.timeRemaining--;
+    updateTimerDisplay();
+    if (state.timeRemaining <= 0) { clearInterval(state.mockTimer); showResult(); }
+  }, 1000);
+}
+
+function stopMockTimer() {
+  if (state.mockTimer) { clearInterval(state.mockTimer); state.mockTimer = null; }
+}
+
+function updateTimerDisplay() {
+  const el = $('mock-timer');
+  if (!el) return;
+  const m = Math.floor(state.timeRemaining / 60);
+  const s = state.timeRemaining % 60;
+  el.textContent = m + ':' + String(s).padStart(2, '0');
+  if (state.timeRemaining <= 300) el.classList.add('timer-warning');
+}
+
+function resetMockMode() {
+  stopMockTimer();
+  state.isMockMode = false; state.isFlashcardMode = false;
+  $('mock-timer').style.display = 'none';
+  $('score-badge-wrap').style.display = '';
+  $('q-mode-tag').style.display = 'none';
+}
+
+// ===== フラッシュカードモード =====
+function startFlashcardMode() {
+  let pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+  pool = shuffle(pool);
+  if (state.settings.count !== 'all') pool = pool.slice(0, parseInt(state.settings.count));
+
+  state.questions = pool;
+  state.currentIndex = 0;
+  state.answers = new Array(pool.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = false; state.isFlashcardMode = true;
+
+  showScreen('quiz');
+  $('q-mode-tag').style.display = '';
+  $('q-mode-tag').textContent = '🃏 フラッシュカード';
+  renderQuestion();
+}
+
+function onFlashcardJudge(isCorrect) {
+  const q = state.questions[state.currentIndex];
+  const idx = state.currentIndex;
+  state.answers[idx] = { chosen: q.answer, correct: q.answer, isCorrect };
+  if (isCorrect) state.score++;
+  else state.wrongQuestions.push(Object.assign({}, q, { chosen: null }));
+  addHistory(q, isCorrect ? q.answer : 0, isCorrect);
+  showFeedback(q, isCorrect ? q.answer : 0);
+  $('feedback-area').style.display = '';
+  $('flashcard-area').style.display = 'none';
+  $('footer-top-normal').style.display = '';
+  $('score-display').textContent = state.score;
+  $('score-denom').textContent = '/' + (idx + 1);
+  updateNextBtn();
+}
+
+// ===== デイリーチャレンジ =====
+function startDailyChallenge() {
+  const pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+
+  const hist = applyHistOverrides(getHistory());
+  // SRS優先で5問
+  const due = shuffle(getSRSDue(pool)).slice(0, 5);
+  // 弱点カテゴリから残りを補完
+  const byCat = {};
+  hist.forEach(h => {
+    const c = h.category || 'その他';
+    if (!byCat[c]) byCat[c] = { t: 0, ok: 0 };
+    byCat[c].t++; if (h.isCorrect) byCat[c].ok++;
+  });
+  const weakCats = Object.entries(byCat)
+    .filter(([, v]) => v.t >= 3 && v.ok / v.t < 0.6).map(([c]) => c);
+  const dueKeys = new Set(due.map(qKey));
+  const weakPool = shuffle(pool.filter(q => weakCats.includes(q.category || 'その他') && !dueKeys.has(qKey(q))));
+  const selected = [...due, ...weakPool].slice(0, 10);
+  // まだ足りなければランダム補完
+  if (selected.length < 10) {
+    const selKeys = new Set(selected.map(qKey));
+    const rest = shuffle(pool.filter(q => !selKeys.has(qKey(q))));
+    selected.push(...rest.slice(0, 10 - selected.length));
+  }
+
+  state.questions = selected;
+  state.currentIndex = 0;
+  state.answers = new Array(selected.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = false; state.isFlashcardMode = false;
+
+  showScreen('quiz');
+  $('q-mode-tag').style.display = '';
+  $('q-mode-tag').textContent = '📅 デイリー';
+  renderQuestion();
+
+  // クリア時にストリーク更新（結果画面で行う）
+  state._isDailyMode = true;
+}
+
+// ===== 弱点集中 =====
+function startWeakCategoryQuiz() {
+  const pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+
+  const hist = applyHistOverrides(getHistory());
+  const byCat = {};
+  hist.forEach(h => {
+    const c = h.category || 'その他';
+    if (!byCat[c]) byCat[c] = { t: 0, ok: 0 };
+    byCat[c].t++; if (h.isCorrect) byCat[c].ok++;
+  });
+  const weakCats = Object.entries(byCat)
+    .filter(([, v]) => v.t >= 3 && v.ok / v.t < 0.6)
+    .sort((a, b) => a[1].ok / a[1].t - b[1].ok / b[1].t)
+    .slice(0, 3).map(([c]) => c);
+
+  if (!weakCats.length) {
+    alert('弱点カテゴリが検出されませんでした。\n（各カテゴリ3問以上の回答履歴が必要です）');
+    return;
+  }
+
+  const weakPool = shuffle(pool.filter(q => weakCats.includes(q.category || 'その他')));
+  state.questions = weakPool.slice(0, 30);
+  state.currentIndex = 0;
+  state.answers = new Array(state.questions.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = false; state.isFlashcardMode = false;
+
+  const tag = '🎯 弱点：' + weakCats.slice(0, 2).join('・');
+  showScreen('quiz');
+  $('q-mode-tag').style.display = '';
+  $('q-mode-tag').textContent = tag;
+  renderQuestion();
+}
+
+function updateWeakSub() {
+  const hist = applyHistOverrides(getHistory());
+  const byCat = {};
+  hist.forEach(h => {
+    const c = h.category || 'その他';
+    if (!byCat[c]) byCat[c] = { t: 0, ok: 0 };
+    byCat[c].t++; if (h.isCorrect) byCat[c].ok++;
+  });
+  const weak = Object.entries(byCat)
+    .filter(([, v]) => v.t >= 3 && v.ok / v.t < 0.6)
+    .sort((a, b) => a[1].ok / a[1].t - b[1].ok / b[1].t);
+  const el = $('weak-sub');
+  if (el && weak.length) el.textContent = weak[0][0] + ' ' + Math.round(weak[0][1].ok / weak[0][1].t * 100) + '%';
+}
+
+// ===== 5分クイック復習 =====
+function startQuickReview() {
+  const pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+  const due = getSRSDue(pool);
+  const selected = shuffle(due.length >= 5 ? due : pool).slice(0, 5);
+
+  state.questions = selected;
+  state.currentIndex = 0;
+  state.answers = new Array(selected.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = false; state.isFlashcardMode = false;
+
+  showScreen('quiz');
+  $('q-mode-tag').style.display = '';
+  $('q-mode-tag').textContent = '⚡ 5分クイック';
+  renderQuestion();
+}
+
+// ===== 直前プラン =====
+const PLAN_DAYS = [
+  { label: '5日前', icon: '🔥', title: '頻出問題を攻略', desc: '複数年度で出題された重要問題に集中。出題パターンを把握する。', action: 'frequent' },
+  { label: '4日前', icon: '🎯', title: '弱点カテゴリ集中', desc: '正答率が低いカテゴリを徹底強化。苦手を潰す日。', action: 'weak' },
+  { label: '3日前', icon: '🔁', title: '繰り返し間違い克服', desc: '何度も間違えている問題を反復。確実に定着させる。', action: 'repeat' },
+  { label: '2日前', icon: '🎲', title: '全範囲ランダム復習', desc: '全年度からランダム出題。総合的な仕上げ確認。', action: 'random' },
+  { label: '前日',  icon: '🏆', title: '模擬試験（本番形式）', desc: '60問・100分で本番同様のシミュレーション。合否ライン確認。', action: 'mock' },
+];
+
+function showPlan() {
+  showScreen('plan');
+  const savedDate = localStorage.getItem(LS_EXAM_DATE);
+  if (savedDate) {
+    $('exam-date-input').value = savedDate;
+    renderPlan(savedDate);
+  }
+}
+
+function renderPlan(examDateStr) {
+  const today = new Date().toISOString().slice(0, 10);
+  const examDate = examDateStr ? new Date(examDateStr) : null;
+  const todayDate = new Date();
+
+  let infoText = '';
+  if (examDate) {
+    const diff = Math.ceil((examDate - todayDate) / (1000 * 60 * 60 * 24));
+    infoText = diff > 0 ? `試験まで ${diff} 日` : diff === 0 ? '🎌 今日が試験日！' : '試験日は過去の日付です';
+    $('exam-date-info').textContent = infoText;
+  }
+
+  // 試験日から逆算して各日を特定
+  const container = $('plan-list');
+  container.innerHTML = '';
+
+  PLAN_DAYS.forEach((plan, i) => {
+    let planDate = null;
+    if (examDate) {
+      planDate = new Date(examDate);
+      planDate.setDate(planDate.getDate() - (4 - i));
+    }
+    const planDateStr = planDate ? planDate.toISOString().slice(0, 10) : null;
+    const isToday = planDateStr === today;
+    const isPast = planDateStr && planDateStr < today;
+
+    const div = document.createElement('div');
+    div.className = 'plan-day' + (isToday ? ' today' : '') + (isPast ? ' past' : '');
+
+    const dateLabel = planDateStr
+      ? planDateStr.slice(5).replace('-', '/') + '（' + plan.label + '）'
+      : plan.label;
+
+    div.innerHTML =
+      '<div class="plan-day-header">' +
+        '<span class="plan-day-num' + (isToday ? ' today' : '') + '">' + plan.icon + ' ' + dateLabel + '</span>' +
+        '<span class="plan-day-title">' + plan.title + '</span>' +
+        (isToday ? '<span class="plan-today-badge">TODAY</span>' : '') +
+      '</div>' +
+      '<div class="plan-day-body">' +
+        '<div class="plan-day-desc">' + plan.desc + '</div>' +
+        '<button class="plan-start-btn" data-action="' + plan.action + '">' +
+          '▶ ' + (isToday ? '今日のメニューを開始' : 'このメニューを開始') +
+        '</button>' +
+      '</div>';
+
+    div.querySelector('.plan-start-btn').addEventListener('click', () => {
+      switch (plan.action) {
+        case 'frequent': showFrequentQuestions(); break;
+        case 'weak':     startWeakCategoryQuiz(); break;
+        case 'repeat':   startRepeatWrongQuiz(); break;
+        case 'random':   startRandomAll(); break;
+        case 'mock':     startMockExam(); break;
+      }
+    });
+    container.appendChild(div);
+  });
+}
+
+function startRandomAll() {
+  let pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+  pool = shuffle(pool);
+  state.questions = pool;
+  state.currentIndex = 0;
+  state.answers = new Array(pool.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = false; state.isFlashcardMode = false;
+  showScreen('quiz');
+  $('q-mode-tag').style.display = 'none';
+  renderQuestion();
+}
+
+// ===== 合格予測 =====
+function renderPassPrediction(hist) {
+  const el = $('stats-pass-prediction');
+  if (!el) return;
+  if (hist.length < 10) {
+    el.innerHTML = '<div class="stats-empty">10問以上の回答履歴が必要です</div>';
+    return;
+  }
+  const recent = hist.slice(-100);
+  const pct = Math.round(recent.filter(h => h.isCorrect).length / recent.length * 100);
+  const cls = pct >= 70 ? 'ok' : pct >= 60 ? 'warn' : 'ng';
+  const label = pct >= 70 ? '✅ 合格圏内' : pct >= 60 ? '⚠️ ボーダーライン' : '❌ 要強化';
+
+  const srs = getSRSStats();
+  const advice = pct >= 70
+    ? 'このペースを維持すれば合格の可能性が高いです。苦手分野の最終確認を。'
+    : pct >= 60
+    ? '合格ライン（60%）付近です。弱点集中モードで重点強化しましょう。'
+    : '正答率が低い状態です。頻出問題と弱点カテゴリを優先的に復習してください。';
+
+  el.innerHTML =
+    '<div class="pass-prediction-wrap">' +
+      '<div style="display:flex;align-items:baseline;gap:10px">' +
+        '<span class="pass-score ' + cls + '">' + pct + '%</span>' +
+        '<span class="pass-label">' + label + '（直近' + recent.length + '問の正答率）</span>' +
+      '</div>' +
+      '<div class="pass-gauge-wrap">' +
+        '<div class="pass-gauge-fill ' + cls + '" style="width:' + Math.min(pct, 100) + '%"></div>' +
+        '<div class="pass-gauge-line"></div>' +
+      '</div>' +
+      '<div class="pass-advice">' + advice + '</div>' +
+      (srs.due > 0 ? '<div class="srs-due-badge">📚 SRS復習待ち: ' + srs.due + '問</div>' : '') +
+    '</div>';
 }
 
 // ===== 繰り返し間違いクイズ =====
@@ -1022,6 +1473,7 @@ function skipQuestion() {
 
 // ===== 結果 =====
 function showResult() {
+  stopMockTimer();
   showScreen('result');
   const total = state.questions.length;
   const answered = state.answers.filter(Boolean);
@@ -1047,6 +1499,29 @@ function showResult() {
     row('不正解', wrong + '問', 'ng') +
     row('スキップ', skipped + '問') +
     row('正答率', pct + '%', pct >= 60 ? 'ok' : 'ng');
+
+  // 模擬試験合否判定
+  const mockBadge = $('mock-result-badge');
+  if (state.isMockMode) {
+    const passed = pct >= 60;
+    mockBadge.textContent = passed
+      ? '🏆 合格！ ' + pct + '% — 合格ライン（60%）突破！'
+      : '❌ 不合格 ' + pct + '% （60%以上で合格）';
+    mockBadge.className = 'mock-result-badge ' + (passed ? 'pass' : 'fail');
+    mockBadge.style.display = '';
+  } else {
+    mockBadge.style.display = 'none';
+  }
+
+  // デイリーモード完了: ストリーク更新
+  if (state._isDailyMode) {
+    markDailyDone();
+    updateStreakBadge();
+  }
+  state._isDailyMode = false;
+
+  // モード表示リセット
+  $('q-mode-tag').style.display = 'none';
 
   const wrongItems = state.answers
     .map((a, i) => ({ a, q: state.questions[i] }))
@@ -1120,7 +1595,11 @@ $('extra-json').addEventListener('change', e => { if (e.target.files.length) han
 $('btn-start').addEventListener('click', startQuiz);
 
 $('btn-back-to-setup').addEventListener('click', () => {
-  if (confirm('設定に戻りますか？（進捗がリセットされます）')) showScreen('setup');
+  if (confirm('設定に戻りますか？（進捗がリセットされます）')) {
+    resetMockMode();
+    state._isDailyMode = false;
+    showScreen('setup');
+  }
 });
 $('btn-prev').addEventListener('click', goPrev);
 $('btn-next').addEventListener('click', goNext);
@@ -1135,7 +1614,7 @@ $('btn-retry-wrong').addEventListener('click', () => {
   showScreen('quiz'); renderQuestion();
 });
 $('btn-retry-all').addEventListener('click', startQuiz);
-$('btn-to-setup').addEventListener('click', () => showScreen('setup'));
+$('btn-to-setup').addEventListener('click', () => { resetMockMode(); showScreen('setup'); });
 
 $('page-modal-backdrop').addEventListener('click', closePageModal);
 $('page-modal-close').addEventListener('click', closePageModal);
@@ -1229,5 +1708,31 @@ $('btn-clear-history').addEventListener('click', () => {
     showStats();
   }
 });
+
+// ===== 学習モードボタン =====
+$('btn-daily').addEventListener('click', startDailyChallenge);
+$('btn-mock').addEventListener('click', startMockExam);
+$('btn-weak').addEventListener('click', startWeakCategoryQuiz);
+$('btn-quick').addEventListener('click', startQuickReview);
+$('btn-flashcard-mode').addEventListener('click', startFlashcardMode);
+$('btn-plan').addEventListener('click', showPlan);
+
+// 直前プラン画面
+$('btn-back-from-plan').addEventListener('click', () => showScreen('setup'));
+$('btn-set-exam-date').addEventListener('click', () => {
+  const date = $('exam-date-input').value;
+  if (!date) { alert('試験日を入力してください'); return; }
+  localStorage.setItem(LS_EXAM_DATE, date);
+  renderPlan(date);
+});
+
+// フラッシュカードモード
+$('btn-flashcard-reveal').addEventListener('click', () => {
+  const q = state.questions[state.currentIndex];
+  $('flashcard-answer-text').textContent = '正解: ' + (q.answer || '?');
+  $('flashcard-revealed').style.display = '';
+});
+$('btn-fc-correct').addEventListener('click', () => onFlashcardJudge(true));
+$('btn-fc-wrong').addEventListener('click', () => onFlashcardJudge(false));
 
 initApp();
