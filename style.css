@@ -30,6 +30,8 @@
   --shadow: 0 6px 32px rgba(0,0,0,.60);
   --shadow-md: 0 10px 48px rgba(0,0,0,.65);
   --inset-hi: inset 0 1px 0 rgba(255,255,255,0.22);
+  --font-din: 'DIN Alternate', 'Barlow Condensed', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-orb: 'Orbitron', 'DIN Alternate', 'Barlow Condensed', sans-serif;
   --specular: linear-gradient(90deg, transparent, rgba(255,255,255,.65) 40%, rgba(255,255,255,.82) 50%, rgba(255,255,255,.65) 60%, transparent);
   --glass-border-top: rgba(255,255,255,0.24);
   --glass-border-left: rgba(255,255,255,0.14);
@@ -52,36 +54,36 @@ body {
   position: fixed; inset: 0;
   z-index: -1; pointer-events: none; overflow: hidden;
 }
-.bg-orb { position: absolute; border-radius: 50%; will-change: transform; }
+.bg-orb { position: absolute; border-radius: 50%; }
 .bg-orb-1 {
   width: 900px; height: 800px;
   background: radial-gradient(circle at 40% 40%, rgba(59,130,246,.42) 0%, transparent 65%);
   top: -28%; left: -22%; filter: blur(72px);
-  animation: orb1 22s ease-in-out infinite alternate;
+  animation: orb1 55s ease-in-out infinite alternate;
 }
 .bg-orb-2 {
   width: 700px; height: 650px;
   background: radial-gradient(circle at 60% 60%, rgba(6,182,212,.30) 0%, transparent 65%);
   bottom: -22%; right: -18%; filter: blur(80px);
-  animation: orb2 28s ease-in-out infinite alternate;
+  animation: orb2 70s ease-in-out infinite alternate;
 }
 .bg-orb-3 {
   width: 450px; height: 450px;
   background: radial-gradient(circle, rgba(139,92,246,.22) 0%, transparent 68%);
   top: 38%; left: 58%; filter: blur(60px);
-  animation: orb3 19s ease-in-out infinite alternate;
+  animation: orb3 48s ease-in-out infinite alternate;
 }
 .bg-orb-4 {
   width: 380px; height: 380px;
   background: radial-gradient(circle, rgba(16,185,129,.26) 0%, transparent 68%);
   top: 58%; left: 6%; filter: blur(65px);
-  animation: orb4 24s ease-in-out infinite alternate;
+  animation: orb4 60s ease-in-out infinite alternate;
 }
 .bg-orb-5 {
   width: 300px; height: 200px;
   background: radial-gradient(ellipse, rgba(245,158,11,.14) 0%, transparent 70%);
   top: 15%; left: 42%; filter: blur(55px);
-  animation: orb1 16s ease-in-out infinite alternate-reverse;
+  animation: orb1 40s ease-in-out infinite alternate-reverse;
 }
 @keyframes orb1 {
   from { transform: translate(0,0) scale(1); }
@@ -102,6 +104,13 @@ body {
 
 .screen { display: none; }
 .screen.active { display: block; }
+
+/* クイズ画面: フルビューポートフレックスレイアウト */
+#screen-quiz.active {
+  display: flex; flex-direction: column;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
+}
 
 /* ===== ボタン ===== */
 .btn-primary {
@@ -344,7 +353,8 @@ body {
 
 /* ===== クイズヘッダー ===== */
 .quiz-header {
-  position: sticky; top: 0;
+  flex-shrink: 0;
+  position: relative;
   background: rgba(8,18,36,0.72);
   backdrop-filter: blur(52px) saturate(220%) brightness(1.10);
   -webkit-backdrop-filter: blur(52px) saturate(220%) brightness(1.10);
@@ -353,7 +363,6 @@ body {
   display: flex; align-items: center; gap: 12px;
   z-index: 100;
   box-shadow: 0 6px 32px rgba(0,0,0,.55), inset 0 -1px 0 rgba(255,255,255,.06);
-  position: relative;
 }
 .quiz-header::after {
   content: '';
@@ -383,18 +392,20 @@ body {
 }
 .score-denom { font-size: 12px; font-weight: 400; color: var(--text-muted); }
 
-.quiz-main { max-width: 800px; margin: 0 auto; padding: 8px; }
+.quiz-main {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  max-width: 800px; width: 100%; margin: 0 auto; padding: 8px;
+}
 
 /* メタタグ (sticky) */
 .question-meta {
-  position: sticky; top: 56px; z-index: 50;
-  background: rgba(3,13,24,.85);
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(3,13,24,.94);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   display: flex; flex-wrap: wrap; gap: 6px;
   padding: 8px 14px;
-  border-radius: var(--radius) var(--radius) 0 0;
 }
 .tag {
   font-size: 11px; font-weight: 600; padding: 3px 10px;
@@ -542,13 +553,14 @@ body {
 
 /* ===== フッター ===== */
 .quiz-footer {
-  position: sticky; bottom: 0;
+  flex-shrink: 0;
+  position: relative;
   background: rgba(8,18,36,0.72);
   backdrop-filter: blur(52px) saturate(220%) brightness(1.08);
   -webkit-backdrop-filter: blur(52px) saturate(220%) brightness(1.08);
   border-top: 1px solid rgba(255,255,255,0.12);
   box-shadow: 0 -8px 36px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.10);
-  z-index: 100;
+  z-index: 10;
 }
 
 .footer-feedback {
@@ -1264,6 +1276,159 @@ body {
   color: var(--success); border-radius: 8px; padding: 5px 12px;
   font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
 }
+
+/* ===== 六角形ハニカム背景 ===== */
+.bg-grid {
+  position: absolute; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='90'%3E%3Cpolygon points='26,15 52,30 52,60 26,75 0,60 0,30' fill='none' stroke='rgba(0%2C230%2C160%2C.055)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 52px 90px;
+  background-repeat: repeat;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* bg-orbsはgridの上に乗る */
+.bg-orb { z-index: 1; }
+
+/* ===== DINフォント適用（英数字専用） ===== */
+/* スコア・タイマー・進捗 */
+#score-display, #score-denom,
+#progress-text,
+#mock-timer,
+.time-attack-text,
+#result-correct, #result-total,
+.result-score,
+.pass-prob-score,
+.result-pct { font-family: var(--font-orb); }
+
+/* 選択肢ボタン番号 */
+.option-num { font-family: var(--font-din); }
+
+/* ページ番号・問題番号タグ */
+.tag-no, .tag-year, .mock-timer { font-family: var(--font-din); letter-spacing: .5px; }
+
+/* 修正・バッジ系 */
+.correction-ans-btn, .streak-badge, .srs-due-badge { font-family: var(--font-din); }
+
+/* ===== ガラス屈折（水滴レンズ）オーバーレイ ===== */
+/* setup-section の after を水滴レンズに更新 */
+.setup-section::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: inherit;
+  background:
+    radial-gradient(ellipse 60% 50% at 32% 26%, rgba(255,255,255,.10) 0%, transparent 58%),
+    radial-gradient(ellipse 35% 25% at 68% 74%, rgba(0,20,50,.06) 0%, transparent 55%);
+  pointer-events: none;
+}
+/* question-card にも同様の屈折 */
+.question-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 50%;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: radial-gradient(ellipse 70% 60% at 28% 24%, rgba(255,255,255,.07) 0%, transparent 62%);
+  pointer-events: none;
+}
+
+/* ===== チェックボックス カスタム ===== */
+input[type=checkbox] {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; min-width: 20px;
+  border: 1.5px solid rgba(6,182,212,.55);
+  border-top-color: rgba(255,255,255,.35);
+  border-left-color: rgba(255,255,255,.25);
+  border-radius: 6px;
+  background: rgba(6,182,212,.06);
+  cursor: pointer; position: relative;
+  transition: all .2s;
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 8px rgba(0,0,0,.3);
+}
+input[type=checkbox]:hover {
+  border-color: rgba(6,182,212,.8);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 0 12px rgba(6,182,212,.35);
+}
+input[type=checkbox]:checked {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  border-color: rgba(255,255,255,.3);
+  box-shadow: 0 0 16px rgba(59,130,246,.55), inset 0 1px 0 rgba(255,255,255,.3);
+}
+input[type=checkbox]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px; top: 2px;
+  width: 7px; height: 11px;
+  border-right: 2.5px solid #fff;
+  border-bottom: 2.5px solid #fff;
+  transform: rotate(42deg);
+  filter: drop-shadow(0 0 2px rgba(255,255,255,.6));
+}
+
+/* ===== ファイル入力ボタン ===== */
+input[type=file] {
+  font-size: 13px; cursor: pointer;
+}
+input[type=file]::file-selector-button {
+  background: rgba(255,255,255,0.055);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,.28);
+  border-left: 1px solid rgba(255,255,255,.18);
+  border-right: 1px solid rgba(0,0,0,.12);
+  border-bottom: 1px solid rgba(0,0,0,.18);
+  border-radius: 10px;
+  color: #67e8f9; font-size: 12px; font-weight: 700;
+  font-family: var(--font-din); letter-spacing: .5px;
+  padding: 7px 16px; margin-right: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.2);
+  transition: all .15s;
+}
+input[type=file]::file-selector-button:hover {
+  background: rgba(255,255,255,.09);
+  box-shadow: 0 6px 22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.28);
+}
+
+/* ===== option-card オーバーフロー修正 ===== */
+.option-card {
+  min-width: 120px;
+  overflow: hidden;
+}
+.option-card select {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 13px;
+}
+.option-label { white-space: nowrap; flex-shrink: 0; }
+
+/* ===== 戻るボタン 大型化 ===== */
+.btn-icon {
+  width: 44px; height: 44px; min-width: 44px;
+  font-size: 22px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ===== 解答ボタン 大型化 ===== */
+.option-btn { height: 64px; }
+.option-num {
+  font-size: 28px; font-weight: 900;
+  letter-spacing: -1px;
+}
+/* ホバー時の屈折シーン追加 */
+.option-btn {
+  position: relative; overflow: hidden;
+}
+.option-btn::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,.07) 0%, transparent 48%, rgba(0,0,0,.04) 100%);
+  pointer-events: none;
+}
+
+/* ===== スキップ・次へ ナビボタン 大型化 ===== */
+.footer-nav { padding: 10px 12px; gap: 10px; }
+.footer-nav .btn-outline { padding: 12px 20px; font-size: 15px; font-weight: 700; }
+.footer-nav .btn-primary { padding: 14px 12px; font-size: 16px; font-weight: 700; }
+.footer-nav .btn-outline:first-child { min-width: 56px; font-size: 20px; }
 
 /* ===== スクロールバー ===== */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
