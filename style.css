@@ -20,31 +20,84 @@
   --text-muted: rgba(224,242,254,.48);
   --border: rgba(59,130,246,.18);
   --border-hi: rgba(59,130,246,.35);
-  --bg: #030d18;
-  --glass: rgba(59,130,246,.06);
-  --glass-hi: rgba(59,130,246,.13);
-  --glass-str: rgba(255,255,255,.07);
-  --radius: 18px;
-  --radius-sm: 12px;
-  --blur: blur(24px) saturate(180%);
-  --shadow: 0 4px 24px rgba(0,0,0,.55);
-  --shadow-md: 0 8px 40px rgba(0,0,0,.60);
-  --inset-hi: inset 0 1px 0 rgba(255,255,255,.12);
+  --bg: #020b17;
+  --glass: rgba(255,255,255,0.048);
+  --glass-hi: rgba(255,255,255,0.085);
+  --glass-str: rgba(255,255,255,0.055);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --blur: blur(52px) saturate(220%) brightness(1.07);
+  --shadow: 0 6px 32px rgba(0,0,0,.60);
+  --shadow-md: 0 10px 48px rgba(0,0,0,.65);
+  --inset-hi: inset 0 1px 0 rgba(255,255,255,0.22);
+  --specular: linear-gradient(90deg, transparent, rgba(255,255,255,.65) 40%, rgba(255,255,255,.82) 50%, rgba(255,255,255,.65) 60%, transparent);
+  --glass-border-top: rgba(255,255,255,0.24);
+  --glass-border-left: rgba(255,255,255,0.14);
+  --glass-border-right: rgba(0,0,0,0.10);
+  --glass-border-bottom: rgba(0,0,0,0.18);
 }
 
 /* ===== ベース ===== */
 body {
   font-family: "Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
   background: var(--bg);
-  background-image:
-    radial-gradient(ellipse at 10% 15%, rgba(59,130,246,.20) 0%, transparent 50%),
-    radial-gradient(ellipse at 90% 85%, rgba(6,182,212,.14) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(16,185,129,.07) 0%, transparent 60%);
-  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
   font-size: 15px;
   line-height: 1.6;
+}
+
+/* ===== 背景 Orbs（Liquid Glass の下地） ===== */
+.bg-scene {
+  position: fixed; inset: 0;
+  z-index: -1; pointer-events: none; overflow: hidden;
+}
+.bg-orb { position: absolute; border-radius: 50%; will-change: transform; }
+.bg-orb-1 {
+  width: 900px; height: 800px;
+  background: radial-gradient(circle at 40% 40%, rgba(59,130,246,.42) 0%, transparent 65%);
+  top: -28%; left: -22%; filter: blur(72px);
+  animation: orb1 22s ease-in-out infinite alternate;
+}
+.bg-orb-2 {
+  width: 700px; height: 650px;
+  background: radial-gradient(circle at 60% 60%, rgba(6,182,212,.30) 0%, transparent 65%);
+  bottom: -22%; right: -18%; filter: blur(80px);
+  animation: orb2 28s ease-in-out infinite alternate;
+}
+.bg-orb-3 {
+  width: 450px; height: 450px;
+  background: radial-gradient(circle, rgba(139,92,246,.22) 0%, transparent 68%);
+  top: 38%; left: 58%; filter: blur(60px);
+  animation: orb3 19s ease-in-out infinite alternate;
+}
+.bg-orb-4 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(16,185,129,.26) 0%, transparent 68%);
+  top: 58%; left: 6%; filter: blur(65px);
+  animation: orb4 24s ease-in-out infinite alternate;
+}
+.bg-orb-5 {
+  width: 300px; height: 200px;
+  background: radial-gradient(ellipse, rgba(245,158,11,.14) 0%, transparent 70%);
+  top: 15%; left: 42%; filter: blur(55px);
+  animation: orb1 16s ease-in-out infinite alternate-reverse;
+}
+@keyframes orb1 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(80px,60px) scale(1.12); }
+}
+@keyframes orb2 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(-70px,-80px) scale(1.10); }
+}
+@keyframes orb3 {
+  from { transform: translate(0,0) scale(1) rotate(0deg); }
+  to   { transform: translate(-55px,45px) scale(0.85) rotate(12deg); }
+}
+@keyframes orb4 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(55px,-48px) scale(1.15); }
 }
 
 .screen { display: none; }
@@ -162,27 +215,67 @@ body {
 /* ===== 設定画面 ===== */
 .setup-container { max-width: 760px; margin: 0 auto; padding: 28px 16px 60px; }
 
+.app-title-wrap { text-align: center; margin-bottom: 28px; }
+.app-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 3px;
+  color: rgba(6,182,212,.65); text-transform: uppercase;
+  margin-bottom: 6px;
+}
 .app-title {
-  font-size: 26px; font-weight: 900; text-align: center;
-  background: linear-gradient(135deg, #60a5fa, #34d399, #22d3ee);
+  font-size: clamp(20px, 5vw, 28px); font-weight: 900;
+  background: linear-gradient(110deg, #bfdbfe 0%, #60a5fa 28%, #22d3ee 56%, #34d399 82%, #a5f3fc 100%);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 28px; line-height: 1.4;
+  letter-spacing: -0.5px; white-space: nowrap;
+  line-height: 1.15; margin: 0;
+  position: relative; display: inline-block;
 }
+.app-title::after {
+  content: '';
+  position: absolute; left: 10%; right: 10%; bottom: -6px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6,182,212,.55), transparent);
+}
+.title-sep { color: rgba(6,182,212,.5); margin: 0 6px; font-weight: 300; }
 
 .setup-section {
-  background: var(--glass);
+  background: rgba(255,255,255,0.045);
   backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow), var(--inset-hi);
+  border-top: 1px solid var(--glass-border-top);
+  border-left: 1px solid var(--glass-border-left);
+  border-right: 1px solid var(--glass-border-right);
+  border-bottom: 1px solid var(--glass-border-bottom);
+  box-shadow:
+    0 10px 48px rgba(0,0,0,.52),
+    0 2px 8px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -1px 0 rgba(0,0,0,.10);
   border-radius: var(--radius);
   padding: 20px; margin-bottom: 14px;
+  position: relative; overflow: hidden;
+}
+/* スペキュラー（上端の光の反射） */
+.setup-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 8%; right: 8%; height: 1px;
+  background: var(--specular);
+  pointer-events: none; z-index: 1;
+}
+/* プリズムシーン（ガラス上部の淡い光） */
+.setup-section::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 35%;
+  background: linear-gradient(180deg, rgba(255,255,255,.04) 0%, transparent 100%);
+  pointer-events: none; border-radius: var(--radius) var(--radius) 0 0;
 }
 .setup-section h2 {
   font-size: 14px; font-weight: 700; margin-bottom: 14px;
   color: var(--text-muted);
   display: flex; align-items: center; gap: 6px;
+  position: relative; z-index: 2;
 }
 .section-hint { font-size: 11px; font-weight: 400; color: var(--text-muted); }
 
@@ -252,14 +345,21 @@ body {
 /* ===== クイズヘッダー ===== */
 .quiz-header {
   position: sticky; top: 0;
-  background: rgba(3,13,24,.80);
-  backdrop-filter: blur(28px) saturate(200%);
-  -webkit-backdrop-filter: blur(28px) saturate(200%);
-  border-bottom: 1px solid var(--border);
+  background: rgba(8,18,36,0.72);
+  backdrop-filter: blur(52px) saturate(220%) brightness(1.10);
+  -webkit-backdrop-filter: blur(52px) saturate(220%) brightness(1.10);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
   padding: 10px 16px;
   display: flex; align-items: center; gap: 12px;
   z-index: 100;
-  box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  box-shadow: 0 6px 32px rgba(0,0,0,.55), inset 0 -1px 0 rgba(255,255,255,.06);
+  position: relative;
+}
+.quiz-header::after {
+  content: '';
+  position: absolute; bottom: 0; left: 4%; right: 4%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6,182,212,.4), transparent);
+  pointer-events: none;
 }
 .progress-info { flex: 1; min-width: 0; }
 #progress-text { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px; }
@@ -306,15 +406,29 @@ body {
 
 /* ===== 問題カード ===== */
 .question-card {
-  background: var(--glass-str);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.038);
+  backdrop-filter: blur(52px) saturate(220%) brightness(1.06);
+  -webkit-backdrop-filter: blur(52px) saturate(220%) brightness(1.06);
+  border-left: 1px solid var(--glass-border-left);
+  border-right: 1px solid var(--glass-border-right);
+  border-bottom: 1px solid var(--glass-border-bottom);
   border-top: none;
   border-radius: 0 0 var(--radius) var(--radius);
   overflow: hidden;
   animation: fadeSlide .25s ease;
-  box-shadow: var(--shadow-md);
+  box-shadow:
+    0 12px 56px rgba(0,0,0,.58),
+    0 2px 10px rgba(0,0,0,.30),
+    inset 1px 0 0 rgba(255,255,255,.08),
+    inset -1px 0 0 rgba(0,0,0,.06);
+  position: relative;
+}
+/* 左エッジの縦スペキュラー */
+.question-card::before {
+  content: '';
+  position: absolute; top: 8%; bottom: 8%; left: 0; width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,.45), transparent);
+  pointer-events: none;
 }
 @keyframes fadeSlide {
   from { opacity:0; transform:translateY(10px); }
@@ -429,11 +543,11 @@ body {
 /* ===== フッター ===== */
 .quiz-footer {
   position: sticky; bottom: 0;
-  background: rgba(3,13,24,.85);
-  backdrop-filter: blur(28px) saturate(200%);
-  -webkit-backdrop-filter: blur(28px) saturate(200%);
-  border-top: 1px solid var(--border);
-  box-shadow: 0 -8px 32px rgba(0,0,0,.5);
+  background: rgba(8,18,36,0.72);
+  backdrop-filter: blur(52px) saturate(220%) brightness(1.08);
+  -webkit-backdrop-filter: blur(52px) saturate(220%) brightness(1.08);
+  border-top: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 -8px 36px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.10);
   z-index: 100;
 }
 
@@ -624,12 +738,17 @@ body {
 }
 .page-modal-box {
   position: relative; z-index: 1;
-  background: rgba(5,15,35,.92);
-  backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border: 1px solid var(--border-hi); border-radius: var(--radius);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(60px) saturate(220%) brightness(1.10);
+  -webkit-backdrop-filter: blur(60px) saturate(220%) brightness(1.10);
+  border-top: 1px solid rgba(255,255,255,0.26);
+  border-left: 1px solid rgba(255,255,255,0.16);
+  border-right: 1px solid rgba(0,0,0,0.10);
+  border-bottom: 1px solid rgba(0,0,0,0.20);
+  border-radius: var(--radius);
   width: min(94vw, 700px); max-height: 92vh;
   display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 16px 64px rgba(0,0,0,.7), var(--inset-hi);
+  box-shadow: 0 20px 80px rgba(0,0,0,.72), inset 0 1px 0 rgba(255,255,255,.22);
 }
 .page-modal-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -965,6 +1084,87 @@ body {
   border: 1px solid rgba(16,185,129,.35); border-radius: 8px;
   align-self: flex-start;
 }
+
+/* ===== 合格確率詳細 ===== */
+.pass-prob-wrap { display: flex; flex-direction: column; gap: 12px; }
+.pass-prob-main { display: flex; align-items: baseline; gap: 12px; }
+.pass-prob-score {
+  font-size: 52px; font-weight: 900; line-height: 1;
+  font-feature-settings: "tnum";
+}
+.pass-prob-score.ok   { color: var(--success); text-shadow: 0 0 28px var(--success-glow); }
+.pass-prob-score.warn { color: var(--warning); text-shadow: 0 0 24px rgba(245,158,11,.6); }
+.pass-prob-score.ng   { color: var(--danger);  text-shadow: 0 0 24px rgba(248,113,113,.6); }
+.pass-prob-label { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+.pass-prob-gauge-wrap {
+  height: 8px; background: rgba(255,255,255,.08);
+  border-radius: 4px; overflow: hidden; position: relative;
+}
+.pass-prob-gauge-fill {
+  height: 100%; border-radius: 4px;
+  transition: width .8s cubic-bezier(.25,.46,.45,.94);
+}
+.pass-prob-gauge-fill.ok   { background: linear-gradient(90deg,#10b981,#34d399); box-shadow: 0 0 8px var(--success-glow); }
+.pass-prob-gauge-fill.warn { background: linear-gradient(90deg,#f59e0b,#fbbf24); box-shadow: 0 0 8px rgba(245,158,11,.5); }
+.pass-prob-gauge-fill.ng   { background: linear-gradient(90deg,#ef4444,#f87171); box-shadow: 0 0 8px rgba(248,113,113,.5); }
+.pass-prob-detail { display: flex; flex-direction: column; gap: 4px; }
+.pass-prob-row {
+  display: flex; justify-content: space-between; font-size: 13px;
+  color: var(--text-muted); padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.pass-prob-row strong { color: var(--text); }
+.pass-prob-basis {
+  background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); overflow: hidden;
+}
+.pass-prob-basis summary {
+  padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 600;
+  color: var(--text-muted); user-select: none;
+  transition: color .15s;
+}
+.pass-prob-basis summary:hover { color: var(--accent); }
+.pass-prob-basis-body {
+  padding: 10px 14px 14px; font-size: 12px; color: var(--text-muted);
+  line-height: 1.8; border-top: 1px solid var(--border);
+}
+.pass-prob-basis-body ol { padding-left: 18px; }
+.pass-prob-basis-body li { margin-bottom: 6px; }
+.pass-prob-basis-body strong { color: var(--text); }
+
+/* ===== 合格率推移グラフ ===== */
+.trend-summary {
+  font-size: 13px; color: var(--text-muted);
+  margin-bottom: 8px; padding: 8px 12px;
+  background: rgba(255,255,255,.04); border-radius: 8px;
+}
+.trend-summary strong.ok { color: var(--success); }
+.trend-summary strong.warn { color: var(--warning); }
+.trend-summary strong.ng { color: var(--danger); }
+.bar-trend { width: 80%; border-radius: 2px 2px 0 0; min-height: 2px; }
+.bar-trend.ok   { background: var(--success); box-shadow: 0 0 4px var(--success-glow); }
+.bar-trend.warn { background: var(--warning); }
+.bar-trend.ng   { background: var(--danger); }
+
+/* ===== 時間帯別チャート ===== */
+.hourly-chart-wrap { overflow-x: auto; }
+.hourly-bars { display: flex; align-items: flex-end; gap: 2px; height: 80px; border-bottom: 1px solid var(--border); min-width: 400px; }
+.hourly-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 14px; }
+.hourly-bar-stack { display: flex; flex-direction: column-reverse; align-items: center; flex: 1; width: 100%; justify-content: flex-start; }
+.hourly-label { font-size: 8px; color: var(--text-muted); margin-top: 3px; height: 10px; line-height: 10px; }
+
+/* ===== 学習アドバイス ===== */
+.study-tip {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  transition: background .15s;
+}
+.study-tip:last-child { margin-bottom: 0; }
+.tip-icon { font-size: 22px; flex-shrink: 0; line-height: 1.2; }
+.tip-text { font-size: 13px; color: var(--text); line-height: 1.8; }
 
 /* ===== タイムアタックバー ===== */
 .time-attack-bar {

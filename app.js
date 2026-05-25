@@ -699,8 +699,12 @@ function showStats() {
   const hist = applyHistOverrides(getHistory());
   const overrides = getOverrides();
 
-  // 合格予測
+  // 各分析セクション
   renderPassPrediction(hist);
+  renderPassProbability(hist);
+  renderPassTrend(hist);
+  renderHourlyChart(hist);
+  renderStudyTips(hist);
 
   // 30日グラフ
   $('stats-daily-chart').innerHTML = renderDailyChart(hist);
@@ -1073,6 +1077,199 @@ function startRandomAll() {
   showScreen('quiz');
   $('q-mode-tag').style.display = 'none';
   renderQuestion();
+}
+
+// ===== 本番合格確率の算定（根拠付き）=====
+function renderPassProbability(hist) {
+  const el = $('stats-pass-probability');
+  if (!el) return;
+  if (hist.length < 30) {
+    el.innerHTML = '<div class="stats-empty">30問以上の回答履歴が必要です（現在 ' + hist.length + '問）</div>';
+    return;
+  }
+  const total = hist.length;
+  const correctCount = hist.filter(h => h.isCorrect).length;
+  const rawPct = correctCount / total * 100;
+  // 過去問は繰り返し学習効果で本番より高く出る → 0.93補正
+  const adjPct = rawPct * 0.93;
+  // ロジスティック変換: P = 1/(1+e^{-k(x-60)}) k=0.18
+  const k = 0.18;
+  const prob = Math.round(100 / (1 + Math.exp(-k * (adjPct - 60))));
+  const cls = prob >= 70 ? 'ok' : prob >= 40 ? 'warn' : 'ng';
+  const label = prob >= 75 ? '合格圏内' : prob >= 50 ? 'ボーダー付近' : '要集中強化';
+
+  el.innerHTML =
+    '<div class="pass-prob-wrap">' +
+      '<div class="pass-prob-main">' +
+        '<span class="pass-prob-score ' + cls + '">' + prob + '%</span>' +
+        '<div><div style="font-size:18px;font-weight:700;color:var(--text)">' + label + '</div>' +
+          '<div class="pass-prob-label">推定合格確率</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pass-prob-gauge-wrap"><div class="pass-prob-gauge-fill ' + cls + '" style="width:' + prob + '%"></div></div>' +
+      '<div class="pass-prob-detail">' +
+        '<div class="pass-prob-row"><span>過去問正答率（全期間）</span><strong>' + rawPct.toFixed(1) + '% （' + correctCount + '/' + total + '問）</strong></div>' +
+        '<div class="pass-prob-row"><span>本番補正後（×0.93）</span><strong>' + adjPct.toFixed(1) + '%</strong></div>' +
+        '<div class="pass-prob-row"><span>合格ライン</span><strong>60%</strong></div>' +
+      '</div>' +
+      '<details class="pass-prob-basis">' +
+        '<summary>📐 算定根拠を見る</summary>' +
+        '<div class="pass-prob-basis-body">' +
+          '<ol>' +
+            '<li><strong>0.93補正：</strong>過去問演習は同じ問題を繰り返すため「学習効果」で正答率が高く出る傾向があります。初見問題が中心の本試験では概ね5〜10%低下するとされており、中間値として×0.93を適用します。</li>' +
+            '<li><strong>ロジスティック変換：</strong>補正後の正答率から合格確率を推定するため P = 1/(1+e<sup>-0.18(x-60)</sup>) を使用。合格ライン60%のとき合格確率50%、70%で約85%になるよう係数を設定しています。</li>' +
+            '<li><strong>留意点：</strong>この確率は統計的参考値です。本番の問題難易度・当日の体調・試験慣れの有無によって実際の結果は異なります。あくまで学習状況の目安としてご活用ください。</li>' +
+          '</ol>' +
+          '<p style="margin-top:10px;color:var(--success);font-weight:700">目安 ✅ 補正後70%超→85%以上の確率　⚠️ 65%→70%前後　❌ 60%以下→要強化</p>' +
+        '</div>' +
+      '</details>' +
+    '</div>';
+}
+
+// ===== 合格率推移（7日移動平均）=====
+function renderPassTrend(hist) {
+  const el = $('stats-trend-chart');
+  if (!el) return;
+  if (hist.length < 10) { el.innerHTML = '<div class="stats-empty">10問以上の回答履歴が必要です</div>'; return; }
+
+  const dayData = {};
+  hist.forEach(h => {
+    const d = h.date ? h.date.slice(0, 10) : '';
+    if (!d) return;
+    if (!dayData[d]) dayData[d] = { c: 0, t: 0 };
+    dayData[d].t++;
+    if (h.isCorrect) dayData[d].c++;
+  });
+  const days = Object.keys(dayData).sort();
+  if (days.length < 2) { el.innerHTML = '<div class="stats-empty">複数日のデータが必要です</div>'; return; }
+
+  const trend = days.map((d, i) => {
+    const window = days.slice(Math.max(0, i - 6), i + 1);
+    const total = window.reduce((s, dd) => s + dayData[dd].t, 0);
+    const correct = window.reduce((s, dd) => s + dayData[dd].c, 0);
+    return { d, pct: total ? Math.round(correct / total * 100) : 0 };
+  });
+
+  const H = 80;
+  const bars = trend.map((t, i) => {
+    const h = Math.round(t.pct / 100 * H);
+    const cls = t.pct >= 70 ? 'ok' : t.pct >= 60 ? 'warn' : 'ng';
+    const lbl = (i === 0 || i === trend.length - 1 || i % Math.ceil(trend.length / 7) === 0)
+      ? t.d.slice(5) : '';
+    return '<div class="chart-day">' +
+      '<div class="chart-tooltip">' + t.d + '<br>' + t.pct + '%</div>' +
+      '<div class="chart-stacks"><div class="bar-trend ' + cls + '" style="height:' + h + 'px"></div></div>' +
+      '<div class="bar-label">' + lbl + '</div>' +
+    '</div>';
+  }).join('');
+
+  const last = trend[trend.length - 1].pct;
+  const first = trend[0].pct;
+  const diff = last - first;
+  const diffStr = (diff > 0 ? '+' : '') + diff + '%';
+  const diffCls = diff > 0 ? 'ok' : diff < 0 ? 'ng' : '';
+
+  el.innerHTML =
+    '<div class="trend-summary">現在の7日移動平均: <strong class="' + (last >= 70 ? 'ok' : last >= 60 ? 'warn' : 'ng') + '">' + last + '%</strong>' +
+    '　　推移: <strong class="' + diffCls + '">' + diffStr + '</strong></div>' +
+    '<div class="chart-container"><div class="chart-bars">' + bars + '</div></div>';
+}
+
+// ===== 時間帯別学習分布 =====
+function renderHourlyChart(hist) {
+  const el = $('stats-hourly-chart');
+  if (!el) return;
+  if (hist.length < 5) { el.innerHTML = '<div class="stats-empty">データが少なすぎます</div>'; return; }
+
+  const hours = Array.from({length: 24}, () => ({ c: 0, w: 0 }));
+  hist.forEach(h => {
+    if (!h.date) return;
+    const hour = new Date(h.date).getHours();
+    if (h.isCorrect) hours[hour].c++;
+    else if (h.chosen !== null) hours[hour].w++;
+  });
+
+  const maxVal = Math.max(...hours.map(h => h.c + h.w), 1);
+  const H = 64;
+  const bars = hours.map((d, i) => {
+    const cH = Math.round(d.c / maxVal * H);
+    const wH = Math.round(d.w / maxVal * H);
+    const lbl = i % 6 === 0 ? i + 'h' : '';
+    return '<div class="chart-day">' +
+      '<div class="chart-tooltip">' + i + '時<br>正:' + d.c + ' 誤:' + d.w + '</div>' +
+      '<div class="chart-stacks">' +
+        '<div class="bar-wrong" style="height:' + wH + 'px"></div>' +
+        '<div class="bar-correct" style="height:' + cH + 'px"></div>' +
+      '</div>' +
+      '<div class="bar-label">' + lbl + '</div>' +
+    '</div>';
+  }).join('');
+
+  el.innerHTML = '<div class="chart-container"><div class="chart-bars" style="min-width:360px">' + bars + '</div>' +
+    '<div class="chart-legend">' +
+    '<span class="legend-item ok">■ 正解</span>' +
+    '<span class="legend-item ng">■ 不正解</span></div></div>';
+}
+
+// ===== 学習アドバイス =====
+function renderStudyTips(hist) {
+  const el = $('stats-study-tips');
+  if (!el) return;
+  const tips = [];
+  const total = hist.length;
+  const correctCount = hist.filter(h => h.isCorrect).length;
+  const pct = total ? Math.round(correctCount / total * 100) : 0;
+  const streak = getStreak();
+  const srs = getSRSStats();
+  const byCat = {};
+  hist.forEach(h => {
+    const c = h.category || 'その他';
+    if (!byCat[c]) byCat[c] = { t: 0, ok: 0 };
+    byCat[c].t++; if (h.isCorrect) byCat[c].ok++;
+  });
+  const weakCats = Object.entries(byCat)
+    .filter(([, v]) => v.t >= 5 && v.ok / v.t < 0.6)
+    .sort((a, b) => a[1].ok / a[1].t - b[1].ok / b[1].t);
+
+  if (pct >= 75) {
+    tips.push({ icon: '🏆', text: '正答率 ' + pct + '% ！合格ラインを大幅に超えています。模擬試験モードで本番形式の最終確認を行いましょう。' });
+  } else if (pct >= 60) {
+    tips.push({ icon: '⚠️', text: '正答率 ' + pct + '% で合格ライン付近です。弱点集中モードで正答率の低いカテゴリを重点強化しましょう。' });
+  } else if (total >= 10) {
+    tips.push({ icon: '🔥', text: '正答率 ' + pct + '% — 頻出問題と弱点カテゴリへの集中が最優先です。デイリーチャレンジを毎日継続してください。' });
+  }
+
+  if (srs.due > 0) {
+    tips.push({ icon: '📚', text: 'SRS復習待ちが' + srs.due + '問あります。デイリーチャレンジで効率よく消化できます。卒業済み: ' + srs.graduated + '問。' });
+  }
+
+  if (streak.count >= 7) {
+    tips.push({ icon: '🔥', text: streak.count + '日連続学習中！継続が最大の武器です。試験当日まで毎日続けましょう。' });
+  } else if (streak.count >= 3) {
+    tips.push({ icon: '✅', text: streak.count + '日連続学習中。3日以上継続でSRS効果が出始めます。この調子で続けましょう！' });
+  } else {
+    tips.push({ icon: '💡', text: '毎日10問のデイリーチャレンジを習慣にしましょう。SRS（間隔反復）で効率よく記憶が定着します。' });
+  }
+
+  if (weakCats.length >= 2) {
+    tips.push({ icon: '🎯', text: '「' + weakCats[0][0] + '」(' + Math.round(weakCats[0][1].ok / weakCats[0][1].t * 100) + '%) と「' + weakCats[1][0] + '」(' + Math.round(weakCats[1][1].ok / weakCats[1][1].t * 100) + '%) が最弱点。弱点集中モードで集中攻略を。' });
+  } else if (weakCats.length === 1) {
+    tips.push({ icon: '🎯', text: '「' + weakCats[0][0] + '」の正答率が' + Math.round(weakCats[0][1].ok / weakCats[0][1].t * 100) + '%と低いです。弱点集中モードで重点的に学習しましょう。' });
+  }
+
+  tips.push({ icon: '📋', text: '【試験5日前プラン】5日前:頻出問題→4日前:弱点集中→3日前:繰り返し間違い→2日前:全範囲ランダム→前日:模擬試験。直前プランで自動管理できます。' });
+
+  if (!total) {
+    el.innerHTML = '<div class="stats-empty">学習履歴がありません。クイズを始めましょう！</div>';
+    return;
+  }
+
+  el.innerHTML = tips.map(t =>
+    '<div class="study-tip">' +
+    '<span class="tip-icon">' + t.icon + '</span>' +
+    '<span class="tip-text">' + t.text + '</span>' +
+    '</div>'
+  ).join('');
 }
 
 // ===== 合格予測 =====
