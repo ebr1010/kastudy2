@@ -1518,16 +1518,45 @@ input[type=file]::file-selector-button:hover {
   white-space: pre-wrap;
 }
 
+/* ===== 解説ソースブロック ===== */
+.source-block {
+  margin-top: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+}
+.source-label {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 14px;
+  letter-spacing: 0.05em;
+}
+.source-label-text  { background: rgba(16,185,129,.18); color: #6ee7b7; }
+.source-label-audio { background: rgba(59,130,246,.18); color: #93c5fd; }
+.source-label-ai    { background: rgba(245,158,11,.15);  color: #fcd34d; }
+.source-body {
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-main, #e0e0e0);
+  white-space: pre-wrap;
+}
+.source-block .textbook-refs,
+.source-block #choice-explanations-area {
+  margin-top: 0;
+}
+
 /* ===== 選択肢ごと解説カード（NotebookLM形式） ===== */
 #choice-explanations-area {
-  margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
+  padding: 8px 10px;
 }
 .choice-exp-card {
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
   border: 1px solid rgba(255,255,255,.08);
   background: rgba(255,255,255,.03);
 }

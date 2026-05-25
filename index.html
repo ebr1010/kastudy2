@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
 
@@ -186,14 +186,32 @@
             <button class="correction-btn" data-num="4">4</button>
           </div>
           <button id="btn-correction-toggle" class="btn-correction-toggle">解答が間違ってる場合はここ</button>
-          <div class="textbook-refs" id="textbook-refs"></div>
-          <!-- 選択肢ごとの解説（NotebookLM形式） -->
-          <div id="choice-explanations-area" style="display:none"></div>
+          <!-- ① テキスト由来の解説 -->
+          <div id="source-textbook" class="source-block" style="display:none">
+            <div class="source-label source-label-text">📖 テキスト由来の解説</div>
+            <div class="textbook-refs" id="textbook-refs"></div>
+            <div id="ai-explanation-area" style="display:none">
+              <div id="ai-explanation-text" class="source-body"></div>
+            </div>
+          </div>
 
+          <!-- ② 音声由来の解説（NotebookLM形式） -->
+          <div id="source-audio-exp" class="source-block" style="display:none">
+            <div class="source-label source-label-audio">🔊 音声由来の解説</div>
+            <div id="choice-explanations-area"></div>
+            <div id="audio-full-exp" class="source-body" style="display:none"></div>
+          </div>
+
+          <!-- ③ AI解説（自分で考えた） -->
+          <div id="source-ai" class="source-block" style="display:none">
+            <div class="source-label source-label-ai">🤖 AI解説（参考）</div>
+            <div id="ai-gen-text" class="source-body"></div>
+          </div>
+
+          <!-- 音声プレイヤー -->
           <div id="audio-player-area" class="audio-player-area" style="display:none">
             <div class="audio-player-label">🔊 解説音声（全問分）</div>
             <audio id="explanation-audio" controls preload="none" class="explanation-audio"></audio>
-            <div class="audio-player-hint">※ 問題番号に合わせて手動でシークしてください</div>
           </div>
 
           <!-- ユーザー追加テキスト参照 -->
@@ -497,6 +515,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>

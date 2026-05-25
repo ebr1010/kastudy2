@@ -482,17 +482,18 @@ function showFeedback(q, chosen) {
   const fbRes = $('footer-feedback-result');
   const fbRef = $('footer-feedback-ref');
 
+  const qNoLabel = 'No.' + q.number;
   if (chosen === null) {
-    fbRes.textContent = '⏭ スキップ';
+    fbRes.textContent = qNoLabel + '  ⏭ スキップ';
     fb.className = 'footer-feedback skip';
   } else if (chosen === 0) {
-    fbRes.textContent = '⏰ 時間切れ  正答: ' + correct;
+    fbRes.textContent = qNoLabel + '  ⏰ 時間切れ  正答: ' + correct;
     fb.className = 'footer-feedback ng';
   } else if (chosen === correct) {
-    fbRes.textContent = '✅ 正解！';
+    fbRes.textContent = qNoLabel + '  ✅ 正解！';
     fb.className = 'footer-feedback ok';
   } else {
-    fbRes.textContent = '❌ 不正解  正答: ' + correct;
+    fbRes.textContent = qNoLabel + '  ❌ 不正解  正答: ' + correct;
     fb.className = 'footer-feedback ng';
   }
 
@@ -544,71 +545,100 @@ function showFeedback(q, chosen) {
     api.appendChild(makeRefBtn('✅ 解答 p.' + ap, [ansImgSrc(ap)], '解答ページ p.' + ap));
   }
 
-  // テキスト参照リンク（元データ）
-  const refs = $('textbook-refs');
+  // ===== ① テキスト由来の解説 =====
+  const srcText = $('source-textbook');
+  const refs    = $('textbook-refs');
   refs.innerHTML = '';
+  let hasTextbook = false;
+
   if (q.textbook_refs && q.textbook_refs.length) {
+    hasTextbook = true;
     q.textbook_refs.forEach(r => {
-      const ps = r.pages[0] === r.pages[1] ? r.pages[0] + 'ページ' : r.pages[0] + '〜' + r.pages[1] + 'ページ';
+      const p0 = r.pages[0], p1 = r.pages[1];
+      const ps = p0 === p1 ? 'p.' + p0 : 'p.' + p0 + '–' + p1;
       const btn = document.createElement('button');
       btn.className = 'ref-item-btn';
-      btn.innerHTML = '<div class="ref-topic">📖 テキスト: ' + r.topic + '</div>' +
-                      '<div class="ref-pages">土木2級1次テキスト.pdf — ' + ps + ' ▶ タップして表示</div>';
+      btn.innerHTML =
+        '<div class="ref-topic">📖 ' + r.topic + '</div>' +
+        '<div class="ref-pages">土木2級1次テキスト — <b>' + ps + '</b> ▶ タップして表示</div>';
       btn.addEventListener('click', () =>
-        openPageModal(textImgSrcs(r.pages[0], r.pages[1]),
-          'テキスト p.' + r.pages[0] + (r.pages[0] !== r.pages[1] ? '-' + r.pages[1] : '') + ' ' + r.topic));
+        openPageModal(textImgSrcs(p0, p1),
+          'テキスト ' + ps + ' ' + r.topic));
       refs.appendChild(btn);
     });
   }
 
-  // ユーザー追加テキスト参照
+  // ユーザー追加参照
   const k = qKey(q);
   const userRefs = getUserRefsForKey(k);
   userRefs.forEach(r => {
-    const ps = r.pages[0] === r.pages[1] ? r.pages[0] + 'ページ' : r.pages[0] + '〜' + r.pages[1] + 'ページ';
+    hasTextbook = true;
+    const ps = r.pages[0] === r.pages[1] ? 'p.' + r.pages[0] : 'p.' + r.pages[0] + '–' + r.pages[1];
     const btn = document.createElement('button');
     btn.className = 'ref-item-btn';
-    btn.innerHTML = '<div class="ref-topic">✏️ ' + r.topic + '（追加）</div>' +
-                    '<div class="ref-pages">土木2級1次テキスト.pdf — ' + ps + ' ▶ タップして表示</div>';
+    btn.innerHTML =
+      '<div class="ref-topic">✏️ ' + r.topic + '（追加）</div>' +
+      '<div class="ref-pages">土木2級1次テキスト — <b>' + ps + '</b> ▶ タップして表示</div>';
     btn.addEventListener('click', () =>
       openPageModal(textImgSrcs(r.pages[0], r.pages[1]),
-        'テキスト p.' + r.pages[0] + (r.pages[0] !== r.pages[1] ? '-' + r.pages[1] : '') + ' ' + r.topic));
+        'テキスト ' + ps + ' ' + r.topic));
     refs.appendChild(btn);
   });
 
-  // 選択肢ごとの解説（NotebookLM形式）
-  const ceArea = $('choice-explanations-area');
-  if (ceArea) {
-    if (chosen !== null && (q.choice_explanations || q.explanation)) {
-      ceArea.innerHTML = '';
-      ceArea.style.display = '';
+  if (srcText) srcText.style.display = hasTextbook ? '' : 'none';
+
+  // ===== ② 音声由来の解説（NotebookLM形式） =====
+  const srcAudioExp = $('source-audio-exp');
+  const ceArea      = $('choice-explanations-area');
+  const audioFullEl = $('audio-full-exp');
+  let hasAudio = false;
+
+  if (chosen !== null && ceArea) {
+    ceArea.innerHTML = '';
+    const hasChoiceExp = q.choice_explanations && q.choice_explanations.some(c => c && c.trim());
+    if (hasChoiceExp) {
+      hasAudio = true;
       for (let i = 0; i < 4; i++) {
         const num = i + 1;
         const isCorrect = num === q.answer;
-        const isSelected = num === chosen || chosen === 0;
-        const expTxt = q.choice_explanations
-          ? (q.choice_explanations[i] || '')
-          : (isCorrect ? (q.explanation || '') : '');
-
+        const isSelected = num === chosen && chosen !== 0;
+        const expTxt = q.choice_explanations[i] || '';
         const card = document.createElement('div');
         let cls = 'choice-exp-card';
         if (isCorrect) cls += ' ce-correct';
-        else if (num === (chosen === 0 ? -1 : chosen)) cls += ' ce-selected-wrong';
+        else if (isSelected) cls += ' ce-selected-wrong';
         card.className = cls;
-
-        const badge = isCorrect
-          ? '<span class="ce-badge ce-badge-ok">✓ 正解</span>'
-          : '<span class="ce-badge ce-badge-ng">✗ 不正解</span>';
-        const yourMark = (num === chosen && chosen !== 0)
-          ? '<span class="ce-yours">あなたの回答</span>' : '';
-
+        const badge = isCorrect ? '<span class="ce-badge ce-badge-ok">✓ 正解</span>'
+                                : '<span class="ce-badge ce-badge-ng">✗ 不正解</span>';
+        const yourMark = isSelected ? '<span class="ce-yours">あなたの回答</span>' : '';
         card.innerHTML =
           '<div class="ce-header"><span class="ce-num">選択肢 ' + num + '</span>' + badge + yourMark + '</div>' +
           (expTxt ? '<div class="ce-text">' + expTxt + '</div>' : '');
         ceArea.appendChild(card);
       }
+    }
+    if (q.audio_explanation && audioFullEl) {
+      hasAudio = true;
+      audioFullEl.textContent = q.audio_explanation;
+      audioFullEl.style.display = '';
+    } else if (audioFullEl) {
+      audioFullEl.style.display = 'none';
+    }
+  } else if (ceArea) {
+    ceArea.innerHTML = '';
+  }
+
+  if (srcAudioExp) srcAudioExp.style.display = (chosen !== null && hasAudio) ? '' : 'none';
+
+  // ===== ③ AI解説（自分で考えた） =====
+  const srcAI   = $('source-ai');
+  const aiGenEl = $('ai-gen-text');
+  if (srcAI && aiGenEl) {
+    if (q.explanation && chosen !== null) {
+      aiGenEl.textContent = q.explanation;
+      srcAI.style.display = '';
     } else {
-      ceArea.style.display = 'none';
+      srcAI.style.display = 'none';
     }
   }
 
