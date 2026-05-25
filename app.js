@@ -223,7 +223,11 @@ function updateStartButton() {
     info.textContent = '年度を選択してください';
     btn.disabled = true;
   } else {
-    info.textContent = sel.length + '年度選択中 — 出題数: ' + actual + '問';
+    const totalAll = sel.reduce((s, ex) => s + ex.questions.length, 0);
+    const noAnsCount = totalAll - total;
+    let infoText = sel.length + '年度選択中 — 出題数: ' + actual + '問';
+    if (onlyAns && noAnsCount > 0) infoText += '（解答未登録 ' + noAnsCount + '問を除外）';
+    info.textContent = infoText;
     btn.disabled = total === 0;
   }
 }
@@ -279,9 +283,17 @@ function renderQuestion() {
   $('q-year-tag').textContent = q._meta.year + '年度 ' + q._meta.period;
   $('q-cat-tag').textContent = q.category || 'その他';
   $('q-no-tag').textContent = 'No.' + q.number + '  (p.' + q.page + ')';
-  // 頻出マーク
+  // 頻出マーク（年数表示）
   const freqTag = $('q-freq-tag');
-  if (freqTag) freqTag.style.display = state.frequentNums.has(q.number) ? '' : 'none';
+  if (freqTag) {
+    const yrs = state.frequentNums instanceof Map ? (state.frequentNums.get(q.number) || 0) : 0;
+    if (yrs >= 3) {
+      freqTag.textContent = '🔥 ×' + yrs + '年';
+      freqTag.style.display = '';
+    } else {
+      freqTag.style.display = 'none';
+    }
+  }
 
   // 画像表示
   loadQuestionImage(q);
@@ -1381,14 +1393,15 @@ function getFrequentQuestions(threshold) {
     });
   });
   return Object.entries(freq)
-    .filter(([, list]) => list.length >= threshold)
-    .sort((a, b) => b[1].length - a[1].length)
+    .filter(([, list]) => new Set(list.map(a => a.year)).size >= threshold)
+    .sort((a, b) => new Set(b[1].map(x => x.year)).size - new Set(a[1].map(x => x.year)).size)
     .map(([num, list]) => {
+      const uniqueYearCount = new Set(list.map(a => a.year)).size;
       const answers = list.filter(a => a.answer).map(a => a.answer);
       const answerSet = new Set(answers);
       return {
         number: parseInt(num),
-        count: list.length,
+        count: uniqueYearCount,
         appearances: list,
         category: list[0].category,
         answers,
@@ -1423,7 +1436,7 @@ function renderFrequentList(freqList) {
       '<div class="freq-item-header">' +
         '<span class="freq-no">No.' + item.number + '</span>' +
         '<span class="freq-cat">' + item.category + '</span>' +
-        '<span class="freq-count-badge">' + item.count + '年度</span>' +
+        '<span class="freq-count-badge">🔥 ' + item.count + '年出題</span>' +
         '<span class="freq-chevron">▶</span>' +
       '</div>' +
       '<div class="freq-detail">' +
@@ -1856,19 +1869,19 @@ function updateTimeAttackDisplay() {
   else               fill.className = 'time-attack-fill danger';
 }
 
-// ===== 頻出番号の事前計算 =====
+// ===== 頻出番号の事前計算（年単位） =====
 function computeFrequentNums(threshold) {
   threshold = threshold || 3;
-  const freq = {};
+  const freq = {}; // number → Set of unique years
   [...state.allExams, ...state.extraExams].forEach(exam => {
     exam.questions.forEach(q => {
-      freq[q.number] = (freq[q.number] || 0) + 1;
+      if (!freq[q.number]) freq[q.number] = new Set();
+      freq[q.number].add(exam.meta.year);
     });
   });
-  state.frequentNums = new Set(
-    Object.entries(freq)
-      .filter(([, n]) => n >= threshold)
-      .map(([num]) => parseInt(num))
+  // Map: question number → unique year count
+  state.frequentNums = new Map(
+    Object.entries(freq).map(([num, years]) => [parseInt(num), years.size])
   );
 }
 

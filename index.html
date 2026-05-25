@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 
@@ -392,12 +392,11 @@
         <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
           <button id="btn-start-frequent-all" class="btn-primary" style="flex:1;min-width:160px">🔥 頻出問題を全て解く</button>
           <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-            <span style="font-size:13px;color:var(--text-muted)">最低出題数:</span>
-            <select id="freq-threshold" class="correction-exam-select" style="width:70px;padding:6px 8px">
-              <option value="3">3回</option>
-              <option value="4">4回</option>
-              <option value="5" selected>5回</option>
-              <option value="7">7回</option>
+            <span style="font-size:13px;color:var(--text-muted)">最低出題年数:</span>
+            <select id="freq-threshold" class="correction-exam-select" style="width:80px;padding:6px 8px">
+              <option value="3">3年以上</option>
+              <option value="4">4年以上</option>
+              <option value="5" selected>全5年</option>
             </select>
           </div>
         </div>
@@ -487,6 +486,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
