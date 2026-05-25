@@ -131,6 +131,20 @@ const state = {
 
 const $ = id => document.getElementById(id);
 
+// AI解説内の専門用語をGoogle検索リンクに変換
+function linkKeywords(text) {
+  // エスケープ
+  const esc = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // 土木・建設の専門用語パターン（カタカナ3字以上 or 漢字2字以上の名詞句）
+  return esc.replace(
+    /([ァ-ヶー]{3,}|[一-龯々]{2,}(?:[一-龯々ァ-ヶーa-zA-Z0-9]{0,8})?)/g,
+    (m) => {
+      const url = 'https://www.google.com/search?q=' + encodeURIComponent(m + ' 土木');
+      return '<a href="' + url + '" target="_blank" rel="noopener" class="kw-link">' + m + '</a>';
+    }
+  );
+}
+
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   $('screen-' + name).classList.add('active');
@@ -495,6 +509,9 @@ function showFeedback(q, chosen) {
   if (chosen === null) {
     fbRes.textContent = qNoLabel + '  ⏭ スキップ';
     fb.className = 'footer-feedback skip';
+  } else if (chosen === -1) {
+    fbRes.textContent = qNoLabel + '  ⏭ スキップ（不正解）  正答: ' + correct;
+    fb.className = 'footer-feedback ng';
   } else if (chosen === 0) {
     fbRes.textContent = qNoLabel + '  ⏰ 時間切れ  正答: ' + correct;
     fb.className = 'footer-feedback ng';
@@ -527,10 +544,12 @@ function showFeedback(q, chosen) {
   fb.style.display = '';
   $('footer-correction-panel').style.display = 'none';
 
-  // ---- カード内の詳細フィードバック（スクロールで見える）----
+  // ---- カード内の詳細フィードバック ----
   const res = $('feedback-result');
   if (chosen === null) {
     res.textContent = '⏭ スキップ'; res.className = 'feedback-result skip';
+  } else if (chosen === -1) {
+    res.textContent = '⏭ スキップ（不正解）  正答: ' + correct; res.className = 'feedback-result ng';
   } else if (chosen === 0) {
     res.textContent = '⏰ 時間切れ  正答: ' + correct; res.className = 'feedback-result ng';
   } else if (chosen === correct) {
@@ -554,7 +573,50 @@ function showFeedback(q, chosen) {
     api.appendChild(makeRefBtn('✅ 解答 p.' + ap, [ansImgSrc(ap)], '解答ページ p.' + ap));
   }
 
-  // ===== ① テキスト由来の解説 =====
+  // ===== AI解説（4択カード） =====
+  const srcAI    = $('source-ai');
+  const aiCards  = $('ai-choice-cards');
+  const answered = chosen !== null;
+
+  if (srcAI && aiCards) {
+    if (answered) {
+      aiCards.innerHTML = '';
+      for (let i = 0; i < 4; i++) {
+        const num = i + 1;
+        const isCorrect  = num === q.answer;
+        const isSelected = num === chosen && chosen > 0;
+        const ceText     = (q.choice_explanations && q.choice_explanations[i]) || '';
+
+        let expTxt = '';
+        if (isCorrect) {
+          expTxt = ceText || q.explanation || '';
+        } else {
+          expTxt = ceText || '';
+        }
+
+        let cls = 'choice-exp-card';
+        if (isCorrect) cls += ' ce-correct';
+        else if (isSelected) cls += ' ce-selected-wrong';
+
+        const badge   = isCorrect
+          ? '<span class="ce-badge ce-badge-ok">✓ 正解</span>'
+          : '<span class="ce-badge ce-badge-ng">✗ 不正解</span>';
+        const yourMark = isSelected ? '<span class="ce-yours">あなたの回答</span>' : '';
+
+        const card = document.createElement('div');
+        card.className = cls;
+        card.innerHTML =
+          '<div class="ce-header"><span class="ce-num">選択肢 ' + num + '</span>' + badge + yourMark + '</div>' +
+          (expTxt ? '<div class="ce-text">' + linkKeywords(expTxt) + '</div>' : '');
+        aiCards.appendChild(card);
+      }
+      srcAI.style.display = '';
+    } else {
+      srcAI.style.display = 'none';
+    }
+  }
+
+  // ===== テキスト参照 =====
   const srcText = $('source-textbook');
   const refs    = $('textbook-refs');
   refs.innerHTML = '';
@@ -571,8 +633,7 @@ function showFeedback(q, chosen) {
         '<div class="ref-topic">📖 ' + r.topic + '</div>' +
         '<div class="ref-pages">土木2級1次テキスト — <b>' + ps + '</b> ▶ タップして表示</div>';
       btn.addEventListener('click', () =>
-        openPageModal(textImgSrcs(p0, p1),
-          'テキスト ' + ps + ' ' + r.topic));
+        openPageModal(textImgSrcs(p0, p1), 'テキスト ' + ps + ' ' + r.topic));
       refs.appendChild(btn);
     });
   }
@@ -589,89 +650,11 @@ function showFeedback(q, chosen) {
       '<div class="ref-topic">✏️ ' + r.topic + '（追加）</div>' +
       '<div class="ref-pages">土木2級1次テキスト — <b>' + ps + '</b> ▶ タップして表示</div>';
     btn.addEventListener('click', () =>
-      openPageModal(textImgSrcs(r.pages[0], r.pages[1]),
-        'テキスト ' + ps + ' ' + r.topic));
+      openPageModal(textImgSrcs(r.pages[0], r.pages[1]), 'テキスト ' + ps + ' ' + r.topic));
     refs.appendChild(btn);
   });
 
-  if (srcText) srcText.style.display = hasTextbook ? '' : 'none';
-
-  // ===== ② 音声由来の解説（NotebookLM形式） =====
-  const srcAudioExp = $('source-audio-exp');
-  const ceArea      = $('choice-explanations-area');
-  const audioFullEl = $('audio-full-exp');
-  let hasAudio = false;
-
-  if (chosen !== null && ceArea) {
-    ceArea.innerHTML = '';
-    const hasChoiceExp = q.choice_explanations && q.choice_explanations.some(c => c && c.trim());
-    if (hasChoiceExp) {
-      hasAudio = true;
-      for (let i = 0; i < 4; i++) {
-        const num = i + 1;
-        const isCorrect = num === q.answer;
-        const isSelected = num === chosen && chosen !== 0;
-        const expTxt = q.choice_explanations[i] || '';
-        // 解説テキストのフォールバック
-        let displayTxt = expTxt;
-        if (!displayTxt && isCorrect && q.explanation) {
-          displayTxt = q.explanation; // 正解には必ず全体解説を表示
-        }
-        if (!displayTxt && !isCorrect) {
-          displayTxt = ''; // 不正解で解説なしは空
-        }
-
-        const card = document.createElement('div');
-        let cls = 'choice-exp-card';
-        if (isCorrect) cls += ' ce-correct';
-        else if (isSelected) cls += ' ce-selected-wrong';
-        card.className = cls;
-        const badge = isCorrect ? '<span class="ce-badge ce-badge-ok">✓ 正解</span>'
-                                : '<span class="ce-badge ce-badge-ng">✗ 不正解</span>';
-        const yourMark = isSelected ? '<span class="ce-yours">あなたの回答</span>' : '';
-        card.innerHTML =
-          '<div class="ce-header"><span class="ce-num">選択肢 ' + num + '</span>' + badge + yourMark + '</div>' +
-          (displayTxt ? '<div class="ce-text">' + displayTxt + '</div>' : '');
-        ceArea.appendChild(card);
-      }
-    }
-    if (q.audio_explanation && audioFullEl) {
-      hasAudio = true;
-      audioFullEl.textContent = q.audio_explanation;
-      audioFullEl.style.display = '';
-    } else if (audioFullEl) {
-      audioFullEl.style.display = 'none';
-    }
-  } else if (ceArea) {
-    ceArea.innerHTML = '';
-  }
-
-  if (srcAudioExp) srcAudioExp.style.display = (chosen !== null && hasAudio) ? '' : 'none';
-
-  // ===== ③ AI解説（自分で考えた） =====
-  const srcAI   = $('source-ai');
-  const aiGenEl = $('ai-gen-text');
-  if (srcAI && aiGenEl) {
-    if (q.explanation && chosen !== null) {
-      aiGenEl.textContent = q.explanation;
-      srcAI.style.display = '';
-    } else {
-      srcAI.style.display = 'none';
-    }
-  }
-
-  // 解説音声
-  const audioArea = $('audio-player-area');
-  const audioEl = $('explanation-audio');
-  if (audioArea && audioEl) {
-    const yearCode = q._meta.year.replace('令和', 'R');
-    const audioSrc = 'audio/' + yearCode + q._meta.period + '.mp3';
-    if (audioEl.getAttribute('data-src') !== audioSrc) {
-      audioEl.src = audioSrc;
-      audioEl.setAttribute('data-src', audioSrc);
-    }
-    audioArea.style.display = '';
-  }
+  if (srcText) srcText.style.display = (answered && hasTextbook) ? '' : 'none';
 
   // ユーザー参照追加エリアを更新
   renderUserRefsDisplay(k);
@@ -1851,11 +1834,18 @@ function skipQuestion() {
   const idx = state.currentIndex;
   if (state.answers[idx] !== null) return;
   stopTimeAttack();
-  state.answers[idx] = { chosen: null, correct: state.questions[idx].answer, isCorrect: false };
-  state.wrongQuestions.push(Object.assign({}, state.questions[idx], { chosen: null }));
-  document.querySelectorAll('.option-btn').forEach(b => { b.disabled = true; });
-  addHistory(state.questions[idx], null, false);
-  showFeedback(state.questions[idx], null);
+  const q = state.questions[idx];
+  const correct = q.answer;
+  // スキップ = 不正解扱い（chosen: -1 で区別）
+  state.answers[idx] = { chosen: -1, correct, isCorrect: false };
+  state.wrongQuestions.push(Object.assign({}, q));
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.disabled = true;
+    const num = i + 1;
+    if (num === correct) b.classList.add('is-correct');
+  });
+  addHistory(q, -1, false);
+  showFeedback(q, -1);
   $('feedback-area').style.display = '';
   updateNextBtn();
 }
