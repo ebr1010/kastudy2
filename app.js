@@ -77,6 +77,7 @@ async function initApp() {
     state.allExams = exams;
     renderExamList();
     updateStartButton();
+    updateRepeatWrongBadge();
   } catch (e) {
     $('exam-list').innerHTML = '<div style="color:red">読み込み失敗: ' + e.message + '</div>';
   }
@@ -450,16 +451,116 @@ function applyCorrection(newAnswer) {
 }
 
 // ===== 分析画面 =====
-function showStats() {
-  showScreen('stats');
-  const rawHist = getHistory();
+function applyHistOverrides(rawHist) {
   const overrides = getOverrides();
-
-  const hist = rawHist.map(h => {
+  return rawHist.map(h => {
     const correct = overrides[h.key] !== undefined ? overrides[h.key] : h.correct;
     return Object.assign({}, h, { correct, isCorrect: h.chosen === correct });
   });
+}
 
+function updateDateFilterCount() {
+  const from = $('filter-date-from').value;
+  const to   = $('filter-date-to').value;
+  if (!from && !to) { $('date-filter-count').textContent = ''; return; }
+  const hist = getHistory();
+  const count = hist.filter(h => {
+    const d = h.date.slice(0, 10);
+    return (!from || d >= from) && (!to || d <= to);
+  }).length;
+  $('date-filter-count').textContent = count + '件が削除対象';
+}
+
+function deleteHistoryByDateRange() {
+  const from = $('filter-date-from').value;
+  const to   = $('filter-date-to').value;
+  if (!from && !to) { alert('日付を入力してください'); return; }
+  const hist = getHistory();
+  const toDelete = hist.filter(h => {
+    const d = h.date.slice(0, 10);
+    return (!from || d >= from) && (!to || d <= to);
+  });
+  if (!toDelete.length) { alert('削除対象がありません'); return; }
+  if (!confirm(toDelete.length + '件の履歴を削除しますか？')) return;
+  const newHist = hist.filter(h => {
+    const d = h.date.slice(0, 10);
+    return (from && d < from) || (to && d > to);
+  });
+  localStorage.setItem(LS.HISTORY, JSON.stringify(newHist));
+  $('filter-date-from').value = '';
+  $('filter-date-to').value = '';
+  showStats();
+}
+
+function renderDailyChart(hist) {
+  const now = new Date();
+  const days = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const dayData = {};
+  days.forEach(d => { dayData[d] = { c: 0, w: 0 }; });
+  hist.forEach(h => {
+    const d = h.date ? h.date.slice(0, 10) : '';
+    if (!dayData[d]) return;
+    if (h.isCorrect) dayData[d].c++;
+    else if (h.chosen !== null) dayData[d].w++;
+  });
+  const maxVal = Math.max(...days.map(d => dayData[d].c + dayData[d].w), 1);
+  const H = 72;
+  const bars = days.map((d, i) => {
+    const data = dayData[d];
+    const cH = Math.max(Math.round(data.c / maxVal * H), data.c > 0 ? 3 : 0);
+    const wH = Math.max(Math.round(data.w / maxVal * H), data.w > 0 ? 3 : 0);
+    const isToday = i === 29;
+    const lbl = (d.slice(5,7) === '01' || i === 0 || i === 14 || i === 29)
+      ? d.slice(5) : '';
+    return '<div class="chart-day' + (isToday ? ' today' : '') + '">' +
+      '<div class="chart-tooltip">' + d + '<br>正:' + data.c + ' 誤:' + data.w + '</div>' +
+      '<div class="chart-stacks">' +
+        '<div class="bar-wrong" style="height:' + wH + 'px"></div>' +
+        '<div class="bar-correct" style="height:' + cH + 'px"></div>' +
+      '</div>' +
+      '<div class="bar-label">' + lbl + '</div>' +
+    '</div>';
+  }).join('');
+  return '<div class="chart-container"><div class="chart-bars">' + bars + '</div>' +
+    '<div class="chart-legend"><span class="legend-item ok">■ 正解</span>' +
+    '<span class="legend-item ng">■ 不正解</span></div></div>';
+}
+
+function renderCarelessMistakes(hist) {
+  const byKey = {};
+  hist.forEach(h => {
+    if (!byKey[h.key]) byKey[h.key] = [];
+    byKey[h.key].push(h);
+  });
+  const careless = Object.values(byKey).filter(arr => {
+    const last = arr[arr.length - 1];
+    return last && !last.isCorrect && last.chosen !== null && arr.some(a => a.isCorrect);
+  }).map(arr => arr[arr.length - 1]).slice(-30).reverse();
+
+  if (!careless.length) return '<div class="stats-empty">ケアレスミスなし 👍</div>';
+  return careless.map(h =>
+    '<div class="careless-item">' +
+    '<span class="careless-key">' + h.year + ' ' + h.period + ' No.' + h.number + '</span>' +
+    '<span class="careless-cat">' + (h.category || '') + '</span>' +
+    '<span class="careless-badge">⚠️ ケアレス</span>' +
+    '</div>'
+  ).join('');
+}
+
+function showStats() {
+  showScreen('stats');
+  const hist = applyHistOverrides(getHistory());
+  const overrides = getOverrides();
+
+  // 30日グラフ
+  $('stats-daily-chart').innerHTML = renderDailyChart(hist);
+
+  // サマリー
   const total = hist.length;
   const correctCount = hist.filter(h => h.isCorrect).length;
   const skipCount = hist.filter(h => h.chosen === null).length;
@@ -476,6 +577,10 @@ function showStats() {
     overrideCount ? statRow('解答修正済み', overrideCount + '問') : '',
   ].join('');
 
+  // ケアレスミス
+  $('stats-careless').innerHTML = renderCarelessMistakes(hist);
+
+  // 年度別
   const byExam = {};
   hist.forEach(h => {
     const k = h.year + ' ' + h.period;
@@ -488,6 +593,7 @@ function showStats() {
     return statRow(k, v.c + '/' + v.t + '問 <strong class="' + (p >= 60 ? 'ok' : 'ng') + '">(' + p + '%)</strong>');
   }).join('') || '<div class="stats-empty">データなし</div>';
 
+  // カテゴリ別
   const byCat = {};
   hist.forEach(h => {
     const cat = h.category || 'その他';
@@ -501,15 +607,199 @@ function showStats() {
     return statRow(cat, v.c + '/' + v.t + '問 <strong class="' + (p >= 60 ? 'ok' : 'ng') + '">(' + p + '%)</strong>');
   }).join('') || '<div class="stats-empty">データなし</div>';
 
+  // 最近の間違い
   const recentWrong = hist.filter(h => !h.isCorrect && h.chosen !== null).slice(-20).reverse();
   $('stats-recent-wrong').innerHTML = recentWrong.map(h =>
     '<div class="stats-row">' +
     '<span class="wrong-no">' + h.year + ' ' + h.period + ' No.' + h.number + '</span>' +
-    '<span style="flex:1;font-size:12px;color:var(--text-muted);padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">' + h.category + '</span>' +
+    '<span style="flex:1;font-size:12px;color:var(--text-muted);padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">' + (h.category || '') + '</span>' +
     '<span class="wrong-ans">→' + h.chosen + '</span>' +
     '<span class="wrong-correct">　正:' + h.correct + '</span>' +
     '</div>'
   ).join('') || '<div class="stats-empty">間違いなし</div>';
+}
+
+// ===== 繰り返し間違いクイズ =====
+function getRepeatWrongInfo() {
+  const hist = applyHistOverrides(getHistory());
+  const wrongCounts = {};
+  hist.forEach(h => {
+    if (!h.isCorrect && h.chosen !== null) {
+      wrongCounts[h.key] = (wrongCounts[h.key] || 0) + 1;
+    }
+  });
+  return Object.entries(wrongCounts)
+    .filter(([k, n]) => n >= 2)
+    .sort((a, b) => b[1] - a[1]);
+}
+
+function updateRepeatWrongBadge() {
+  const list = getRepeatWrongInfo();
+  const badge = $('repeat-wrong-badge');
+  if (badge) {
+    if (list.length) {
+      badge.textContent = list.length + '問';
+      badge.style.display = '';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+
+function startRepeatWrongQuiz() {
+  const repeatWrongKeys = getRepeatWrongInfo().map(([k]) => k);
+  if (!repeatWrongKeys.length) { alert('2回以上間違えた問題がありません'); return; }
+
+  const overrides = getOverrides();
+  const pool = [];
+  [...state.allExams, ...state.extraExams].forEach(exam => {
+    exam.questions.forEach(q => {
+      const fakeQ = Object.assign({}, q, { _meta: exam.meta });
+      const k = qKey(fakeQ);
+      if (repeatWrongKeys.includes(k)) {
+        const ov = overrides[k];
+        pool.push(ov !== undefined
+          ? Object.assign({}, fakeQ, { answer: ov, _overridden: true })
+          : fakeQ);
+      }
+    });
+  });
+
+  if (!pool.length) { alert('該当する問題データが見つかりません'); return; }
+  state.questions = shuffle(pool);
+  state.currentIndex = 0;
+  state.answers = new Array(pool.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  showScreen('quiz'); renderQuestion();
+}
+
+// ===== 頻出問題 =====
+function getFrequentQuestions(threshold) {
+  const freq = {};
+  [...state.allExams, ...state.extraExams].forEach(exam => {
+    exam.questions.forEach(q => {
+      const num = q.number;
+      if (!freq[num]) freq[num] = [];
+      freq[num].push({
+        year: exam.meta.year,
+        period: exam.meta.period,
+        page: q.page,
+        answer_page: exam.meta.answer_page,
+        category: q.category || 'その他',
+        answer: q.answer,
+        examId: exam.meta.id,
+        q, exam,
+      });
+    });
+  });
+  return Object.entries(freq)
+    .filter(([, list]) => list.length >= threshold)
+    .sort((a, b) => b[1].length - a[1].length)
+    .map(([num, list]) => {
+      const answers = list.filter(a => a.answer).map(a => a.answer);
+      const answerSet = new Set(answers);
+      return {
+        number: parseInt(num),
+        count: list.length,
+        appearances: list,
+        category: list[0].category,
+        answers,
+        answerConsistent: answerSet.size <= 1,
+        dominantAnswer: answers.length
+          ? [...answerSet].sort((a, b) =>
+              answers.filter(x => x === b).length - answers.filter(x => x === a).length)[0]
+          : null,
+      };
+    });
+}
+
+function renderFrequentList(freqList) {
+  const container = $('frequent-list');
+  if (!freqList.length) {
+    container.innerHTML = '<div class="stats-empty">該当する頻出問題がありません</div>';
+    return;
+  }
+  container.innerHTML = '';
+  freqList.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'freq-item';
+    const ansText = item.answerConsistent
+      ? '<span class="freq-answer-consistent">正解: ' + (item.dominantAnswer || '?') + ' （全年度一致）</span>'
+      : '<span class="freq-answer-mixed">⚠️ 年度で正解が異なる（要確認）</span>';
+    const yearBtns = item.appearances.map(ap => {
+      const label = ap.year + ap.period + ' p.' + ap.page;
+      return '<button class="freq-year-btn" data-page="' + ap.page + '">' + label + '</button>';
+    }).join('');
+
+    div.innerHTML =
+      '<div class="freq-item-header">' +
+        '<span class="freq-no">No.' + item.number + '</span>' +
+        '<span class="freq-cat">' + item.category + '</span>' +
+        '<span class="freq-count-badge">' + item.count + '年度</span>' +
+        '<span class="freq-chevron">▶</span>' +
+      '</div>' +
+      '<div class="freq-detail">' +
+        '<div class="freq-answer-row">' + ansText + '</div>' +
+        '<div class="freq-years">' + yearBtns + '</div>' +
+        '<button class="freq-quiz-btn" data-num="' + item.number + '">▶ この問題だけ解く</button>' +
+      '</div>';
+
+    // アコーディオン
+    div.querySelector('.freq-item-header').addEventListener('click', () => {
+      div.classList.toggle('open');
+    });
+    // 年度ページボタン
+    div.querySelectorAll('.freq-year-btn').forEach((btn, i) => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const ap = item.appearances[i];
+        openPageModal(
+          [ansImgSrc(ap.page)],
+          ap.year + ap.period + ' No.' + item.number + ' (' + ap.category + ')'
+        );
+      });
+    });
+    // この問題だけ解くボタン
+    div.querySelector('.freq-quiz-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      startFrequentQuiz([item.number]);
+    });
+    container.appendChild(div);
+  });
+}
+
+function startFrequentQuiz(numbers) {
+  const overrides = getOverrides();
+  let pool = [];
+  [...state.allExams, ...state.extraExams].forEach(exam => {
+    exam.questions.forEach(q => {
+      if (numbers && !numbers.includes(q.number)) return;
+      if (!q.answer && !(overrides[qKey(Object.assign({}, q, { _meta: exam.meta }))])) return;
+      const fakeQ = Object.assign({}, q, { _meta: exam.meta });
+      const k = qKey(fakeQ);
+      const ov = overrides[k];
+      pool.push(ov !== undefined
+        ? Object.assign({}, fakeQ, { answer: ov, _overridden: true })
+        : fakeQ);
+    });
+  });
+  if (!pool.length) { alert('出題できる問題がありません'); return; }
+  pool = shuffle(pool);
+  state.questions = pool;
+  state.currentIndex = 0;
+  state.answers = new Array(pool.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  showScreen('quiz'); renderQuestion();
+}
+
+function showFrequentQuestions() {
+  showScreen('frequent');
+  if (!state.allExams.length) {
+    $('frequent-list').innerHTML = '<div class="stats-empty">データを読み込んでください</div>';
+    return;
+  }
+  const threshold = parseInt($('freq-threshold').value);
+  renderFrequentList(getFrequentQuestions(threshold));
 }
 
 // ===== GitHub API 連携 =====
@@ -910,9 +1200,29 @@ $('btn-clear-overrides').addEventListener('click', () => {
   }
 });
 
+// 繰り返し間違いクイズ
+$('btn-repeat-wrong').addEventListener('click', startRepeatWrongQuiz);
+
+// 頻出問題
+$('btn-frequent').addEventListener('click', showFrequentQuestions);
+$('btn-back-from-frequent').addEventListener('click', () => showScreen('setup'));
+$('btn-start-frequent-all').addEventListener('click', () => {
+  const threshold = parseInt($('freq-threshold').value);
+  const freqList = getFrequentQuestions(threshold);
+  if (!freqList.length) { alert('頻出問題がありません'); return; }
+  startFrequentQuiz(freqList.map(f => f.number));
+});
+$('freq-threshold').addEventListener('change', () => {
+  const threshold = parseInt($('freq-threshold').value);
+  renderFrequentList(getFrequentQuestions(threshold));
+});
+
 // 分析画面
 $('btn-stats').addEventListener('click', showStats);
 $('btn-back-from-stats').addEventListener('click', () => showScreen('setup'));
+$('filter-date-from').addEventListener('change', updateDateFilterCount);
+$('filter-date-to').addEventListener('change', updateDateFilterCount);
+$('btn-delete-by-date').addEventListener('click', deleteHistoryByDateRange);
 $('btn-clear-history').addEventListener('click', () => {
   if (confirm('回答履歴を全て削除しますか？（解答修正は残ります）')) {
     localStorage.removeItem(LS.HISTORY);

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>土木2級1次 過去問クイズ</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -60,8 +60,12 @@
       <div class="start-area">
         <div id="selected-count" class="selected-info">年度を選択してください</div>
         <button id="btn-start" class="btn-primary" disabled>クイズ開始</button>
-        <button id="btn-stats" class="btn-outline" style="margin-top:10px;width:100%">📊 学習分析を見る</button>
-        <button id="btn-correction-list" class="btn-outline" style="margin-top:8px;width:100%">📝 解答一括修正</button>
+        <div class="quick-actions">
+          <button id="btn-repeat-wrong" class="btn-quick">🔁 繰り返し間違えた問題<span id="repeat-wrong-badge" class="badge" style="display:none"></span></button>
+          <button id="btn-frequent" class="btn-quick">🔥 頻出問題</button>
+          <button id="btn-stats" class="btn-quick">📊 学習分析</button>
+          <button id="btn-correction-list" class="btn-quick">📝 解答修正</button>
+        </div>
       </div>
     </div>
   </div>
@@ -82,8 +86,6 @@
     </header>
 
     <main class="quiz-main">
-
-      <!-- メタ情報（sticky） -->
       <div class="question-meta" id="question-meta">
         <span class="tag tag-year" id="q-year-tag"></span>
         <span class="tag tag-cat" id="q-cat-tag"></span>
@@ -91,8 +93,6 @@
       </div>
 
       <div class="question-card" id="question-card">
-
-        <!-- 問題画像 -->
         <div class="question-image-wrap" id="question-image-wrap">
           <img id="question-img" src="" alt="問題" class="question-img">
           <div id="img-loading" class="img-loading">📄 画像読込中...</div>
@@ -102,11 +102,9 @@
           </div>
         </div>
 
-        <!-- 解答後フィードバック -->
         <div class="feedback-area" id="feedback-area" style="display:none">
           <div class="feedback-result" id="feedback-result"></div>
           <div class="answer-page-info" id="answer-page-info"></div>
-          <!-- 解答修正 -->
           <div id="answer-correction" class="answer-correction" style="display:none">
             <span class="correction-label">✏️ 正解を変更:</span>
             <button class="correction-btn" data-num="1">1</button>
@@ -117,19 +115,15 @@
           <button id="btn-correction-toggle" class="btn-correction-toggle">解答が間違ってる場合はここ</button>
           <div class="textbook-refs" id="textbook-refs"></div>
         </div>
-
       </div>
     </main>
 
-    <!-- 答えボタン＋ナビを常時フッターに固定 -->
     <footer class="quiz-footer">
-      <!-- 解答後フィードバックバー -->
       <div class="footer-feedback" id="footer-feedback" style="display:none">
         <span id="footer-feedback-result"></span>
         <span id="footer-feedback-ref"></span>
         <button id="btn-footer-correction" class="btn-footer-correction" title="解答修正">✏️</button>
       </div>
-      <!-- 解答修正パネル（フッター内） -->
       <div id="footer-correction-panel" class="footer-correction-panel" style="display:none">
         <span class="correction-label">✏️ 正解を変更:</span>
         <button class="correction-btn" data-num="1">1</button>
@@ -137,7 +131,6 @@
         <button class="correction-btn" data-num="3">3</button>
         <button class="correction-btn" data-num="4">4</button>
       </div>
-
       <div class="footer-top">
         <span class="answer-label" id="answer-label-text">答えを選択 →</span>
         <div class="options-container" id="options-container">
@@ -166,10 +159,8 @@
           <div id="result-pct" class="result-pct"></div>
         </div>
       </div>
-
       <div class="result-breakdown" id="result-breakdown"></div>
       <div class="result-wrong-list" id="result-wrong-list"></div>
-
       <div class="result-actions">
         <button id="btn-retry-wrong" class="btn-outline">間違えた問題を再挑戦</button>
         <button id="btn-retry-all" class="btn-outline">もう一度</button>
@@ -185,7 +176,6 @@
         <button id="btn-back-from-correction" class="btn-icon">←</button>
         <h1 class="app-title" style="margin:0;font-size:20px">📝 解答一括修正</h1>
       </div>
-
       <section class="setup-section">
         <h2>年度を選択</h2>
         <select id="correction-exam-select" class="correction-exam-select">
@@ -193,9 +183,7 @@
         </select>
         <div id="correction-override-count" style="font-size:13px;color:var(--text-muted);margin-top:8px"></div>
       </section>
-
       <div id="correction-list"></div>
-
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;padding-bottom:40px">
         <div class="gh-token-row">
           <span id="gh-token-status" class="gh-token-status">🔑 GitHubトークン: 未設定</span>
@@ -216,17 +204,38 @@
       </div>
 
       <section class="setup-section">
-        <h2>全体サマリー</h2>
+        <h2>🗓 日時を指定して削除</h2>
+        <div class="date-filter-row">
+          <input type="date" id="filter-date-from" class="date-input">
+          <span class="date-sep">〜</span>
+          <input type="date" id="filter-date-to" class="date-input">
+          <button id="btn-delete-by-date" class="btn-danger-sm">🗑 削除</button>
+        </div>
+        <div id="date-filter-count" class="date-filter-count"></div>
+      </section>
+
+      <section class="setup-section">
+        <h2>📈 30日間の学習推移</h2>
+        <div id="stats-daily-chart"></div>
+      </section>
+
+      <section class="setup-section">
+        <h2>📋 全体サマリー</h2>
         <div id="stats-summary"></div>
       </section>
 
       <section class="setup-section">
-        <h2>年度・期別</h2>
+        <h2>⚠️ ケアレスミス <span class="section-hint">（一度正解→最近間違えた問題）</span></h2>
+        <div id="stats-careless"></div>
+      </section>
+
+      <section class="setup-section">
+        <h2>📅 年度・期別</h2>
         <div id="stats-by-exam"></div>
       </section>
 
       <section class="setup-section">
-        <h2>カテゴリ別（正答率低い順）</h2>
+        <h2>📂 カテゴリ別（正答率低い順）</h2>
         <div id="stats-by-cat"></div>
       </section>
 
@@ -236,8 +245,36 @@
       </section>
 
       <div style="text-align:center;margin-top:8px;padding-bottom:40px">
-        <button id="btn-clear-history" class="btn-outline" style="color:var(--danger);border-color:var(--danger)">🗑 履歴をリセット</button>
+        <button id="btn-clear-history" class="btn-outline" style="color:var(--danger);border-color:var(--danger)">🗑 履歴を全てリセット</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ========== 頻出問題画面 ========== -->
+  <div id="screen-frequent" class="screen">
+    <div class="setup-container">
+      <div class="stats-title-row">
+        <button id="btn-back-from-frequent" class="btn-icon">←</button>
+        <h1 class="app-title" style="margin:0;font-size:20px">🔥 頻出問題</h1>
+      </div>
+
+      <section class="setup-section">
+        <h2>複数年度で出題された問題</h2>
+        <p class="hint-text">3年度以上で繰り返し出題されている重要問題です。根拠として各年度のページを確認できます。</p>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <button id="btn-start-frequent-all" class="btn-primary" style="flex:1;min-width:160px">🔥 頻出問題を全て解く</button>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <span style="font-size:13px;color:var(--text-muted)">最低出題数:</span>
+            <select id="freq-threshold" class="correction-exam-select" style="width:70px;padding:6px 8px">
+              <option value="3">3回</option>
+              <option value="4">4回</option>
+              <option value="5" selected>5回</option>
+              <option value="7">7回</option>
+            </select>
+          </div>
+        </div>
+        <div id="frequent-list"></div>
+      </section>
     </div>
   </div>
 
@@ -250,25 +287,25 @@
         <button id="gh-token-modal-close" class="page-modal-close-btn">✕</button>
       </div>
       <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
-        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 12px;font-size:12px;color:#92400e;margin-bottom:-4px">
+        <div style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);border-radius:8px;padding:10px 12px;font-size:12px;color:#fcd34d">
           ⚠️ 403エラーが出た場合は古いトークンを削除して以下の手順で再作成してください
         </div>
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:13px;line-height:2">
+        <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:12px;font-size:13px;line-height:2;color:var(--text)">
           <b>① 下のリンクを開く（クラシック版）</b><br>
           <a href="https://github.com/settings/tokens/new" target="_blank"
-             style="color:var(--primary);word-break:break-all">
+             style="color:var(--accent);word-break:break-all">
             https://github.com/settings/tokens/new
           </a><br>
           <b>② Note</b>（名前）に何でも入力<br>
-          <b>③ Expiration</b> → <code>No expiration</code><br>
+          <b>③ Expiration</b> → <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px">No expiration</code><br>
           <b>④ Select scopes の「repo」</b>にチェック ✓<br>
-          <span style="padding-left:1em;font-size:12px;color:#555">※「repo」1箇所だけ。その下の細かい項目は不要</span><br>
+          <span style="padding-left:1em;font-size:12px;color:var(--text-muted)">※「repo」1箇所だけ。細かい項目は不要</span><br>
           <b>⑤ 一番下の「Generate token」</b>をクリック<br>
-          <b>⑥ 表示された <code>ghp_...</code> をコピー</b>してここに貼る
+          <b>⑥ 表示された <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px">ghp_...</code> をコピー</b>してここに貼る
         </div>
         <input id="gh-token-input" type="password"
                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx を貼り付け"
-               style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px">
+               style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:rgba(255,255,255,.06);color:var(--text)">
         <button id="gh-token-save" class="btn-primary">保存</button>
         <button id="gh-token-delete" class="btn-outline" style="color:var(--danger);border-color:var(--danger);font-size:13px">設定済みトークンを削除</button>
       </div>
@@ -287,6 +324,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>
