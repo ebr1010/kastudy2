@@ -1292,7 +1292,7 @@ function renderTopPassScore() {
   const hist = applyHistOverrides(getHistory());
   if (hist.length < 10) { el.style.display = 'none'; return; }
 
-  const recent = hist.slice(-100);
+  const recent = hist.slice(-1000);
   const pct = Math.round(recent.filter(h => h.isCorrect).length / recent.length * 100);
   const cls = pct >= 70 ? 'ok' : pct >= 60 ? 'warn' : 'ng';
   const label = pct >= 70 ? '✅ 合格圏内' : pct >= 60 ? '⚠️ ボーダー' : '❌ 要強化';
@@ -1328,7 +1328,7 @@ function renderPassPrediction(hist) {
     el.innerHTML = '<div class="stats-empty">10問以上の回答履歴が必要です</div>';
     return;
   }
-  const recent = hist.slice(-100);
+  const recent = hist.slice(-1000);
   const pct = Math.round(recent.filter(h => h.isCorrect).length / recent.length * 100);
   const cls = pct >= 70 ? 'ok' : pct >= 60 ? 'warn' : 'ng';
   const label = pct >= 70 ? '✅ 合格圏内' : pct >= 60 ? '⚠️ ボーダーライン' : '❌ 要強化';
