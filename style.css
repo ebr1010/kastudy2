@@ -1517,3 +1517,30 @@ input[type=file]::file-selector-button:hover {
   color: var(--text-main, #e0e0e0);
   white-space: pre-wrap;
 }
+
+/* ===== 解説音声プレイヤー ===== */
+.audio-player-area {
+  margin-top: 14px;
+  background: var(--card-bg, #1e2a3a);
+  border: 1px solid rgba(59,130,246,.5);
+  border-left: 4px solid var(--primary, #3b82f6);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.audio-player-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary, #3b82f6);
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+.explanation-audio {
+  width: 100%;
+  border-radius: 6px;
+  accent-color: var(--primary, #3b82f6);
+}
+.audio-player-hint {
+  font-size: 11px;
+  color: var(--text-muted, #888);
+  margin-top: 6px;
+}

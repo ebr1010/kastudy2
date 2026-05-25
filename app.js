@@ -588,6 +588,19 @@ function showFeedback(q, chosen) {
     }
   }
 
+  // 解説音声
+  const audioArea = $('audio-player-area');
+  const audioEl = $('explanation-audio');
+  if (audioArea && audioEl) {
+    const yearCode = q._meta.year.replace('令和', 'R');
+    const audioSrc = 'audio/' + yearCode + q._meta.period + '.mp3';
+    if (audioEl.getAttribute('data-src') !== audioSrc) {
+      audioEl.src = audioSrc;
+      audioEl.setAttribute('data-src', audioSrc);
+    }
+    audioArea.style.display = '';
+  }
+
   // ユーザー参照追加エリアを更新
   renderUserRefsDisplay(k);
   // 参照追加UIは回答後に表示
