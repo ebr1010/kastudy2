@@ -576,15 +576,39 @@ function showFeedback(q, chosen) {
     refs.appendChild(btn);
   });
 
-  // 解説
-  const expArea = $('explanation-area');
-  const expText = $('explanation-text');
-  if (expArea && expText) {
-    if (q.explanation && chosen !== null) {
-      expText.textContent = q.explanation;
-      expArea.style.display = '';
+  // 選択肢ごとの解説（NotebookLM形式）
+  const ceArea = $('choice-explanations-area');
+  if (ceArea) {
+    if (chosen !== null && (q.choice_explanations || q.explanation)) {
+      ceArea.innerHTML = '';
+      ceArea.style.display = '';
+      for (let i = 0; i < 4; i++) {
+        const num = i + 1;
+        const isCorrect = num === q.answer;
+        const isSelected = num === chosen || chosen === 0;
+        const expTxt = q.choice_explanations
+          ? (q.choice_explanations[i] || '')
+          : (isCorrect ? (q.explanation || '') : '');
+
+        const card = document.createElement('div');
+        let cls = 'choice-exp-card';
+        if (isCorrect) cls += ' ce-correct';
+        else if (num === (chosen === 0 ? -1 : chosen)) cls += ' ce-selected-wrong';
+        card.className = cls;
+
+        const badge = isCorrect
+          ? '<span class="ce-badge ce-badge-ok">✓ 正解</span>'
+          : '<span class="ce-badge ce-badge-ng">✗ 不正解</span>';
+        const yourMark = (num === chosen && chosen !== 0)
+          ? '<span class="ce-yours">あなたの回答</span>' : '';
+
+        card.innerHTML =
+          '<div class="ce-header"><span class="ce-num">選択肢 ' + num + '</span>' + badge + yourMark + '</div>' +
+          (expTxt ? '<div class="ce-text">' + expTxt + '</div>' : '');
+        ceArea.appendChild(card);
+      }
     } else {
-      expArea.style.display = 'none';
+      ceArea.style.display = 'none';
     }
   }
 
