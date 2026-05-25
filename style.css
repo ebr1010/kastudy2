@@ -394,12 +394,12 @@ body {
 
 .quiz-main {
   flex: 1; overflow-y: auto; overflow-x: hidden;
-  max-width: 800px; width: 100%; margin: 0 auto; padding: 8px;
+  max-width: 800px; width: 100%; margin: 0 auto; padding: 0 8px 8px;
 }
 
-/* メタタグ (sticky) */
+/* メタタグ (flex固定行) */
 .question-meta {
-  position: sticky; top: 0; z-index: 50;
+  flex-shrink: 0;
   background: rgba(3,13,24,.94);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
