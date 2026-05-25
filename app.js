@@ -485,6 +485,9 @@ function showFeedback(q, chosen) {
   if (chosen === null) {
     fbRes.textContent = '⏭ スキップ';
     fb.className = 'footer-feedback skip';
+  } else if (chosen === 0) {
+    fbRes.textContent = '⏰ 時間切れ  正答: ' + correct;
+    fb.className = 'footer-feedback ng';
   } else if (chosen === correct) {
     fbRes.textContent = '✅ 正解！';
     fb.className = 'footer-feedback ok';
@@ -518,6 +521,8 @@ function showFeedback(q, chosen) {
   const res = $('feedback-result');
   if (chosen === null) {
     res.textContent = '⏭ スキップ'; res.className = 'feedback-result skip';
+  } else if (chosen === 0) {
+    res.textContent = '⏰ 時間切れ  正答: ' + correct; res.className = 'feedback-result ng';
   } else if (chosen === correct) {
     res.textContent = '✅ 正解！'; res.className = 'feedback-result ok';
   } else {
@@ -1758,6 +1763,23 @@ function skipQuestion() {
   updateNextBtn();
 }
 
+// chosen=0 をタイムアウト専用センチネルとして使用（1-4は正規の選択肢）
+function timeoutQuestion() {
+  const idx = state.currentIndex;
+  if (state.answers[idx] !== null) return;
+  const q = state.questions[idx];
+  state.answers[idx] = { chosen: 0, correct: q.answer, isCorrect: false };
+  state.wrongQuestions.push(Object.assign({}, q, { chosen: 0 }));
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    applyStyle(btn, parseInt(btn.dataset.num), 0, q.answer); // 正解だけreveal表示
+    btn.disabled = true;
+  });
+  addHistory(q, 0, false); // SRS更新あり・間違い扱い
+  showFeedback(q, 0);
+  $('feedback-area').style.display = '';
+  updateNextBtn();
+}
+
 // ===== 結果 =====
 function showResult() {
   stopMockTimer();
@@ -1880,7 +1902,7 @@ function startTimeAttack() {
     updateTimeAttackDisplay();
     if (state.timeAttackRemaining <= 0) {
       stopTimeAttack();
-      skipQuestion(); // 時間切れ → 自動スキップ（正解を表示）
+      timeoutQuestion(); // 時間切れ → 間違い扱いで正解を表示
     }
   }, 1000);
 }
