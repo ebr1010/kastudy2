@@ -131,14 +131,24 @@ const state = {
 
 const $ = id => document.getElementById(id);
 
-// AI解説内の専門用語をGoogle検索リンクに変換
+// 一般語ブラックリスト（リンク対象外）
+const KW_BLACKLIST = new Set([
+  '正解','不正解','選択肢','記述','定義','条件','数値','用語','混同','注意',
+  '微妙','目的','方法','関係','問題','設計','工事','材料','作業','基準',
+  '管理','特徴','適用','確認','実施','施工','計算','理由','内容','種類',
+  '場合','以上','以下','全て','それ','これ','ため','こと','もの','など',
+  '区別','違い','逆転','逆に','区分','対象','必要','重要','注目','参照',
+  '引用','テキスト','パターン','混同注意','混同しやすい','混ざりやすい',
+]);
+
+// AI解説内の専門技術用語のみGoogle検索リンク化（一般語は除外）
 function linkKeywords(text) {
-  // エスケープ
   const esc = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  // 土木・建設の専門用語パターン（カタカナ3字以上 or 漢字2字以上の名詞句）
+  // カタカナ5文字以上 or 漢字4文字以上の複合語のみ対象
   return esc.replace(
-    /([ァ-ヶー]{3,}|[一-龯々]{2,}(?:[一-龯々ァ-ヶーa-zA-Z0-9]{0,8})?)/g,
+    /([ァ-ヶー]{5,}|[一-龯々]{4,}(?:[一-龯々ァ-ヶーa-zA-Z0-9]*)?)/g,
     (m) => {
+      if (KW_BLACKLIST.has(m)) return m;
       const url = 'https://www.google.com/search?q=' + encodeURIComponent(m + ' 土木');
       return '<a href="' + url + '" target="_blank" rel="noopener" class="kw-link">' + m + '</a>';
     }
