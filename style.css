@@ -1034,6 +1034,56 @@ body {
 .mock-result-badge.pass { background: var(--success-light); color: var(--success); border: 2px solid rgba(16,185,129,.5); box-shadow: 0 0 24px var(--success-glow); }
 .mock-result-badge.fail { background: var(--danger-light); color: var(--danger); border: 2px solid rgba(248,113,113,.5); }
 
+/* ===== トップ合格予測バナー ===== */
+.top-pass-score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  flex-wrap: wrap;
+}
+.top-pass-score.tps-ok  { border-color: rgba(16,185,129,.35); background: rgba(16,185,129,.07); }
+.top-pass-score.tps-warn{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.07); }
+.top-pass-score.tps-ng  { border-color: rgba(239,68,68,.35);  background: rgba(239,68,68,.07); }
+
+.tps-left { display: flex; align-items: baseline; gap: 8px; flex-shrink: 0; }
+.tps-pct  { font-size: 30px; font-weight: 900; font-family: 'Orbitron', sans-serif; line-height: 1; }
+.tps-pct.ok   { color: var(--success); text-shadow: 0 0 14px var(--success-glow); }
+.tps-pct.warn { color: var(--warning); text-shadow: 0 0 14px rgba(245,158,11,.5); }
+.tps-pct.ng   { color: var(--danger);  text-shadow: 0 0 14px rgba(248,113,113,.5); }
+.tps-label { font-size: 12px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+
+.tps-center { flex: 1; min-width: 100px; display: flex; flex-direction: column; gap: 4px; }
+.tps-gauge-wrap { position: relative; height: 10px; background: rgba(255,255,255,.1); border-radius: 6px; overflow: hidden; }
+.tps-gauge-fill { height: 100%; border-radius: 6px; transition: width 1s ease; }
+.tps-gauge-fill.ok   { background: linear-gradient(90deg, #10b981, #34d399); box-shadow: 0 0 8px var(--success-glow); }
+.tps-gauge-fill.warn { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.tps-gauge-fill.ng   { background: linear-gradient(90deg, #ef4444, #f87171); }
+.tps-gauge-line { position: absolute; left: 60%; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,.4); }
+.tps-sub { font-size: 10px; color: var(--text-muted); }
+
+.tps-right { font-size: 12px; font-weight: 600; color: var(--text-muted); flex-shrink: 0; white-space: nowrap; }
+
+.tps-detail-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.06);
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s;
+}
+.tps-detail-btn:hover { background: rgba(255,255,255,.12); color: var(--text); }
+
 /* ===== 合格予測 ===== */
 .pass-prediction-wrap { display: flex; flex-direction: column; gap: 12px; }
 .pass-gauge-wrap { position: relative; height: 20px; background: rgba(255,255,255,.08); border-radius: 10px; overflow: hidden; }

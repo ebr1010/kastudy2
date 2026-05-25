@@ -163,6 +163,7 @@ async function initApp() {
     updateRepeatWrongBadge();
     updateStreakBadge();
     updateWeakSub();
+    renderTopPassScore();
     computeFrequentNums();
   } catch (e) {
     $('exam-list').innerHTML = '<div style="color:red">読み込み失敗: ' + e.message + '</div>';
@@ -1284,6 +1285,41 @@ function renderStudyTips(hist) {
   ).join('');
 }
 
+// ===== トップページ用・合格予測スコアバナー =====
+function renderTopPassScore() {
+  const el = $('top-pass-score');
+  if (!el) return;
+  const hist = applyHistOverrides(getHistory());
+  if (hist.length < 10) { el.style.display = 'none'; return; }
+
+  const recent = hist.slice(-100);
+  const pct = Math.round(recent.filter(h => h.isCorrect).length / recent.length * 100);
+  const cls = pct >= 70 ? 'ok' : pct >= 60 ? 'warn' : 'ng';
+  const label = pct >= 70 ? '✅ 合格圏内' : pct >= 60 ? '⚠️ ボーダー' : '❌ 要強化';
+  const streak = getStreak();
+  const today = new Date().toISOString().slice(0, 10);
+  const streakStr = streak.count > 0
+    ? (streak.lastDate === today && streak.todayDone ? '✅' : '🔥') + ' ' + streak.count + '日連続'
+    : '';
+
+  el.style.display = '';
+  el.className = 'top-pass-score tps-' + cls;
+  el.innerHTML =
+    '<div class="tps-left">' +
+      '<span class="tps-pct ' + cls + '">' + pct + '%</span>' +
+      '<span class="tps-label">' + label + '</span>' +
+    '</div>' +
+    '<div class="tps-center">' +
+      '<div class="tps-gauge-wrap">' +
+        '<div class="tps-gauge-fill ' + cls + '" style="width:' + Math.min(pct, 100) + '%"></div>' +
+        '<div class="tps-gauge-line"></div>' +
+      '</div>' +
+      '<div class="tps-sub">直近 ' + recent.length + '問の正答率</div>' +
+    '</div>' +
+    (streakStr ? '<div class="tps-right">' + streakStr + '</div>' : '') +
+    '<button class="tps-detail-btn" onclick="showStats()">詳細 →</button>';
+}
+
 // ===== 合格予測 =====
 function renderPassPrediction(hist) {
   const el = $('stats-pass-prediction');
@@ -2075,7 +2111,7 @@ $('btn-retry-wrong').addEventListener('click', () => {
   showScreen('quiz'); renderQuestion();
 });
 $('btn-retry-all').addEventListener('click', startQuiz);
-$('btn-to-setup').addEventListener('click', () => { resetMockMode(); showScreen('setup'); });
+$('btn-to-setup').addEventListener('click', () => { resetMockMode(); showScreen('setup'); renderTopPassScore(); });
 
 $('page-modal-backdrop').addEventListener('click', closePageModal);
 $('page-modal-close').addEventListener('click', closePageModal);
