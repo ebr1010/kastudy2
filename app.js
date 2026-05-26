@@ -42,6 +42,40 @@ const LS_USER_REFS = 'kastudy_user_refs';
 const LS_SRS       = 'kastudy_srs';
 const LS_STREAK    = 'kastudy_streak';
 const LS_EXAM_DATE = 'kastudy_exam_date';
+const LS_SESSION   = 'kastudy_session';   // クイズ途中再開用
+
+// ===== セッション保存・復元 =====
+function saveSession() {
+  if (!state.questions.length) return;
+  const session = {
+    questions: state.questions.map(q => ({ _meta: q._meta, number: q.number, id: q.id })),
+    questionIds: state.questions.map(q => q._meta?.id + '_' + q.number),
+    answers: state.answers,
+    currentIndex: state.currentIndex,
+    isMockMode: state.isMockMode,
+    savedAt: Date.now(),
+  };
+  localStorage.setItem(LS_SESSION, JSON.stringify(session));
+}
+
+function clearSession() {
+  localStorage.removeItem(LS_SESSION);
+}
+
+function loadSession() {
+  try { return JSON.parse(localStorage.getItem(LS_SESSION) || 'null'); } catch { return null; }
+}
+
+function renderResumeBtn() {
+  const sess = loadSession();
+  const btn = $('btn-resume');
+  if (!btn) return;
+  if (!sess || !sess.questions?.length) { btn.style.display = 'none'; return; }
+  const ago = Math.round((Date.now() - sess.savedAt) / 60000);
+  const agoStr = ago < 60 ? ago + '分前' : Math.round(ago/60) + '時間前';
+  btn.textContent = '▶ 続きから（' + agoStr + ' / Q' + (sess.currentIndex + 1) + '/' + sess.questions.length + '）';
+  btn.style.display = '';
+}
 const SRS_INTERVALS = [1, 3, 7, 14, 30]; // level 0-4
 
 // ===== SRS（間隔反復）=====
@@ -133,17 +167,22 @@ const $ = id => document.getElementById(id);
 
 // 一般語ブラックリスト（リンク対象外）
 const KW_BLACKLIST = new Set([
-  // 正誤・解説の定型語
+  // 正誤・解説定型語
   '正解','不正解','選択肢','記述','定義','条件','数値','用語','混同','注意',
   '目的','方法','関係','問題','設計','工事','材料','作業','基準','管理',
   '特徴','適用','確認','実施','施工','計算','理由','内容','種類','対象',
   '以上','以下','場合','全体','自体','必要','重要','参照','引用','変化',
   '区別','違い','逆転','区分','注目','テキスト','パターン',
-  // 2文字一般語
-  '正しい','誤り','誤っ','なぜ','ため','こと','もの','など','それ','これ',
-  '関係','場合','以上','以下','全て','確認','実施','適用','管理','特徴',
-  '内容','種類','理由','計算','設計','施工','工事','材料','作業','基準',
-  '対象','必要','重要','参照','区別','区分','変化','自体','全体',
+  // 2文字汎用語（図・説明系）
+  '下図','上図','図中','記号','模式','式中','次の','以下','以上',
+  '構成','関連','基本','標準','一般','通常','特定','共通','各種',
+  '全て','全部','全長','全幅','全高','全体','自体','場合','状態',
+  '種類','内容','理由','計算','設計','確認','実施','適用','管理',
+  '特徴','説明','表現','意味','定義','記述','指定','規定','規格',
+  '配置','位置','方向','方法','手法','手順','工程','作業','操作',
+  '変化','変動','変更','増加','減少','増大','低下','上昇','低減',
+  '関係','影響','効果','結果','原因','要因','要素','要件','条件',
+  '比較','確認','検討','評価','判断','選択','決定','設定','測定',
 ]);
 
 // 解説テキスト内の専門用語・固有名詞をGoogle検索リンク化
@@ -196,6 +235,7 @@ async function initApp() {
     updateWeakSub();
     renderTopPassScore();
     computeFrequentNums();
+    renderResumeBtn();
   } catch (e) {
     $('exam-list').innerHTML = '<div style="color:red">読み込み失敗: ' + e.message + '</div>';
   }
@@ -264,6 +304,38 @@ function updateStartButton() {
   }
 }
 
+// ===== 続きから再開 =====
+function resumeQuiz() {
+  const sess = loadSession();
+  if (!sess) return;
+  const all = [...state.allExams, ...state.extraExams];
+  const overrides = getOverrides();
+  // セッションのquestionIdを使って問題データを復元
+  const restored = [];
+  sess.questionIds.forEach(qid => {
+    const [examId, numStr] = qid.split('_');
+    const num = parseInt(numStr);
+    const exam = all.find(e => e.meta.id === examId);
+    if (!exam) return;
+    const q = exam.questions.find(q => q.number === num);
+    if (!q) return;
+    let r = Object.assign({}, q, { _meta: exam.meta });
+    const k = qKey(r);
+    if (overrides[k] !== undefined) r = Object.assign({}, r, { answer: overrides[k], _overridden: true });
+    restored.push(r);
+  });
+  if (!restored.length) { clearSession(); renderResumeBtn(); return; }
+  state.questions = restored;
+  state.answers = sess.answers;
+  state.currentIndex = sess.currentIndex;
+  state.score = state.answers.filter(a => a?.isCorrect).length;
+  state.wrongQuestions = [];
+  state.isMockMode = sess.isMockMode || false;
+  state.isFlashcardMode = false;
+  showScreen('quiz');
+  renderQuestion();
+}
+
 // ===== クイズ開始 =====
 function startQuiz() {
   const all = [...state.allExams, ...state.extraExams];
@@ -271,9 +343,16 @@ function startQuiz() {
   state.settings.order = $('order-select').value;
   state.settings.count = $('count-select').value;
 
+  // 問題番号範囲
+  const rangeFrom = parseInt($('range-from')?.value) || 0;
+  const rangeTo   = parseInt($('range-to')?.value)   || 9999;
+
   let pool = [];
   all.filter(e => state.selectedIds.has(e.meta.id)).forEach(exam => {
-    const qs = onlyAns ? exam.questions.filter(q => q.answer) : exam.questions;
+    let qs = onlyAns ? exam.questions.filter(q => q.answer) : exam.questions;
+    if (rangeFrom > 0 || rangeTo < 9999) {
+      qs = qs.filter(q => q.number >= rangeFrom && q.number <= rangeTo);
+    }
     qs.forEach(q => pool.push(Object.assign({}, q, { _meta: exam.meta })));
   });
 
@@ -467,6 +546,7 @@ function onAnswer(chosen) {
   $('score-display').textContent = state.score;
   $('score-denom').textContent = '/' + (state.currentIndex + 1);
   updateNextBtn();
+  saveSession();  // 回答するたびに状態保存
 }
 
 // ===== ページビューアーモーダル =====
@@ -1919,6 +1999,7 @@ function timeoutQuestion() {
 function showResult() {
   stopMockTimer();
   stopTimeAttack();
+  clearSession();   // クイズ完了でセッション削除
   showScreen('result');
   const total = state.questions.length;
   const answered = state.answers.filter(Boolean);
