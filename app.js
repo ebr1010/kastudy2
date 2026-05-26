@@ -548,7 +548,7 @@ function showFeedback(q, chosen) {
 
   if (ap) {
     fbRef.appendChild(document.createTextNode('　'));
-    fbRef.appendChild(makeRefBtn('解答 p.' + ap, [ansImgSrc(ap)], '解答ページ p.' + ap));
+    fbRef.appendChild(makeRefBtn('解答 p.' + ap, [ansImgSrc(ap)], 'No.' + q.number + '　解答 p.' + ap));
   }
   if (q.textbook_refs && q.textbook_refs.length) {
     const r = q.textbook_refs[0];
@@ -587,7 +587,7 @@ function showFeedback(q, chosen) {
   api.innerHTML = '📄 過去問「' + q._meta.source_pdf + '」No.' + q.number + '　問題 p.' + q.page;
   if (ap) {
     api.appendChild(document.createTextNode('　'));
-    api.appendChild(makeRefBtn('✅ 解答 p.' + ap, [ansImgSrc(ap)], '解答ページ p.' + ap));
+    api.appendChild(makeRefBtn('✅ 解答 p.' + ap, [ansImgSrc(ap)], 'No.' + q.number + '　解答 p.' + ap));
   }
 
   // ===== AI解説（4択カード） =====
