@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 
@@ -204,6 +204,10 @@
               <div class="ai-term-list-label">🔍 用語一覧</div>
               <div id="ai-term-links" class="ai-term-links"></div>
             </div>
+            <!-- 解説通報 -->
+            <div class="ai-report-row">
+              <button id="btn-report-explanation" class="btn-report-explanation" style="display:none">⚑ 解説がおかしい</button>
+            </div>
           </div>
 
           <!-- テキスト参照 -->
@@ -273,6 +277,7 @@
         <button id="btn-prev" class="btn-outline" disabled>◀</button>
         <button id="btn-skip" class="btn-outline">スキップ</button>
         <button id="btn-next" class="btn-primary" disabled>次へ ▶</button>
+        <button id="btn-pause-quiz" class="btn-pause-quiz" title="中断して保存">⏸</button>
       </div>
     </footer>
   </div>
@@ -513,6 +518,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=23"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

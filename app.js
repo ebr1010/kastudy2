@@ -43,6 +43,38 @@ const LS_SRS       = 'kastudy_srs';
 const LS_STREAK    = 'kastudy_streak';
 const LS_EXAM_DATE = 'kastudy_exam_date';
 const LS_SESSION   = 'kastudy_session';   // クイズ途中再開用
+const LS_REPORTS   = 'kastudy_reports';   // 解説通報履歴
+
+// ===== 解説通報 =====
+function loadReports() {
+  try { return JSON.parse(localStorage.getItem(LS_REPORTS) || '[]'); } catch { return []; }
+}
+function saveReportEntry(q) {
+  const reports = loadReports();
+  const key = (q._meta?.id || '') + '_' + q.number;
+  if (!reports.find(r => r.key === key)) {
+    reports.unshift({
+      key,
+      exam: q._meta?.id || '',
+      number: q.number,
+      category: q.category || '',
+      reportedAt: Date.now()
+    });
+    localStorage.setItem(LS_REPORTS, JSON.stringify(reports));
+  }
+}
+function reportExplanation(q) {
+  saveReportEntry(q);
+  const btn = $('btn-report-explanation');
+  if (btn) { btn.textContent = '⚑ 通報済み'; btn.disabled = true; btn.classList.add('reported'); }
+}
+
+// ===== 中断保存 =====
+function pauseQuiz() {
+  saveSession();
+  showScreen('setup');
+  renderResumeBtn();
+}
 
 // ===== セッション保存・復元 =====
 function saveSession() {
@@ -444,6 +476,10 @@ function renderQuestion() {
   $('btn-prev').disabled = idx === 0;
   updateNextBtn();
 
+  // 中断ボタン
+  const pauseBtn = $('btn-pause-quiz');
+  if (pauseBtn) { pauseBtn.onclick = pauseQuiz; }
+
   // カードアニメーション
   const card = $('question-card');
   card.style.animation = 'none';
@@ -702,12 +738,30 @@ function showFeedback(q, chosen) {
 
         const card = document.createElement('div');
         card.className = cls;
+        let bodyHtml = '';
+        if (expTxt === '読取失敗') {
+          bodyHtml = '<div class="ce-text ce-fail">📷 読取失敗 — 画像でご確認ください</div>';
+        } else if (expTxt) {
+          bodyHtml = '<div class="ce-text">' + linkKeywords(expTxt) + '</div>';
+        }
         card.innerHTML =
           '<div class="ce-header"><span class="ce-num">選択肢 ' + num + '</span>' + badge + yourMark + '</div>' +
-          (expTxt ? '<div class="ce-text">' + linkKeywords(expTxt) + '</div>' : '');
+          bodyHtml;
         aiCards.appendChild(card);
       }
       srcAI.style.display = '';
+
+      // ===== 解説通報ボタン =====
+      const reportBtn = $('btn-report-explanation');
+      if (reportBtn) {
+        const key = (q._meta?.id || '') + '_' + q.number;
+        const already = loadReports().find(r => r.key === key);
+        reportBtn.textContent = already ? '⚑ 通報済み' : '⚑ 解説がおかしい';
+        reportBtn.disabled = !!already;
+        reportBtn.className = 'btn-report-explanation' + (already ? ' reported' : '');
+        reportBtn.onclick = () => reportExplanation(q);
+        reportBtn.style.display = '';
+      }
 
       // ===== 用語一覧 =====
       const termList  = $('ai-term-list');
@@ -741,6 +795,8 @@ function showFeedback(q, chosen) {
       srcAI.style.display = 'none';
       const termList = $('ai-term-list');
       if (termList) termList.style.display = 'none';
+      const reportBtn = $('btn-report-explanation');
+      if (reportBtn) reportBtn.style.display = 'none';
     }
   }
 

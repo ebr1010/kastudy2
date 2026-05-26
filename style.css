@@ -1733,3 +1733,60 @@ input[type=file]::file-selector-button:hover {
   color: var(--text-muted, #888);
   margin-top: 6px;
 }
+
+/* ===== 中断ボタン ===== */
+.btn-pause-quiz {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--text-muted, #aaa);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  line-height: 1;
+}
+.btn-pause-quiz:hover {
+  background: rgba(255,200,50,0.15);
+  color: #fbbf24;
+  border-color: #fbbf24;
+}
+
+/* ===== 解説通報ボタン ===== */
+.ai-report-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding: 0 2px;
+}
+.btn-report-explanation {
+  background: transparent;
+  border: 1px solid rgba(239,68,68,0.4);
+  color: rgba(239,68,68,0.7);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-report-explanation:hover {
+  background: rgba(239,68,68,0.12);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+.btn-report-explanation.reported {
+  color: var(--text-muted, #888);
+  border-color: rgba(255,255,255,0.12);
+  cursor: default;
+}
+.btn-report-explanation:disabled {
+  opacity: 0.6;
+}
+
+/* ===== 読取失敗バッジ ===== */
+.ce-fail {
+  color: var(--text-muted, #888);
+  font-size: 12px;
+  font-style: italic;
+  padding: 6px 0 2px;
+}
