@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=18">
+  <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 
@@ -175,6 +175,9 @@
           </div>
         </div>
 
+        <!-- 用語検索チップ -->
+        <div class="term-chips-bar" id="term-chips-bar"></div>
+
         <div class="feedback-area" id="feedback-area" style="display:none">
           <div class="feedback-result" id="feedback-result"></div>
           <div class="answer-page-info" id="answer-page-info"></div>
@@ -266,18 +269,53 @@
   <!-- ========== 結果画面 ========== -->
   <div id="screen-result" class="screen">
     <div class="result-container">
-      <div class="result-header">
-        <div class="result-emoji" id="result-emoji">🎉</div>
-        <h2 id="result-title">お疲れ様でした！</h2>
-        <div class="result-score">
-          <span id="result-correct"></span> / <span id="result-total"></span>
-          <div id="result-pct" class="result-pct"></div>
+
+      <!-- バナー -->
+      <div class="result-banner" id="result-banner">よくできました。テスト終了。</div>
+
+      <!-- 円グラフ + 正解/不正解カウント -->
+      <div class="result-score-row">
+        <div class="result-circle-ring" id="result-circle-ring">
+          <div class="result-circle-inner">
+            <div class="result-circle-score" id="result-circle-score"></div>
+            <div class="result-circle-pct"  id="result-circle-pct"></div>
+          </div>
         </div>
-        <!-- 模擬試験合否判定 -->
-        <div id="mock-result-badge" style="display:none" class="mock-result-badge"></div>
+        <div class="result-count-col">
+          <div class="result-count-item">
+            <span class="result-count-label">正解</span>
+            <span class="result-count-val ok" id="result-correct"></span>
+          </div>
+          <div class="result-count-item">
+            <span class="result-count-label">不正解</span>
+            <span class="result-count-val ng" id="result-wrong-count"></span>
+          </div>
+          <div class="result-count-item">
+            <span class="result-count-label">スキップ</span>
+            <span class="result-count-val" id="result-skip-count"></span>
+          </div>
+        </div>
       </div>
-      <div class="result-breakdown" id="result-breakdown"></div>
+
+      <!-- 模擬試験合否判定 -->
+      <div id="mock-result-badge" style="display:none" class="mock-result-badge"></div>
+
+      <!-- トピック + フォローアップ -->
+      <div class="result-topics-grid" id="result-topics-grid" style="display:none">
+        <div class="result-topics-col">
+          <h3 class="result-col-title">取り上げたトピック</h3>
+          <ul class="result-topics-list" id="result-topics-list"></ul>
+        </div>
+        <div class="result-followup-col">
+          <h3 class="result-col-title">学習を継続</h3>
+          <p class="result-followup-hint">間違えたカテゴリで新しいテストを生成</p>
+          <div class="result-followup-btns" id="result-followup-btns"></div>
+        </div>
+      </div>
+
+      <!-- 間違えた問題リスト -->
       <div class="result-wrong-list" id="result-wrong-list"></div>
+
       <div class="result-actions">
         <button id="btn-retry-wrong" class="btn-outline">間違えた問題を再挑戦</button>
         <button id="btn-retry-all" class="btn-outline">もう一度</button>
@@ -499,6 +537,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=17"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>
