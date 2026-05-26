@@ -1635,6 +1635,46 @@ input[type=file]::file-selector-button:hover {
 }
 .kw-link:hover { color: #a5f3fc; text-decoration-style: solid; }
 
+/* ===== 用語一覧パネル ===== */
+.ai-term-list {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(6,182,212,.06);
+  border: 1px solid rgba(6,182,212,.2);
+  border-radius: 12px;
+}
+.ai-term-list-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(6,182,212,.65);
+  margin-bottom: 10px;
+}
+.ai-term-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.term-pill {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: rgba(6,182,212,.10);
+  border: 1px solid rgba(6,182,212,.28);
+  color: #67e8f9;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+  cursor: pointer;
+}
+.term-pill:hover {
+  background: rgba(6,182,212,.22);
+  border-color: rgba(6,182,212,.5);
+  color: #a5f3fc;
+}
+
 /* ===== 解説音声プレイヤー ===== */
 .audio-player-area {
   margin-top: 14px;

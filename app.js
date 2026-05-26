@@ -628,8 +628,39 @@ function showFeedback(q, chosen) {
         aiCards.appendChild(card);
       }
       srcAI.style.display = '';
+
+      // ===== 用語一覧 =====
+      const termList  = $('ai-term-list');
+      const termLinks = $('ai-term-links');
+      if (termList && termLinks) {
+        // 問題文・選択肢テキスト（OCR済み）＋AI解説を全結合
+        const parts = [];
+        if (q.q_text) parts.push(q.q_text);
+        if (Array.isArray(q.choices)) parts.push(...q.choices);
+        parts.push(...(q.choice_explanations || []));
+        const allText = parts.join(' ');
+        const seen = new Set();
+        const terms = [];
+        allText.replace(/([ァ-ヶー]{3,}|[一-龯々]{2,}(?:[一-龯々ァ-ヶーa-zA-Z0-9・%\/]+)?)/g, (m) => {
+          if (!seen.has(m) && !KW_BLACKLIST.has(m) && !/^[ぁ-ん]+$/.test(m)) {
+            seen.add(m);
+            terms.push(m);
+          }
+        });
+        if (terms.length) {
+          termLinks.innerHTML = terms.map(t =>
+            '<a href="https://www.google.com/search?q=' + encodeURIComponent(t + ' 土木施工管理') +
+            '" target="_blank" rel="noopener" class="term-pill">' + t + '</a>'
+          ).join('');
+          termList.style.display = '';
+        } else {
+          termList.style.display = 'none';
+        }
+      }
     } else {
       srcAI.style.display = 'none';
+      const termList = $('ai-term-list');
+      if (termList) termList.style.display = 'none';
     }
   }
 
