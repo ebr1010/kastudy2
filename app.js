@@ -584,7 +584,7 @@ function showFeedback(q, chosen) {
 
   // 解答ページリンク
   const api = $('answer-page-info');
-  api.innerHTML = '📄 過去問「' + q._meta.source_pdf + '」' + q.page + 'ページ';
+  api.innerHTML = '📄 過去問「' + q._meta.source_pdf + '」No.' + q.number + '　問題 p.' + q.page;
   if (ap) {
     api.appendChild(document.createTextNode('　'));
     api.appendChild(makeRefBtn('✅ 解答 p.' + ap, [ansImgSrc(ap)], '解答ページ p.' + ap));
