@@ -139,21 +139,17 @@ const KW_BLACKLIST = new Set([
   '場合','以上','以下','全て','それ','これ','ため','こと','もの','など',
   '区別','違い','逆転','逆に','区分','対象','必要','重要','注目','参照',
   '引用','テキスト','パターン','混同注意','混同しやすい','混ざりやすい',
-  // 追加（2文字・3文字カタカナ一般語）
-  'する','ある','ない','なる','いる','れる','られる','です','ます','した',
-  '以下','以上','また','さらに','そのため','これら','それら',
-  'アップ','ダウン','セット','ポイント','タイプ','モード','ケース',
 ]);
 
-// 解説テキスト内の技術用語をGoogle検索リンク化
+// AI解説内の専門技術用語のみGoogle検索リンク化（一般語は除外）
 function linkKeywords(text) {
   const esc = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  // カタカナ3文字以上 or 漢字3文字以上の複合語
+  // カタカナ5文字以上 or 漢字4文字以上の複合語のみ対象
   return esc.replace(
-    /([ァ-ヶー]{3,}|[一-龯々]{3,}(?:[一-龯々ァ-ヶーa-zA-Z0-9]*)?)/g,
+    /([ァ-ヶー]{5,}|[一-龯々]{4,}(?:[一-龯々ァ-ヶーa-zA-Z0-9]*)?)/g,
     (m) => {
       if (KW_BLACKLIST.has(m)) return m;
-      const url = 'https://www.google.com/search?q=' + encodeURIComponent(m + ' 土木施工管理');
+      const url = 'https://www.google.com/search?q=' + encodeURIComponent(m + ' 土木');
       return '<a href="' + url + '" target="_blank" rel="noopener" class="kw-link">' + m + '</a>';
     }
   );
@@ -326,25 +322,6 @@ function renderQuestion() {
 
   // 画像表示
   loadQuestionImage(q);
-
-  // 用語検索チップ（カテゴリ・テキスト参照トピック）
-  const chipsBar = $('term-chips-bar');
-  if (chipsBar) {
-    chipsBar.innerHTML = '';
-    const terms = [];
-    if (q.category) terms.push(q.category);
-    const topic = q.textbook_refs?.[0]?.topic;
-    if (topic && topic !== q.category) terms.push(topic);
-    terms.forEach(t => {
-      const a = document.createElement('a');
-      a.className = 'term-chip';
-      a.textContent = t;
-      a.href = 'https://www.google.com/search?q=' + encodeURIComponent(t + ' 土木施工管理');
-      a.target = '_blank';
-      a.rel = 'noopener';
-      chipsBar.appendChild(a);
-    });
-  }
 
   // ボタン状態リセット
   const saved = state.answers[idx];
@@ -1908,29 +1885,27 @@ function showResult() {
   const total = state.questions.length;
   const answered = state.answers.filter(Boolean);
   const correct = answered.filter(a => a.isCorrect).length;
-  const wrong   = answered.filter(a => !a.isCorrect && a.chosen !== null).length;
+  const wrong = answered.filter(a => !a.isCorrect && a.chosen !== null).length;
   const skipped = answered.filter(a => a.chosen === null).length;
   const pct = total ? Math.round(correct / total * 100) : 0;
 
-  // バナー
-  const banner = $('result-banner');
-  if (pct === 100) banner.textContent = '🏆 完璧！テスト終了。';
-  else if (pct >= 80) banner.textContent = '🎉 よくできました。テスト終了。';
-  else if (pct >= 60) banner.textContent = '✅ 合格ライン達成！テスト終了。';
-  else banner.textContent = '📚 お疲れ様でした。テスト終了。';
+  let emoji = '😢', title = 'もう少し頑張りましょう！';
+  if (pct >= 80) { emoji = '🏆'; title = '素晴らしい！合格圏内です！'; }
+  else if (pct >= 60) { emoji = '🎉'; title = '合格ライン到達！'; }
+  else if (pct >= 40) { emoji = '😤'; title = 'あと少し！'; }
 
-  // 円グラフ
-  const ring = $('result-circle-ring');
-  const deg = Math.round(pct * 3.6);
-  const color = pct >= 80 ? '#10b981' : pct >= 60 ? '#f59e0b' : '#f87171';
-  ring.style.background = `conic-gradient(${color} ${deg}deg, rgba(255,255,255,.08) ${deg}deg)`;
-  $('result-circle-score').textContent = correct + '/' + total;
-  $('result-circle-pct').textContent = pct + '%';
-
-  // カウント
+  $('result-emoji').textContent = emoji;
+  $('result-title').textContent = title;
   $('result-correct').textContent = correct;
-  $('result-wrong-count').textContent = wrong;
-  $('result-skip-count').textContent = skipped;
+  $('result-total').textContent = total;
+  $('result-pct').textContent = '正答率: ' + pct + '%';
+
+  $('result-breakdown').innerHTML =
+    row('出題数', total + '問') +
+    row('正解', correct + '問', 'ok') +
+    row('不正解', wrong + '問', 'ng') +
+    row('スキップ', skipped + '問') +
+    row('正答率', pct + '%', pct >= 60 ? 'ok' : 'ng');
 
   // 模擬試験合否判定
   const mockBadge = $('mock-result-badge');
@@ -1946,56 +1921,19 @@ function showResult() {
   }
 
   // デイリーモード完了: ストリーク更新
-  if (state._isDailyMode) { markDailyDone(); updateStreakBadge(); }
+  if (state._isDailyMode) {
+    markDailyDone();
+    updateStreakBadge();
+  }
   state._isDailyMode = false;
+
+  // モード表示リセット
   $('q-mode-tag').style.display = 'none';
 
-  // ===== トピック + フォローアップ =====
-  const topicsGrid = $('result-topics-grid');
-  const topicsList = $('result-topics-list');
-  const followupBtns = $('result-followup-btns');
-
-  // 今回解いた問題のカテゴリ（重複除去・順序保持）
-  const coveredCats = [];
-  state.questions.forEach(q => {
-    const c = q.category || '未分類';
-    if (!coveredCats.includes(c)) coveredCats.push(c);
-  });
-
-  // 間違えた問題のカテゴリ
   const wrongItems = state.answers
     .map((a, i) => ({ a, q: state.questions[i] }))
     .filter(({ a }) => a && !a.isCorrect);
 
-  const wrongCats = [];
-  wrongItems.forEach(({ q }) => {
-    const c = q.category || '未分類';
-    if (!wrongCats.includes(c)) wrongCats.push(c);
-  });
-
-  if (coveredCats.length) {
-    topicsGrid.style.display = '';
-    topicsList.innerHTML = coveredCats
-      .map(c => `<li>${c}</li>`)
-      .join('');
-
-    followupBtns.innerHTML = '';
-    if (wrongCats.length) {
-      wrongCats.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = 'result-followup-btn';
-        btn.textContent = cat;
-        btn.onclick = () => startFollowupQuiz(cat);
-        followupBtns.appendChild(btn);
-      });
-    } else {
-      followupBtns.innerHTML = '<p style="font-size:13px;color:var(--success)">✅ 全問正解！次のカテゴリへ進もう</p>';
-    }
-  } else {
-    topicsGrid.style.display = 'none';
-  }
-
-  // 間違えた問題リスト
   const wl = $('result-wrong-list');
   if (!wrongItems.length) { wl.style.display = 'none'; return; }
   wl.style.display = '';
@@ -2005,35 +1943,11 @@ function showResult() {
     el.className = 'wrong-item';
     el.innerHTML =
       '<span class="wrong-no">' + q._meta.year + ' ' + q._meta.period + ' No.' + q.number + '</span>' +
-      '<span class="wrong-cat">' + (q.category || '') + '</span>' +
       '<span style="flex:1"></span>' +
       '<span class="wrong-ans">→ ' + (a.chosen ?? 'skip') + '</span>' +
       '<span class="wrong-correct">　正: ' + (q.answer ?? '?') + '</span>';
     wl.appendChild(el);
   });
-}
-
-function startFollowupQuiz(category) {
-  // 全ロード済みデータから該当カテゴリの問題を抽出してクイズ開始
-  const allQ = [];
-  [...state.allExams, ...state.extraExams].forEach(ex => {
-    const qs = ex.questions || ex;
-    qs.forEach(q => {
-      if ((q.category || '未分類') === category && q.answer) {
-        allQ.push({ ...q, _meta: { year: ex.meta?.year || '', period: ex.meta?.period || '', id: ex.meta?.id || '' } });
-      }
-    });
-  });
-  if (!allQ.length) { alert('該当問題がありません'); return; }
-  // シャッフルして最大20問
-  const shuffled = allQ.sort(() => Math.random() - .5).slice(0, 20);
-  state.questions = shuffled;
-  state.answers = new Array(shuffled.length).fill(null);
-  state.currentIndex = 0;
-  state.score = 0;
-  state.isMockMode = false;
-  showScreen('quiz');
-  renderQuestion();
 }
 
 function row(label, val, cls) {
