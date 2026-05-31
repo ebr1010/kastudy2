@@ -586,6 +586,102 @@ function onAnswer(chosen) {
 }
 
 // ===== ページビューアーモーダル =====
+// ===== AI質問モーダル =====
+let _aiAskCurrentQ = null;
+let _aiAskImageSrcs = [];
+
+function openAiAskModal() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  _aiAskCurrentQ = q;
+
+  // 問題ページ画像 + 解答ページ画像
+  const srcs = [ansImgSrc(q.page)];
+  if (q._meta && q._meta.answer_page) srcs.push(ansImgSrc(q._meta.answer_page));
+  _aiAskImageSrcs = srcs;
+
+  // 画像を表示
+  const imgWrap = $('ai-ask-images');
+  imgWrap.innerHTML = '';
+  srcs.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-ask-img-wrap';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = i === 0 ? '問題' : '解答';
+    img.className = 'ai-ask-img';
+    const label = document.createElement('div');
+    label.className = 'ai-ask-img-label';
+    label.textContent = i === 0 ? `問題 p.${q.page}` : `解答 p.${q._meta.answer_page}`;
+    const dlBtn = document.createElement('a');
+    dlBtn.href = src;
+    dlBtn.download = `kastudy_${q._meta?.id || ''}_No${q.number}_${i === 0 ? 'q' : 'a'}.png`;
+    dlBtn.className = 'btn-ai-dl';
+    dlBtn.textContent = '⬇ DL';
+    wrap.appendChild(img);
+    wrap.appendChild(label);
+    wrap.appendChild(dlBtn);
+    imgWrap.appendChild(wrap);
+  });
+
+  // プロンプトテキスト生成
+  const qType = q.q_type || 'unknown';
+  const qTypeLabel = qType === 'negative'
+    ? '【否定型】適当でないもの・誤っているものはどれか'
+    : '【肯定型】適当なもの・正しいものはどれか';
+  const prompt =
+    `土木施工管理技士（2級）過去問\n` +
+    `${q._meta?.year || ''}年度${q._meta?.period || ''} No.${q.number}\n` +
+    `カテゴリ: ${q.category || ''}\n` +
+    `問題タイプ: ${qTypeLabel}\n` +
+    `正解番号: ${q.answer}\n\n` +
+    `【お願い】\n` +
+    `添付の問題画像を読み取り、選択肢1〜4それぞれについて以下を解説してください。\n` +
+    `- 問題タイプ（${qType === 'negative' ? '否定型なので正解＝誤った記述' : '肯定型なので正解＝正しい記述'}）を踏まえて\n` +
+    `- 各選択肢の語句を引用しながら\n` +
+    `- 正解/不正解の具体的な理由（数値・工法名・条件を正確に）\n` +
+    `形式: {"1":"解説","2":"解説","3":"解説","4":"解説"}`;
+
+  $('ai-ask-prompt-text').value = prompt;
+  $('ai-ask-copy-status').textContent = '';
+  $('ai-ask-modal').style.display = 'flex';
+}
+
+function closeAiAskModal() {
+  $('ai-ask-modal').style.display = 'none';
+}
+
+async function copyAiImages() {
+  const status = $('ai-ask-copy-status');
+  if (!_aiAskImageSrcs.length) return;
+  const src = _aiAskImageSrcs[0]; // まず問題ページをコピー
+  try {
+    const resp = await fetch(src);
+    const blob = await resp.blob();
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    status.textContent = '✅ 問題画像をクリップボードにコピーしました。AIチャットに貼り付けてください。';
+    status.className = 'ai-ask-copy-status ok';
+  } catch (e) {
+    // フォールバック: 新しいタブで開く
+    status.textContent = '⚠️ 自動コピー不可。画像を右クリック→コピーしてください。';
+    status.className = 'ai-ask-copy-status warn';
+    window.open(src, '_blank');
+  }
+}
+
+async function copyAiPrompt() {
+  const text = $('ai-ask-prompt-text').value;
+  const status = $('ai-ask-copy-status');
+  try {
+    await navigator.clipboard.writeText(text);
+    status.textContent = '✅ プロンプトをコピーしました。';
+    status.className = 'ai-ask-copy-status ok';
+  } catch (e) {
+    status.textContent = '⚠️ コピー失敗。テキストを手動で選択してください。';
+    status.className = 'ai-ask-copy-status warn';
+  }
+}
+
 function openPageModal(srcs, title) {
   const body = $('page-modal-body');
   body.innerHTML = '';
