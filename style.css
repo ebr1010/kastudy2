@@ -2039,6 +2039,8 @@ input[type=file]::file-selector-button:hover {
   padding: 12px;
   background: #080810;
   cursor: crosshair;
+  touch-action: none;            /* スクロールコンテナのタッチを無効化 */
+  -webkit-user-select: none;
 }
 #crop-canvas {
   display: block;
@@ -2065,4 +2067,102 @@ input[type=file]::file-selector-button:hover {
   font-size: 11px;
   color: rgba(255,255,255,0.25);
   margin-left: auto;
+}
+
+/* ===== 問題番号範囲ダイヤル ===== */
+.option-card-range {
+  cursor: default;
+}
+.range-dial-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.range-dial-labels {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.range-dial-val {
+  font-family: 'Barlow Condensed', monospace;
+  font-size: 22px;
+  font-weight: 800;
+  color: #a78bfa;
+  letter-spacing: 0.04em;
+  min-width: 64px;
+  text-align: center;
+}
+.range-dial-sep {
+  font-size: 18px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 600;
+}
+.range-dual-slider {
+  position: relative;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+.range-track {
+  position: absolute;
+  left: 0; right: 0;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+.range-track-fill {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  border-radius: 3px;
+  transition: left 0.05s, width 0.05s;
+}
+.range-thumb {
+  position: absolute;
+  width: 100%;
+  height: 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  pointer-events: none;
+  outline: none;
+  margin: 0;
+}
+.range-thumb::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #a78bfa;
+  border: 3px solid #1a1035;
+  box-shadow: 0 2px 8px rgba(139,92,246,0.5);
+  cursor: grab;
+  pointer-events: all;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.range-thumb::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+  box-shadow: 0 4px 16px rgba(139,92,246,0.8);
+  cursor: grabbing;
+}
+.range-thumb::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #a78bfa;
+  border: 3px solid #1a1035;
+  box-shadow: 0 2px 8px rgba(139,92,246,0.5);
+  cursor: grab;
+  pointer-events: all;
+}
+.range-thumb-from { z-index: 3; }
+.range-thumb-to   { z-index: 4; }
+.range-dial-hint {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  text-align: center;
 }

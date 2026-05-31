@@ -268,6 +268,7 @@ async function initApp() {
     renderTopPassScore();
     computeFrequentNums();
     renderResumeBtn();
+    updateRangeDialMax();
   } catch (e) {
     $('exam-list').innerHTML = '<div style="color:red">読み込み失敗: ' + e.message + '</div>';
   }
@@ -284,6 +285,58 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ===== 設定画面 =====
+// ===== 問題番号範囲ダイヤル =====
+function initRangeDial() {
+  const sliderFrom = $('range-from');
+  const sliderTo   = $('range-to');
+  if (!sliderFrom || !sliderTo) return;
+
+  function update() {
+    let lo = parseInt(sliderFrom.value);
+    let hi = parseInt(sliderTo.value);
+    // 交差したら値を入れ替え
+    if (lo > hi) {
+      if (document.activeElement === sliderFrom) {
+        sliderFrom.value = hi; lo = hi;
+      } else {
+        sliderTo.value = lo; hi = lo;
+      }
+    }
+    $('range-dial-from').textContent = 'No.' + lo;
+    $('range-dial-to').textContent   = 'No.' + hi;
+    // トラック塗り
+    const fill = $('range-track-fill');
+    const max  = parseInt(sliderFrom.max);
+    const min  = parseInt(sliderFrom.min);
+    const pct  = v => ((v - min) / (max - min) * 100).toFixed(2) + '%';
+    fill.style.left  = pct(lo);
+    fill.style.width = ((hi - lo) / (max - min) * 100).toFixed(2) + '%';
+  }
+
+  sliderFrom.addEventListener('input', update);
+  sliderTo.addEventListener('input', update);
+  update();
+}
+
+// 選択試験が変わったらmax値を更新
+function updateRangeDialMax() {
+  const all = [...state.allExams, ...state.extraExams];
+  const sel = all.filter(e => state.selectedIds.has(e.meta.id));
+  if (!sel.length) return;
+  const nums = sel.flatMap(e => e.questions.map(q => q.number));
+  const maxNum = Math.max(...nums);
+  const minNum = Math.min(...nums);
+  const sliderFrom = $('range-from');
+  const sliderTo   = $('range-to');
+  if (!sliderFrom || !sliderTo) return;
+  sliderFrom.min = minNum; sliderFrom.max = maxNum;
+  sliderTo.min   = minNum; sliderTo.max   = maxNum;
+  // 範囲を全体にリセット
+  sliderFrom.value = minNum;
+  sliderTo.value   = maxNum;
+  initRangeDial();
+}
+
 function renderExamList() {
   const container = $('exam-list');
   const all = [...state.allExams, ...state.extraExams];
@@ -306,6 +359,7 @@ function renderExamList() {
       e.target.checked ? state.selectedIds.add(id) : state.selectedIds.delete(id);
       item.classList.toggle('checked', e.target.checked);
       updateStartButton();
+      updateRangeDialMax();
     });
     container.appendChild(item);
   });
@@ -628,26 +682,15 @@ function closeCropModal() {
   _cropDrawing = false;
 }
 
-// タッチ・マウス共通の座標取得
+// ===== Pointer Events API による座標取得（マウス・タッチ・iPad全対応）=====
+// Pointer Events は clientX/clientY を直接持つのでタッチ分岐不要
 function _cropGetPos(e) {
   const canvas = _cropCanvas;
   if (!canvas) return { x: 0, y: 0 };
   const r = canvas.getBoundingClientRect();
-  let clientX, clientY;
-  if (e.touches && e.touches.length > 0) {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else if (e.changedTouches && e.changedTouches.length > 0) {
-    // touchend では changedTouches を使う
-    clientX = e.changedTouches[0].clientX;
-    clientY = e.changedTouches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
   return {
-    x: Math.max(0, Math.min(canvas.width,  (clientX - r.left) * (canvas.width  / r.width))),
-    y: Math.max(0, Math.min(canvas.height, (clientY - r.top)  * (canvas.height / r.height)))
+    x: Math.max(0, Math.min(canvas.width,  (e.clientX - r.left) * (canvas.width  / r.width))),
+    y: Math.max(0, Math.min(canvas.height, (e.clientY - r.top)  * (canvas.height / r.height)))
   };
 }
 
@@ -668,10 +711,13 @@ function _cropRedraw(ex, ey) {
   _cropSel = { active: true, x, y, w, h };
 }
 
-// イベントハンドラ（グローバル登録、モーダル開閉で付け外し）
+// Pointer Events ハンドラ
+// setPointerCapture でモーダル内スクロールより先にイベントを捕捉
 function _onCropStart(e) {
   if (!_cropCanvas || $('img-crop-modal').style.display === 'none') return;
   e.preventDefault();
+  // pointerCapture: 指が canvas 外に出ても pointermove/pointerup が届く
+  try { _cropCanvas.setPointerCapture(e.pointerId); } catch(_) {}
   _cropDrawing = true;
   const p = _cropGetPos(e);
   _cropSX = p.x; _cropSY = p.y;
@@ -685,18 +731,17 @@ function _onCropMove(e) {
 }
 function _onCropEnd(e) {
   _cropDrawing = false;
+  try { _cropCanvas.releasePointerCapture(e.pointerId); } catch(_) {}
 }
 
-// canvasにイベントを直接登録（モーダル内要素なのでpassive:falseが確実に効く）
+// Pointer Events API で登録（マウス・タッチ・Apple Pencil 全てをカバー）
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = $('crop-canvas');
   if (!canvas) return;
-  canvas.addEventListener('mousedown',  _onCropStart);
-  canvas.addEventListener('mousemove',  _onCropMove);
-  canvas.addEventListener('mouseup',    _onCropEnd);
-  canvas.addEventListener('touchstart', _onCropStart, { passive: false });
-  canvas.addEventListener('touchmove',  _onCropMove,  { passive: false });
-  canvas.addEventListener('touchend',   _onCropEnd,   { passive: false });
+  canvas.addEventListener('pointerdown',   _onCropStart);
+  canvas.addEventListener('pointermove',   _onCropMove);
+  canvas.addEventListener('pointerup',     _onCropEnd);
+  canvas.addEventListener('pointercancel', _onCropEnd);
 });
 
 async function copyCropSelection() {
