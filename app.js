@@ -722,111 +722,92 @@ async function copyBothPages() {
   }
 }
 
-// ===== 📐 範囲選択コピーモーダル（スライダー方式・iPad完全対応）=====
-let _cropImg = null;
-let _cropSel = { active: false, x: 0, y: 0, w: 0, h: 0 };
-let _cropScaleX = 1, _cropScaleY = 1;
-let _cropCanvas = null, _cropCtx = null;
+// ===== 📐 範囲選択コピーモーダル =====
+// キャンバスタッチはiPadで動かないため <img> 表示方式に変更。
+// スライダー2本で上端/下端を指定 → フル解像度でクロップ → <img> に反映。
+// iPad では画像を長押しすることで OS ネイティブのコピー/保存が使える。
+let _cropFullCanvas = null;   // フル解像度合成キャンバス
+let _cropOutCanvas  = null;   // 現在の切り出し結果キャンバス
+let _cropSliderTimer = null;
 
 function openCropModal() {
   const q = state.questions[state.currentIndex];
   if (!q) return;
-  $('crop-status').textContent = '読み込み中…';
-  $('crop-status').className = 'crop-status';
-  _cropSel = { active: false };
-  _cropImg = null;
-  // スライダーをリセット
-  const slTop = $('crop-y-top'); if (slTop) slTop.value = 0;
-  const slBot = $('crop-y-bot'); if (slBot) slBot.value = 100;
-  if ($('crop-y-top-val')) $('crop-y-top-val').textContent = '0%';
-  if ($('crop-y-bot-val')) $('crop-y-bot-val').textContent = '100%';
+
+  // モーダルを先に表示
   $('img-crop-modal').style.display = 'flex';
+  $('crop-status').textContent = '';
+  $('crop-loading').style.display = '';
+  $('crop-preview-img').style.display = 'none';
+  _cropFullCanvas = null;
+  _cropOutCanvas  = null;
+
+  // スライダーをリセット
+  $('crop-y-top').value = 0;   $('crop-y-top-val').textContent = '0%';
+  $('crop-y-bot').value = 100; $('crop-y-bot-val').textContent = '100%';
+
+  // スライダーのイベントをここで登録（oninput は HTML 属性に書かない）
+  ['crop-y-top', 'crop-y-bot'].forEach(id => {
+    const el = $(id);
+    el.oninput = onCropSlider;
+  });
 
   _buildCombinedCanvas(q).then(({ full, srcs }) => {
-    _cropImg = full;
-    const maxW = Math.min(window.innerWidth  * 0.95, 960);
-    const maxH = window.innerHeight * 0.55;   // スライダー2本分を上下に確保
-    const scale = Math.min(maxW / full.width, maxH / full.height, 1);
-
-    const canvas = $('crop-canvas');
-    canvas.width  = Math.round(full.width  * scale);
-    canvas.height = Math.round(full.height * scale);
-    _cropScaleX = full.width  / canvas.width;
-    _cropScaleY = full.height / canvas.height;
-    _cropCanvas = canvas;
-    _cropCtx    = canvas.getContext('2d');
-
-    onCropSlider();   // スライダー初期値で描画 & _cropSel を設定
+    _cropFullCanvas = full;
+    $('crop-loading').style.display = 'none';
+    _updateCropPreview();   // 初期表示（全体）
 
     const pageLabel = srcs.length > 1
       ? 'p.' + q.page + ' + 解答 p.' + q._meta.answer_page
       : 'p.' + q.page;
     $('crop-status').textContent = pageLabel;
-    $('crop-status').className = 'crop-status';
   }).catch(err => {
-    $('crop-status').textContent = '⚠ 画像読み込み失敗';
-    $('crop-status').className = 'crop-status warn';
+    $('crop-loading').textContent = '⚠ 画像読み込み失敗';
     console.error(err);
   });
 }
 
-// スライダー変更時に呼ばれる（oninput / openCropModal の両方から）
+// スライダー変更 → ラベル即時更新 + デバウンスでプレビュー更新
 function onCropSlider() {
-  if (!_cropCanvas || !_cropImg) return;
+  $('crop-y-top-val').textContent = $('crop-y-top').value + '%';
+  $('crop-y-bot-val').textContent = $('crop-y-bot').value + '%';
+  clearTimeout(_cropSliderTimer);
+  _cropSliderTimer = setTimeout(_updateCropPreview, 150);
+}
 
+// 実際の切り出し処理（フル解像度）
+function _updateCropPreview() {
+  if (!_cropFullCanvas) return;
   const topPct = parseInt($('crop-y-top').value) / 100;
-  const botPct = parseInt($('crop-y-bot').value) / 100;
+  const botPct = Math.max(parseInt($('crop-y-bot').value) / 100, topPct + 0.01);
 
-  // ラベル更新
-  $('crop-y-top-val').textContent = Math.round(topPct * 100) + '%';
-  $('crop-y-bot-val').textContent = Math.round(botPct * 100) + '%';
+  const srcW = _cropFullCanvas.width;
+  const srcH = _cropFullCanvas.height;
+  const y0   = Math.round(topPct * srcH);
+  const y1   = Math.round(botPct * srcH);
 
-  // 上端が下端を超えないようにクランプ
-  const clampedBot = Math.max(botPct, topPct + 0.02);
+  // 切り出し結果キャンバス
+  const out = document.createElement('canvas');
+  out.width  = srcW;
+  out.height = y1 - y0;
+  out.getContext('2d').drawImage(_cropFullCanvas, 0, y0, srcW, y1 - y0, 0, 0, srcW, y1 - y0);
+  _cropOutCanvas = out;
 
-  const cw = _cropCanvas.width;
-  const ch = _cropCanvas.height;
-  const y0 = Math.round(topPct    * ch);
-  const y1 = Math.round(clampedBot * ch);
-
-  // キャンバス再描画
-  const ctx = _cropCtx;
-  ctx.clearRect(0, 0, cw, ch);
-  ctx.drawImage(_cropImg, 0, 0, cw, ch);
-
-  // 選択範囲外を暗くする
-  ctx.fillStyle = 'rgba(0,0,0,0.55)';
-  if (y0 > 0)      ctx.fillRect(0, 0,  cw, y0);
-  if (y1 < ch)     ctx.fillRect(0, y1, cw, ch - y1);
-
-  // 選択枠
-  ctx.strokeStyle = '#a78bfa';
-  ctx.lineWidth = Math.max(2, cw * 0.003);
-  ctx.strokeRect(1, y0, cw - 2, y1 - y0);
-
-  // _cropSel を更新（copyCropSelection が参照）
-  _cropSel = { active: true, x: 0, y: y0, w: cw, h: y1 - y0 };
+  // <img> に反映（長押しコピー可能）
+  const previewImg = $('crop-preview-img');
+  previewImg.src = out.toDataURL('image/png');
+  previewImg.style.display = 'block';
 }
 
 function closeCropModal() {
   $('img-crop-modal').style.display = 'none';
+  clearTimeout(_cropSliderTimer);
 }
 
 async function copyCropSelection() {
-  const canvas = _cropCanvas;
-  if (!canvas || !_cropImg) return;
+  const out = _cropOutCanvas;
+  if (!out) return;
   const status = $('crop-status');
-  const sel = _cropSel.active ? _cropSel : { x: 0, y: 0, w: canvas.width, h: canvas.height };
-
-  const out = document.createElement('canvas');
-  out.width  = Math.round(sel.w * _cropScaleX);
-  out.height = Math.round(sel.h * _cropScaleY);
-  const octx = out.getContext('2d');
-  octx.drawImage(_cropImg,
-    sel.x * _cropScaleX, sel.y * _cropScaleY,
-    sel.w * _cropScaleX, sel.h * _cropScaleY,
-    0, 0, out.width, out.height
-  );
 
   out.toBlob(async blob => {
     // ClipboardItem が使えるか確認（Safari 13.1+, iOS/iPadOS 13.4+）
