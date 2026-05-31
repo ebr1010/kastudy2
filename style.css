@@ -1922,3 +1922,20 @@ input[type=file]::file-selector-button:hover {
 }
 .ai-ask-copy-status.ok { color: #4ade80; }
 .ai-ask-copy-status.warn { color: #fbbf24; }
+
+/* ===== バージョン表示 ===== */
+.app-title-wrap {
+  position: relative;
+}
+.app-version {
+  position: absolute;
+  top: 4px;
+  right: 0;
+  font-size: 11px;
+  font-family: 'Barlow Condensed', monospace;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  pointer-events: none;
+  user-select: none;
+}
