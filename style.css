@@ -2045,7 +2045,10 @@ input[type=file]::file-selector-button:hover {
   border-radius: 4px;
   max-width: 100%;
   user-select: none;
+  -webkit-user-select: none;
   -webkit-user-drag: none;
+  touch-action: none;       /* iPadでスクロールよりドラッグを優先 */
+  -webkit-touch-callout: none; /* 長押しメニュー無効 */
 }
 .crop-footer {
   padding: 10px 16px;
