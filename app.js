@@ -640,24 +640,9 @@ function onAnswer(chosen) {
 }
 
 // ===== ページビューアーモーダル =====
-// ===== 画像範囲選択コピー =====
-// ===== 画像範囲選択コピー（iPad対応版） =====
-let _cropImg = null;
-let _cropSel = { active: false, x: 0, y: 0, w: 0, h: 0 };
-let _cropScaleX = 1, _cropScaleY = 1;
-let _cropCanvas = null, _cropCtx = null;
-let _cropDrawing = false, _cropSX = 0, _cropSY = 0;
-
-function openCropModal() {
-  const q = state.questions[state.currentIndex];
-  if (!q) return;
-  $('crop-status').textContent = '読み込み中…';
-  $('crop-status').className = 'crop-status';
-  _cropSel = { active: false };
-  _cropDrawing = false;
-  _cropImg = null;
-
-  // 問題ページ + 解答ページを両方ロード
+// ===== 画像合成共通ユーティリティ =====
+// 問題ページ + 解答ページを縦連結したオフスクリーンキャンバスを返す
+function _buildCombinedCanvas(q) {
   const srcs = [ansImgSrc(q.page)];
   if (q._meta && q._meta.answer_page) srcs.push(ansImgSrc(q._meta.answer_page));
 
@@ -668,9 +653,8 @@ function openCropModal() {
     i.src = src;
   });
 
-  Promise.all(srcs.map(loadImg)).then(imgs => {
-    // ===== フル解像度の合成キャンバスを作る =====
-    const GAP = 12;  // ページ間の区切り（px）
+  return Promise.all(srcs.map(loadImg)).then(imgs => {
+    const GAP = 12;
     const totalW = Math.max(...imgs.map(i => i.naturalWidth || i.width));
     const totalH = imgs.reduce((s, i) => s + (i.naturalHeight || i.height), 0) + GAP * (imgs.length - 1);
 
@@ -687,43 +671,99 @@ function openCropModal() {
       const ih = img.naturalHeight || img.height;
       fctx.drawImage(img, Math.round((totalW - iw) / 2), yOff, iw, ih);
       yOff += ih;
-      // ページ区切り線
       if (idx < imgs.length - 1) {
         fctx.fillStyle = '#4c1d95';
         fctx.fillRect(0, yOff, totalW, GAP);
         yOff += GAP;
       }
     });
+    return { full, srcs };
+  });
+}
 
-    // _cropImg に合成キャンバスを代入（drawImage はキャンバスを受け付ける）
+// ===== 🤖 ボタン：問題+解答ページを即時コピー =====
+async function copyBothPages() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+
+  const btn = $('btn-ai-ask');
+  const orig = btn.textContent;
+  btn.textContent = '⏳';
+  btn.disabled = true;
+
+  try {
+    const { full } = await _buildCombinedCanvas(q);
+
+    await new Promise((resolve, reject) => {
+      full.toBlob(async blob => {
+        try {
+          if (typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+            btn.textContent = '✅';
+          } else {
+            // フォールバック: ダウンロード
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'kastudy_' + (q._meta?.id || '') + '_No' + q.number + '.png';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            btn.textContent = '⬇';
+          }
+          resolve();
+        } catch(e) { reject(e); }
+      }, 'image/png');
+    });
+  } catch(err) {
+    btn.textContent = '❌';
+    console.error(err);
+  } finally {
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2200);
+  }
+}
+
+// ===== 📐 範囲選択コピーモーダル =====
+let _cropImg = null;
+let _cropSel = { active: false, x: 0, y: 0, w: 0, h: 0 };
+let _cropScaleX = 1, _cropScaleY = 1;
+let _cropCanvas = null, _cropCtx = null;
+let _cropDrawing = false, _cropSX = 0, _cropSY = 0;
+
+function openCropModal() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  $('crop-status').textContent = '読み込み中…';
+  $('crop-status').className = 'crop-status';
+  _cropSel = { active: false };
+  _cropDrawing = false;
+  _cropImg = null;
+  $('img-crop-modal').style.display = 'flex';
+
+  _buildCombinedCanvas(q).then(({ full, srcs }) => {
     _cropImg = full;
-
-    // ===== 表示用キャンバスへスケールダウン描画 =====
     const maxW = Math.min(window.innerWidth  * 0.95, 960);
     const maxH = window.innerHeight * 0.74;
-    const scale = Math.min(maxW / totalW, maxH / totalH, 1);
+    const scale = Math.min(maxW / full.width, maxH / full.height, 1);
 
     const canvas = $('crop-canvas');
-    canvas.width  = Math.round(totalW * scale);
-    canvas.height = Math.round(totalH * scale);
-    _cropScaleX = totalW / canvas.width;
-    _cropScaleY = totalH / canvas.height;
+    canvas.width  = Math.round(full.width  * scale);
+    canvas.height = Math.round(full.height * scale);
+    _cropScaleX = full.width  / canvas.width;
+    _cropScaleY = full.height / canvas.height;
     _cropCanvas = canvas;
     _cropCtx    = canvas.getContext('2d');
     _cropCtx.drawImage(full, 0, 0, canvas.width, canvas.height);
 
-    const pageLabel = imgs.length > 1
-      ? 'p.' + q.page + ' + 解答 p.' + q._meta.answer_page
-      : 'p.' + q.page;
-    $('crop-status').textContent = pageLabel + ' — ドラッグで範囲選択';
+    $('crop-status').textContent =
+      srcs.length > 1
+        ? 'p.' + q.page + ' + 解答 p.' + q._meta.answer_page + ' — ドラッグで範囲選択'
+        : 'p.' + q.page + ' — ドラッグで範囲選択';
     $('crop-status').className = 'crop-status';
   }).catch(err => {
     $('crop-status').textContent = '⚠ 画像の読み込みに失敗';
     $('crop-status').className = 'crop-status warn';
     console.error(err);
   });
-
-  $('img-crop-modal').style.display = 'flex';
 }
 
 function closeCropModal() {
