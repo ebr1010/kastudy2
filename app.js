@@ -184,7 +184,7 @@ const state = {
   answers: [],
   score: 0,
   wrongQuestions: [],
-  settings: { order: 'random', count: 'all', onlyWithAnswer: true },
+  settings: { order: 'sequential', count: 'all', onlyWithAnswer: true },
   isMockMode: false,
   isFlashcardMode: false,
   timeRemaining: 0,
