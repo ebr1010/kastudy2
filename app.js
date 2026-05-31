@@ -651,29 +651,78 @@ let _cropDrawing = false, _cropSX = 0, _cropSY = 0;
 function openCropModal() {
   const q = state.questions[state.currentIndex];
   if (!q) return;
-  $('crop-status').textContent = '';
+  $('crop-status').textContent = '読み込み中…';
+  $('crop-status').className = 'crop-status';
   _cropSel = { active: false };
   _cropDrawing = false;
+  _cropImg = null;
 
-  const img = new Image();
-  // crossOrigin を設定しない（同一オリジンなのでtaintなし、Safariの互換性問題回避）
-  img.onload = () => {
-    _cropImg = img;
-    const maxW = Math.min(window.innerWidth * 0.96, 960);
-    const maxH = window.innerHeight * 0.68;
-    const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+  // 問題ページ + 解答ページを両方ロード
+  const srcs = [ansImgSrc(q.page)];
+  if (q._meta && q._meta.answer_page) srcs.push(ansImgSrc(q._meta.answer_page));
 
-    // 既存canvasを再利用（cloneしない）
+  const loadImg = src => new Promise((resolve, reject) => {
+    const i = new Image();
+    i.onload = () => resolve(i);
+    i.onerror = () => reject(new Error('load: ' + src));
+    i.src = src;
+  });
+
+  Promise.all(srcs.map(loadImg)).then(imgs => {
+    // ===== フル解像度の合成キャンバスを作る =====
+    const GAP = 12;  // ページ間の区切り（px）
+    const totalW = Math.max(...imgs.map(i => i.naturalWidth || i.width));
+    const totalH = imgs.reduce((s, i) => s + (i.naturalHeight || i.height), 0) + GAP * (imgs.length - 1);
+
+    const full = document.createElement('canvas');
+    full.width  = totalW;
+    full.height = totalH;
+    const fctx = full.getContext('2d');
+    fctx.fillStyle = '#ffffff';
+    fctx.fillRect(0, 0, totalW, totalH);
+
+    let yOff = 0;
+    imgs.forEach((img, idx) => {
+      const iw = img.naturalWidth  || img.width;
+      const ih = img.naturalHeight || img.height;
+      fctx.drawImage(img, Math.round((totalW - iw) / 2), yOff, iw, ih);
+      yOff += ih;
+      // ページ区切り線
+      if (idx < imgs.length - 1) {
+        fctx.fillStyle = '#4c1d95';
+        fctx.fillRect(0, yOff, totalW, GAP);
+        yOff += GAP;
+      }
+    });
+
+    // _cropImg に合成キャンバスを代入（drawImage はキャンバスを受け付ける）
+    _cropImg = full;
+
+    // ===== 表示用キャンバスへスケールダウン描画 =====
+    const maxW = Math.min(window.innerWidth  * 0.95, 960);
+    const maxH = window.innerHeight * 0.74;
+    const scale = Math.min(maxW / totalW, maxH / totalH, 1);
+
     const canvas = $('crop-canvas');
-    canvas.width  = Math.round(img.width  * scale);
-    canvas.height = Math.round(img.height * scale);
-    _cropScaleX = img.width  / canvas.width;
-    _cropScaleY = img.height / canvas.height;
+    canvas.width  = Math.round(totalW * scale);
+    canvas.height = Math.round(totalH * scale);
+    _cropScaleX = totalW / canvas.width;
+    _cropScaleY = totalH / canvas.height;
     _cropCanvas = canvas;
     _cropCtx    = canvas.getContext('2d');
-    _cropCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  };
-  img.src = ansImgSrc(q.page);
+    _cropCtx.drawImage(full, 0, 0, canvas.width, canvas.height);
+
+    const pageLabel = imgs.length > 1
+      ? 'p.' + q.page + ' + 解答 p.' + q._meta.answer_page
+      : 'p.' + q.page;
+    $('crop-status').textContent = pageLabel + ' — ドラッグで範囲選択';
+    $('crop-status').className = 'crop-status';
+  }).catch(err => {
+    $('crop-status').textContent = '⚠ 画像の読み込みに失敗';
+    $('crop-status').className = 'crop-status warn';
+    console.error(err);
+  });
+
   $('img-crop-modal').style.display = 'flex';
 }
 
