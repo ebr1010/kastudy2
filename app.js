@@ -722,12 +722,11 @@ async function copyBothPages() {
   }
 }
 
-// ===== 📐 範囲選択コピーモーダル =====
+// ===== 📐 範囲選択コピーモーダル（スライダー方式・iPad完全対応）=====
 let _cropImg = null;
 let _cropSel = { active: false, x: 0, y: 0, w: 0, h: 0 };
 let _cropScaleX = 1, _cropScaleY = 1;
 let _cropCanvas = null, _cropCtx = null;
-let _cropDrawing = false, _cropSX = 0, _cropSY = 0;
 
 function openCropModal() {
   const q = state.questions[state.currentIndex];
@@ -735,14 +734,18 @@ function openCropModal() {
   $('crop-status').textContent = '読み込み中…';
   $('crop-status').className = 'crop-status';
   _cropSel = { active: false };
-  _cropDrawing = false;
   _cropImg = null;
+  // スライダーをリセット
+  const slTop = $('crop-y-top'); if (slTop) slTop.value = 0;
+  const slBot = $('crop-y-bot'); if (slBot) slBot.value = 100;
+  if ($('crop-y-top-val')) $('crop-y-top-val').textContent = '0%';
+  if ($('crop-y-bot-val')) $('crop-y-bot-val').textContent = '100%';
   $('img-crop-modal').style.display = 'flex';
 
   _buildCombinedCanvas(q).then(({ full, srcs }) => {
     _cropImg = full;
     const maxW = Math.min(window.innerWidth  * 0.95, 960);
-    const maxH = window.innerHeight * 0.74;
+    const maxH = window.innerHeight * 0.55;   // スライダー2本分を上下に確保
     const scale = Math.min(maxW / full.width, maxH / full.height, 1);
 
     const canvas = $('crop-canvas');
@@ -752,86 +755,62 @@ function openCropModal() {
     _cropScaleY = full.height / canvas.height;
     _cropCanvas = canvas;
     _cropCtx    = canvas.getContext('2d');
-    _cropCtx.drawImage(full, 0, 0, canvas.width, canvas.height);
 
-    $('crop-status').textContent =
-      srcs.length > 1
-        ? 'p.' + q.page + ' + 解答 p.' + q._meta.answer_page + ' — ドラッグで範囲選択'
-        : 'p.' + q.page + ' — ドラッグで範囲選択';
+    onCropSlider();   // スライダー初期値で描画 & _cropSel を設定
+
+    const pageLabel = srcs.length > 1
+      ? 'p.' + q.page + ' + 解答 p.' + q._meta.answer_page
+      : 'p.' + q.page;
+    $('crop-status').textContent = pageLabel;
     $('crop-status').className = 'crop-status';
   }).catch(err => {
-    $('crop-status').textContent = '⚠ 画像の読み込みに失敗';
+    $('crop-status').textContent = '⚠ 画像読み込み失敗';
     $('crop-status').className = 'crop-status warn';
     console.error(err);
   });
 }
 
+// スライダー変更時に呼ばれる（oninput / openCropModal の両方から）
+function onCropSlider() {
+  if (!_cropCanvas || !_cropImg) return;
+
+  const topPct = parseInt($('crop-y-top').value) / 100;
+  const botPct = parseInt($('crop-y-bot').value) / 100;
+
+  // ラベル更新
+  $('crop-y-top-val').textContent = Math.round(topPct * 100) + '%';
+  $('crop-y-bot-val').textContent = Math.round(botPct * 100) + '%';
+
+  // 上端が下端を超えないようにクランプ
+  const clampedBot = Math.max(botPct, topPct + 0.02);
+
+  const cw = _cropCanvas.width;
+  const ch = _cropCanvas.height;
+  const y0 = Math.round(topPct    * ch);
+  const y1 = Math.round(clampedBot * ch);
+
+  // キャンバス再描画
+  const ctx = _cropCtx;
+  ctx.clearRect(0, 0, cw, ch);
+  ctx.drawImage(_cropImg, 0, 0, cw, ch);
+
+  // 選択範囲外を暗くする
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  if (y0 > 0)      ctx.fillRect(0, 0,  cw, y0);
+  if (y1 < ch)     ctx.fillRect(0, y1, cw, ch - y1);
+
+  // 選択枠
+  ctx.strokeStyle = '#a78bfa';
+  ctx.lineWidth = Math.max(2, cw * 0.003);
+  ctx.strokeRect(1, y0, cw - 2, y1 - y0);
+
+  // _cropSel を更新（copyCropSelection が参照）
+  _cropSel = { active: true, x: 0, y: y0, w: cw, h: y1 - y0 };
+}
+
 function closeCropModal() {
   $('img-crop-modal').style.display = 'none';
-  _cropDrawing = false;
 }
-
-// ===== Pointer Events API による座標取得（マウス・タッチ・iPad全対応）=====
-// Pointer Events は clientX/clientY を直接持つのでタッチ分岐不要
-function _cropGetPos(e) {
-  const canvas = _cropCanvas;
-  if (!canvas) return { x: 0, y: 0 };
-  const r = canvas.getBoundingClientRect();
-  return {
-    x: Math.max(0, Math.min(canvas.width,  (e.clientX - r.left) * (canvas.width  / r.width))),
-    y: Math.max(0, Math.min(canvas.height, (e.clientY - r.top)  * (canvas.height / r.height)))
-  };
-}
-
-function _cropRedraw(ex, ey) {
-  const canvas = _cropCanvas, ctx = _cropCtx;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(_cropImg, 0, 0, canvas.width, canvas.height);
-  const x = Math.min(_cropSX, ex), y = Math.min(_cropSY, ey);
-  const w = Math.abs(ex - _cropSX),  h = Math.abs(ey - _cropSY);
-  if (w < 4 || h < 4) return;
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.clearRect(x, y, w, h);
-  ctx.drawImage(_cropImg, x * _cropScaleX, y * _cropScaleY, w * _cropScaleX, h * _cropScaleY, x, y, w, h);
-  ctx.strokeStyle = '#a78bfa';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(x, y, w, h);
-  _cropSel = { active: true, x, y, w, h };
-}
-
-// Pointer Events ハンドラ
-// setPointerCapture でモーダル内スクロールより先にイベントを捕捉
-function _onCropStart(e) {
-  if (!_cropCanvas || $('img-crop-modal').style.display === 'none') return;
-  e.preventDefault();
-  // pointerCapture: 指が canvas 外に出ても pointermove/pointerup が届く
-  try { _cropCanvas.setPointerCapture(e.pointerId); } catch(_) {}
-  _cropDrawing = true;
-  const p = _cropGetPos(e);
-  _cropSX = p.x; _cropSY = p.y;
-  _cropSel = { active: false };
-}
-function _onCropMove(e) {
-  if (!_cropDrawing) return;
-  e.preventDefault();
-  const p = _cropGetPos(e);
-  _cropRedraw(p.x, p.y);
-}
-function _onCropEnd(e) {
-  _cropDrawing = false;
-  try { _cropCanvas.releasePointerCapture(e.pointerId); } catch(_) {}
-}
-
-// Pointer Events API で登録（マウス・タッチ・Apple Pencil 全てをカバー）
-document.addEventListener('DOMContentLoaded', () => {
-  const canvas = $('crop-canvas');
-  if (!canvas) return;
-  canvas.addEventListener('pointerdown',   _onCropStart);
-  canvas.addEventListener('pointermove',   _onCropMove);
-  canvas.addEventListener('pointerup',     _onCropEnd);
-  canvas.addEventListener('pointercancel', _onCropEnd);
-});
 
 async function copyCropSelection() {
   const canvas = _cropCanvas;

@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=27">
+  <link rel="stylesheet" href="style.css?v=28">
 </head>
 <body>
 
@@ -555,29 +555,44 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v2.6.7</div>
+  <div class="app-version-badge">v2.6.8</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
     <div class="page-modal-backdrop" onclick="closeCropModal()"></div>
     <div class="crop-modal-box">
       <div class="crop-modal-header">
-        <span class="crop-modal-title">📐 ドラッグで範囲選択 → コピー</span>
+        <span class="crop-modal-title">📐 範囲選択コピー</span>
         <div class="crop-header-btns">
           <button id="btn-crop-copy" class="btn-crop-copy" onclick="copyCropSelection()">📋 コピー</button>
           <button class="page-modal-close-btn" onclick="closeCropModal()">✕</button>
         </div>
       </div>
+      <!-- 上端スライダー -->
+      <div class="crop-slider-row">
+        <span class="crop-slider-label">上端</span>
+        <input type="range" id="crop-y-top" class="crop-slider" min="0" max="100" value="0"
+               oninput="onCropSlider()">
+        <span class="crop-slider-val" id="crop-y-top-val">0%</span>
+      </div>
+      <!-- 画像プレビュー（タッチ不要・表示専用） -->
       <div class="crop-canvas-wrap" id="crop-canvas-wrap">
         <canvas id="crop-canvas"></canvas>
       </div>
+      <!-- 下端スライダー -->
+      <div class="crop-slider-row">
+        <span class="crop-slider-label">下端</span>
+        <input type="range" id="crop-y-bot" class="crop-slider" min="0" max="100" value="100"
+               oninput="onCropSlider()">
+        <span class="crop-slider-val" id="crop-y-bot-val">100%</span>
+      </div>
       <div class="crop-footer">
         <span id="crop-status" class="crop-status"></span>
-        <span class="crop-hint">範囲未選択の場合は画像全体をコピー</span>
+        <span class="crop-hint">スライダーで選択範囲を調整 → コピー</span>
       </div>
     </div>
   </div>
 
-  <script src="app.js?v=31"></script>
+  <script src="app.js?v=32"></script>
 </body>
 </html>
