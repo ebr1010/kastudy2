@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
 
@@ -26,7 +26,6 @@
       <div class="app-title-wrap">
         <div class="app-eyebrow">Civil Engineering · 2nd Grade</div>
         <h1 class="app-title">土木2級一次検定<span class="title-sep">|</span>過去問クイズ</h1>
-        <div class="app-version" id="app-version">v2.5.0</div>
       </div>
 
       <!-- 合格予測スコア（履歴10問以上で表示） -->
@@ -177,6 +176,7 @@
     <main class="quiz-main">
       <div class="question-card" id="question-card">
         <div class="question-image-wrap" id="question-image-wrap">
+          <button class="btn-crop-trigger" id="btn-crop-trigger" title="範囲選択してコピー" onclick="openCropModal()">📐</button>
           <img id="question-img" src="" alt="問題" class="question-img">
           <div id="img-loading" class="img-loading">📄 画像読込中...</div>
           <div id="img-error" class="img-error" style="display:none">
@@ -544,6 +544,30 @@
     </div>
   </div>
 
-  <script src="app.js?v=25"></script>
+  <!-- バージョンバッジ -->
+  <div class="app-version-badge">v2.6.0</div>
+
+  <!-- 画像範囲選択コピーモーダル -->
+  <div id="img-crop-modal" class="page-modal" style="display:none">
+    <div class="page-modal-backdrop" onclick="closeCropModal()"></div>
+    <div class="crop-modal-box">
+      <div class="crop-modal-header">
+        <span class="crop-modal-title">📐 ドラッグで範囲選択 → コピー</span>
+        <div class="crop-header-btns">
+          <button id="btn-crop-copy" class="btn-crop-copy" onclick="copyCropSelection()">📋 コピー</button>
+          <button class="page-modal-close-btn" onclick="closeCropModal()">✕</button>
+        </div>
+      </div>
+      <div class="crop-canvas-wrap" id="crop-canvas-wrap">
+        <canvas id="crop-canvas"></canvas>
+      </div>
+      <div class="crop-footer">
+        <span id="crop-status" class="crop-status"></span>
+        <span class="crop-hint">範囲未選択の場合は画像全体をコピー</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=26"></script>
 </body>
 </html>

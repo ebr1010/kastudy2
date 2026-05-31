@@ -586,6 +586,126 @@ function onAnswer(chosen) {
 }
 
 // ===== ページビューアーモーダル =====
+// ===== 画像範囲選択コピー =====
+let _cropImg = null;
+let _cropSel = { active: false, x: 0, y: 0, w: 0, h: 0 };
+let _cropScaleX = 1, _cropScaleY = 1;
+
+function openCropModal() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  const src = ansImgSrc(q.page);
+  const modal = $('img-crop-modal');
+  const canvas = $('crop-canvas');
+  const ctx = canvas.getContext('2d');
+  $('crop-status').textContent = '';
+  _cropSel = { active: false };
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    _cropImg = img;
+    const maxW = Math.min(window.innerWidth * 0.96, 960);
+    const maxH = window.innerHeight * 0.72;
+    const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+    canvas.width  = Math.round(img.width  * scale);
+    canvas.height = Math.round(img.height * scale);
+    _cropScaleX = img.width  / canvas.width;
+    _cropScaleY = img.height / canvas.height;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    bindCropEvents(canvas, ctx);
+  };
+  img.src = src;
+  modal.style.display = 'flex';
+}
+
+function closeCropModal() { $('img-crop-modal').style.display = 'none'; }
+
+function bindCropEvents(canvas, ctx) {
+  let drawing = false, sx = 0, sy = 0;
+
+  function pos(e) {
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return {
+      x: Math.max(0, Math.min(canvas.width,  (t.clientX - r.left) * (canvas.width  / r.width))),
+      y: Math.max(0, Math.min(canvas.height, (t.clientY - r.top)  * (canvas.height / r.height)))
+    };
+  }
+
+  function redraw(ex, ey) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(_cropImg, 0, 0, canvas.width, canvas.height);
+    const x = Math.min(sx, ex), y = Math.min(sy, ey);
+    const w = Math.abs(ex - sx),  h = Math.abs(ey - sy);
+    if (w < 2 || h < 2) return;
+    // 暗転オーバーレイ
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // 選択範囲だけクリア
+    ctx.clearRect(x, y, w, h);
+    ctx.drawImage(_cropImg, x * _cropScaleX, y * _cropScaleY, w * _cropScaleX, h * _cropScaleY, x, y, w, h);
+    // ボーダー
+    ctx.strokeStyle = '#a78bfa';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+    _cropSel = { active: true, x, y, w, h };
+  }
+
+  // 古いイベントを消す（再バインド防止）
+  const nc = canvas.cloneNode(false);
+  nc.width = canvas.width; nc.height = canvas.height;
+  const pCtx = nc.getContext('2d');
+  pCtx.drawImage(_cropImg, 0, 0, canvas.width, canvas.height);
+  canvas.parentNode.replaceChild(nc, canvas);
+
+  nc.addEventListener('mousedown',  e => { e.preventDefault(); drawing = true; const p = pos(e); sx = p.x; sy = p.y; _cropSel = { active: false }; });
+  nc.addEventListener('mousemove',  e => { if (!drawing) return; e.preventDefault(); const p = pos(e); redraw(p.x, p.y); });
+  nc.addEventListener('mouseup',    e => { drawing = false; });
+  nc.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = pos(e); sx = p.x; sy = p.y; _cropSel = { active: false }; }, { passive: false });
+  nc.addEventListener('touchmove',  e => { if (!drawing) return; e.preventDefault(); const p = pos(e); redraw(p.x, p.y); }, { passive: false });
+  nc.addEventListener('touchend',   e => { drawing = false; });
+
+  // btn-crop-copy にも最新 canvas を渡す
+  $('btn-crop-copy').onclick = () => copyCropSelectionOn(nc, pCtx);
+}
+
+function copyCropSelectionOn(canvas, ctx) {
+  const status = $('crop-status');
+  const sel = _cropSel.active ? _cropSel : { x: 0, y: 0, w: canvas.width, h: canvas.height };
+
+  const out = document.createElement('canvas');
+  out.width  = Math.round(sel.w * _cropScaleX);
+  out.height = Math.round(sel.h * _cropScaleY);
+  const octx = out.getContext('2d');
+  octx.drawImage(_cropImg,
+    sel.x * _cropScaleX, sel.y * _cropScaleY,
+    sel.w * _cropScaleX, sel.h * _cropScaleY,
+    0, 0, out.width, out.height
+  );
+
+  out.toBlob(async blob => {
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      status.textContent = '✅ コピー完了 — AIチャットに貼り付けてください';
+      status.className = 'crop-status ok';
+    } catch {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'question_crop.png'; a.click();
+      URL.revokeObjectURL(url);
+      status.textContent = '⬇ クリップボード不可 → ダウンロードしました';
+      status.className = 'crop-status warn';
+    }
+  }, 'image/png');
+}
+
+function copyCropSelection() {
+  const canvas = $('crop-canvas') || document.querySelector('#crop-canvas-wrap canvas');
+  if (!canvas) return;
+  copyCropSelectionOn(canvas, canvas.getContext('2d'));
+}
+
 // ===== AI質問モーダル =====
 let _aiAskCurrentQ = null;
 let _aiAskImageSrcs = [];
