@@ -38,6 +38,55 @@ function addHistory(q, chosen, isCorrect) {
 // ===== 全定数 =====
 const LS_USER_REFS = 'kastudy_user_refs';
 
+// ===== 理解度メモ =====
+// level: 'mid' = 中理解, 'no' = 無理解, undefined = 未設定
+const LS_UNDERSTANDING = 'kastudy_understanding';
+
+function getUnderstanding() {
+  try { return JSON.parse(localStorage.getItem(LS_UNDERSTANDING) || '{}'); } catch { return {}; }
+}
+
+function setUnderstanding(key, level) {
+  const data = getUnderstanding();
+  if (level === null) {
+    delete data[key];
+  } else {
+    data[key] = level;
+  }
+  localStorage.setItem(LS_UNDERSTANDING, JSON.stringify(data));
+}
+
+function getUnderstandingLevel(key) {
+  return getUnderstanding()[key] || null;
+}
+
+function getUnderstandingPool(pool, level) {
+  const data = getUnderstanding();
+  return pool.filter(q => data[qKey(q)] === level);
+}
+
+function renderUnderstandingBtns() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  const key = qKey(q);
+  const level = getUnderstandingLevel(key);
+  const btnMid = $('btn-understand-mid');
+  const btnNo  = $('btn-understand-no');
+  if (!btnMid || !btnNo) return;
+  btnMid.classList.toggle('active', level === 'mid');
+  btnNo.classList.toggle('active',  level === 'no');
+}
+
+function onUnderstandingClick(level) {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  const key = qKey(q);
+  const current = getUnderstandingLevel(key);
+  // 同じボタンを押したらリセット
+  setUnderstanding(key, current === level ? null : level);
+  renderUnderstandingBtns();
+}
+
 // ===== SRS / ストリーク 定数 =====
 const LS_SRS       = 'kastudy_srs';
 const LS_STREAK    = 'kastudy_streak';
@@ -265,6 +314,7 @@ async function initApp() {
     updateRepeatWrongBadge();
     updateStreakBadge();
     updateWeakSub();
+    updateUnderstandingBadges();
     renderTopPassScore();
     computeFrequentNums();
     renderResumeBtn();
@@ -567,6 +617,9 @@ function renderQuestion() {
   } else {
     stopTimeAttack();
   }
+
+  // 理解度ボタン状態更新
+  renderUnderstandingBtns();
 }
 
 function loadQuestionImage(q) {
@@ -1551,6 +1604,39 @@ function startDailyChallenge() {
 
   // クリア時にストリーク更新（結果画面で行う）
   state._isDailyMode = true;
+}
+
+// ===== 理解度バッジ更新 =====
+function updateUnderstandingBadges() {
+  const data = getUnderstanding();
+  const midCount = Object.values(data).filter(v => v === 'mid').length;
+  const noCount  = Object.values(data).filter(v => v === 'no').length;
+  const midBadge = $('understand-mid-badge');
+  const noBadge  = $('understand-no-badge');
+  if (midBadge) { midBadge.textContent = midCount; midBadge.style.display = midCount ? '' : 'none'; }
+  if (noBadge)  { noBadge.textContent  = noCount;  noBadge.style.display  = noCount  ? '' : 'none'; }
+}
+
+// ===== 理解度フィルタークイズ =====
+function startUnderstandingQuiz(level) {
+  const pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+  const filtered = getUnderstandingPool(pool, level);
+  if (!filtered.length) {
+    const label = level === 'mid' ? '中理解' : '無理解';
+    alert(label + 'にメモした問題がありません。\nクイズ中に問題ごとにメモできます。');
+    return;
+  }
+  const label = level === 'mid' ? '🟡 中理解' : '🔴 無理解';
+  state.questions = shuffle(filtered);
+  state.currentIndex = 0;
+  state.answers = new Array(state.questions.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = false; state.isFlashcardMode = false;
+  showScreen('quiz');
+  $('q-mode-tag').style.display = '';
+  $('q-mode-tag').textContent = label + '問題';
+  renderQuestion();
 }
 
 // ===== 弱点集中 =====
@@ -2895,6 +2981,8 @@ $('btn-weak').addEventListener('click', startWeakCategoryQuiz);
 $('btn-quick').addEventListener('click', startQuickReview);
 $('btn-flashcard-mode').addEventListener('click', startFlashcardMode);
 $('btn-plan').addEventListener('click', showPlan);
+$('btn-understand-mid-mode').addEventListener('click', () => startUnderstandingQuiz('mid'));
+$('btn-understand-no-mode').addEventListener('click', () => startUnderstandingQuiz('no'));
 
 // 直前プラン画面
 $('btn-back-from-plan').addEventListener('click', () => showScreen('setup'));

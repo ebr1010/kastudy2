@@ -2240,3 +2240,46 @@ input[type=file]::file-selector-button:hover {
   color: rgba(255,255,255,0.25);
   text-align: center;
 }
+
+/* ===== 理解度メモボタン（クイズ中） ===== */
+.understanding-row {
+  display: flex;
+  gap: 8px;
+  padding: 6px 12px 2px;
+  justify-content: center;
+}
+.btn-understand {
+  flex: 1;
+  max-width: 160px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.5);
+  transition: all .18s;
+}
+.btn-understand-mid.active {
+  background: rgba(234,179,8,0.22);
+  border-color: #eab308;
+  color: #fde047;
+  box-shadow: 0 0 8px rgba(234,179,8,0.4);
+}
+.btn-understand-no.active {
+  background: rgba(239,68,68,0.22);
+  border-color: #ef4444;
+  color: #fca5a5;
+  box-shadow: 0 0 8px rgba(239,68,68,0.4);
+}
+.btn-understand:hover:not(.active) {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8);
+}
+
+/* ===== 理解度クイックアクションボタン ===== */
+.btn-quick-mid { border-color: rgba(234,179,8,0.4) !important; color: #fde047 !important; }
+.btn-quick-no  { border-color: rgba(239,68,68,0.4)  !important; color: #fca5a5 !important; }
+.btn-quick-mid:hover { background: rgba(234,179,8,0.15) !important; }
+.btn-quick-no:hover  { background: rgba(239,68,68,0.15)  !important; }

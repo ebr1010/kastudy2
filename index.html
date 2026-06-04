@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=31">
+  <link rel="stylesheet" href="style.css?v=37">
 </head>
 <body>
 
@@ -91,6 +94,8 @@
               <option value="15">15秒</option>
               <option value="20">20秒</option>
               <option value="30">30秒</option>
+              <option value="45">45秒</option>
+              <option value="60">1分</option>
             </select>
           </label>
         </div>
@@ -145,6 +150,8 @@
         <div class="quick-actions">
           <button id="btn-repeat-wrong" class="btn-quick">🔁 繰り返し間違い<span id="repeat-wrong-badge" class="badge" style="display:none"></span></button>
           <button id="btn-frequent" class="btn-quick">🔥 頻出問題</button>
+          <button id="btn-understand-mid-mode" class="btn-quick btn-quick-mid">🟡 中理解問題<span id="understand-mid-badge" class="badge" style="display:none"></span></button>
+          <button id="btn-understand-no-mode"  class="btn-quick btn-quick-no">🔴 無理解問題<span id="understand-no-badge"  class="badge" style="display:none"></span></button>
           <button id="btn-stats" class="btn-quick">📊 学習分析</button>
           <button id="btn-correction-list" class="btn-quick">📝 解答修正</button>
           <button id="btn-manage-refs" class="btn-quick">📖 テキスト参照管理</button>
@@ -292,6 +299,12 @@
           <button class="option-btn" data-num="4"><span class="option-num">4</span></button>
         </div>
       </div>
+      <!-- 理解度メモ -->
+      <div class="understanding-row" id="understanding-row">
+        <button id="btn-understand-mid" class="btn-understand btn-understand-mid" onclick="onUnderstandingClick('mid')">🟡 中理解</button>
+        <button id="btn-understand-no"  class="btn-understand btn-understand-no"  onclick="onUnderstandingClick('no')">🔴 無理解</button>
+      </div>
+
       <div class="footer-nav">
         <button id="btn-prev" class="btn-outline" disabled>◀</button>
         <button id="btn-skip" class="btn-outline">スキップ</button>
@@ -563,7 +576,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v2.7.3</div>
+  <div class="app-version-badge">v2.8.0</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
@@ -600,6 +613,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=35"></script>
+  <script src="app.js?v=37"></script>
 </body>
 </html>
