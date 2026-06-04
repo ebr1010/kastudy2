@@ -2594,7 +2594,7 @@ function handleExtraFiles(files) {
 // ===== タイムアタック =====
 function getTimeAttackSec() {
   const el = $('time-attack-select');
-  return el ? (parseInt(el.value) || 0) : 0;
+  return el ? (parseFloat(el.value) || 0) : 0;
 }
 
 function startTimeAttack() {
@@ -2608,14 +2608,15 @@ function startTimeAttack() {
   state.timeAttackTotal = sec;
   updateTimeAttackDisplay();
   $('time-attack-bar').style.display = '';
+  const tick = 0.1;
   state.timeAttackTimer = setInterval(() => {
-    state.timeAttackRemaining--;
+    state.timeAttackRemaining = Math.round((state.timeAttackRemaining - tick) * 10) / 10;
     updateTimeAttackDisplay();
     if (state.timeAttackRemaining <= 0) {
       stopTimeAttack();
-      timeoutQuestion(); // 時間切れ → 間違い扱いで正解を表示
+      timeoutQuestion();
     }
-  }, 1000);
+  }, 100);
 }
 
 function stopTimeAttack() {
@@ -2631,7 +2632,7 @@ function updateTimeAttackDisplay() {
     ? (state.timeAttackRemaining / state.timeAttackTotal * 100)
     : 100;
   const sec = state.timeAttackRemaining;
-  el.textContent = sec + '秒';
+  el.textContent = (sec % 1 === 0 ? sec : sec.toFixed(1)) + '秒';
   fill.style.width = Math.max(0, pct) + '%';
   if (pct > 50)      fill.className = 'time-attack-fill';
   else if (pct > 25) fill.className = 'time-attack-fill warn';
