@@ -2244,30 +2244,34 @@ input[type=file]::file-selector-button:hover {
 /* ===== 理解度メモボタン（タグ行統合） ===== */
 .tag-understand {
   cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.2);
   background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.35);
   font-size: 11px;
-  padding: 2px 8px;
+  font-weight: 700;
+  padding: 2px 9px;
   border-radius: 20px;
-  transition: all .18s;
-  line-height: 1.6;
+  transition: all .15s;
+  line-height: 1.7;
+  opacity: 0.5;
 }
 .tag-understand:hover {
-  background: rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.75);
+  opacity: 0.85;
+  background: rgba(255,255,255,0.1);
 }
 .tag-understand-mid.active {
-  background: rgba(234,179,8,0.22);
-  border-color: #eab308;
-  color: #fde047;
-  box-shadow: 0 0 6px rgba(234,179,8,0.35);
+  opacity: 1;
+  background: #ca8a04;
+  border-color: #fde047;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(234,179,8,0.7);
 }
 .tag-understand-no.active {
-  background: rgba(239,68,68,0.22);
-  border-color: #ef4444;
-  color: #fca5a5;
-  box-shadow: 0 0 6px rgba(239,68,68,0.35);
+  opacity: 1;
+  background: #dc2626;
+  border-color: #fca5a5;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(239,68,68,0.7);
 }
 
 /* ===== 理解度クイックアクションボタン ===== */
