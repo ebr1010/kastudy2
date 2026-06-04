@@ -518,11 +518,6 @@ function renderQuestion() {
   if (saved !== null) {
     showFeedback(q, saved.chosen);
     $('feedback-area').style.display = '';
-    // パネルを展開状態にリセット
-    const qc2 = $('question-card');
-    if (qc2) qc2.classList.remove('panel-folded');
-    const tog = $('btn-panel-toggle');
-    if (tog) tog.textContent = '▼ 仕舞う';
   } else {
     $('feedback-area').style.display = 'none';
     $('footer-feedback').style.display = 'none';
@@ -976,12 +971,19 @@ function showFeedback(q, chosen) {
   const correct = q.answer;
   const ap = q._meta.answer_page;
 
-  // 回答後は画像を縮小するクラスを付与
+  // 回答後は画像を縮小するクラスを付与 + パネルを折り畳み状態にリセット
   const qCard = $('question-card');
   if (qCard) {
-    if (chosen !== null) qCard.classList.add('feedback-visible');
-    else qCard.classList.remove('feedback-visible');
+    if (chosen !== null) {
+      qCard.classList.add('feedback-visible');
+      qCard.classList.add('panel-folded');
+    } else {
+      qCard.classList.remove('feedback-visible');
+      qCard.classList.remove('panel-folded');
+    }
   }
+  const panelTogBtn = $('btn-panel-toggle');
+  if (panelTogBtn) panelTogBtn.textContent = chosen !== null ? '▲ 開く' : '▼ 仕舞う';
 
   // ---- フッターフィードバックバー ----
   const fb = $('footer-feedback');
