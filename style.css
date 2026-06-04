@@ -524,11 +524,46 @@ body {
   flex: 1; min-height: 0;
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 14px 16px 120px;
   background: rgba(255,255,255,.05);
   border-top: 1px solid var(--border);
+  display: flex; flex-direction: column;
 }
-.feedback-result { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+/* 折り畳みバー（常に表示・スクロールで追従） */
+.feedback-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px;
+  background: rgba(8,18,36,0.96);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: sticky; top: 0; z-index: 10;
+}
+.feedback-body {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 12px 16px 120px;
+}
+/* 仕舞うボタン */
+.btn-panel-toggle {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 12px; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.btn-panel-toggle:hover { background: rgba(255,255,255,0.16); color: var(--text); }
+/* フィードバックパネル折り畳み状態 */
+.panel-folded .feedback-area {
+  flex: 0 0 auto !important;
+  overflow: hidden !important;
+  max-height: 48px;
+}
+.panel-folded .feedback-body { display: none; }
+.panel-folded .question-image-wrap {
+  flex: 1 !important; /* 38vh制約を解除 */
+}
+.feedback-result { font-size: 20px; font-weight: 800; }
 .feedback-result.ok   { color: var(--success); text-shadow: 0 0 16px var(--success-glow); }
 .feedback-result.ng   { color: var(--danger);  text-shadow: 0 0 16px rgba(248,113,113,.6); }
 .feedback-result.skip { color: var(--warning); }
@@ -1579,7 +1614,13 @@ input[type=file]::file-selector-button:hover {
 }
 .source-label-text  { background: rgba(16,185,129,.18); color: #6ee7b7; }
 .source-label-audio { background: rgba(59,130,246,.18); color: #93c5fd; }
-.source-label-ai    { background: rgba(245,158,11,.15);  color: #fcd34d; }
+.source-label-ai    { background: rgba(245,158,11,.15);  color: #fcd34d;
+  cursor: pointer; user-select: none; -webkit-user-select: none;
+  display: flex; align-items: center; justify-content: space-between; }
+.source-label-ai::after { content: '▼'; font-size: 10px; opacity: 0.7; }
+.source-block.ai-collapsed .source-label-ai::after { content: '▶'; }
+/* AI解説 折り畳み時はボディを非表示 */
+.source-block.ai-collapsed .ai-body { display: none; }
 .source-body {
   padding: 10px 14px;
   font-size: 13px;

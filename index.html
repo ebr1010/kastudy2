@@ -6,7 +6,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=30">
+  <link rel="stylesheet" href="style.css?v=31">
 </head>
 <body>
 
@@ -196,7 +196,12 @@
         </div>
 
         <div class="feedback-area" id="feedback-area" style="display:none">
-          <div class="feedback-result" id="feedback-result"></div>
+          <!-- 折り畳みバー：常に表示 -->
+          <div class="feedback-topbar" id="feedback-topbar">
+            <div class="feedback-result" id="feedback-result"></div>
+            <button id="btn-panel-toggle" class="btn-panel-toggle" title="問題を確認">▼ 仕舞う</button>
+          </div>
+          <div class="feedback-body" id="feedback-body">
           <div class="answer-page-info" id="answer-page-info"></div>
           <div id="answer-correction" class="answer-correction" style="display:none">
             <span class="correction-label">✏️ 正解を変更:</span>
@@ -206,18 +211,20 @@
             <button class="correction-btn" data-num="4">4</button>
           </div>
           <button id="btn-correction-toggle" class="btn-correction-toggle">解答が間違ってる場合はここ</button>
-          <!-- AI解説（4択カード） -->
-          <div id="source-ai" class="source-block" style="display:none">
-            <div class="source-label source-label-ai">🤖 AI解説</div>
-            <div id="ai-choice-cards"></div>
-            <!-- 用語一覧 -->
-            <div id="ai-term-list" class="ai-term-list" style="display:none">
-              <div class="ai-term-list-label">🔍 用語一覧</div>
-              <div id="ai-term-links" class="ai-term-links"></div>
-            </div>
-            <!-- 解説通報 -->
-            <div class="ai-report-row">
-              <button id="btn-report-explanation" class="btn-report-explanation" style="display:none">⚑ 解説がおかしい</button>
+          <!-- AI解説（4択カード）: デフォルト折り畳み -->
+          <div id="source-ai" class="source-block ai-collapsed" style="display:none">
+            <div class="source-label source-label-ai" id="btn-ai-toggle">🤖 AI解説</div>
+            <div class="ai-body">
+              <div id="ai-choice-cards"></div>
+              <!-- 用語一覧 -->
+              <div id="ai-term-list" class="ai-term-list" style="display:none">
+                <div class="ai-term-list-label">🔍 用語一覧</div>
+                <div id="ai-term-links" class="ai-term-links"></div>
+              </div>
+              <!-- 解説通報 -->
+              <div class="ai-report-row">
+                <button id="btn-report-explanation" class="btn-report-explanation" style="display:none">⚑ 解説がおかしい</button>
+              </div>
             </div>
           </div>
 
@@ -245,6 +252,7 @@
               </div>
             </div>
           </div>
+          </div><!-- /feedback-body -->
         </div>
       </div>
     </main>
@@ -555,7 +563,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v2.7.1</div>
+  <div class="app-version-badge">v2.7.2</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
@@ -592,6 +600,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=33"></script>
+  <script src="app.js?v=34"></script>
 </body>
 </html>

@@ -518,13 +518,18 @@ function renderQuestion() {
   if (saved !== null) {
     showFeedback(q, saved.chosen);
     $('feedback-area').style.display = '';
+    // パネルを展開状態にリセット
+    const qc2 = $('question-card');
+    if (qc2) qc2.classList.remove('panel-folded');
+    const tog = $('btn-panel-toggle');
+    if (tog) tog.textContent = '▼ 仕舞う';
   } else {
     $('feedback-area').style.display = 'none';
     $('footer-feedback').style.display = 'none';
     $('footer-feedback').className = 'footer-feedback';
     $('footer-correction-panel').style.display = 'none';
     const qc = $('question-card');
-    if (qc) qc.classList.remove('feedback-visible');
+    if (qc) { qc.classList.remove('feedback-visible'); qc.classList.remove('panel-folded'); }
   }
 
   $('btn-prev').disabled = idx === 0;
@@ -1095,6 +1100,7 @@ function showFeedback(q, chosen) {
         aiCards.appendChild(card);
       }
       srcAI.style.display = '';
+      srcAI.classList.add('ai-collapsed'); // デフォルト折り畳み
 
       // ===== 解説通報ボタン =====
       const reportBtn = $('btn-report-explanation');
@@ -2905,5 +2911,20 @@ $('btn-flashcard-reveal').addEventListener('click', () => {
 });
 $('btn-fc-correct').addEventListener('click', () => onFlashcardJudge(true));
 $('btn-fc-wrong').addEventListener('click', () => onFlashcardJudge(false));
+
+// ===== フィードバックパネル 折り畳み =====
+$('btn-panel-toggle').addEventListener('click', () => {
+  const qc  = $('question-card');
+  const btn = $('btn-panel-toggle');
+  if (!qc) return;
+  const folded = qc.classList.toggle('panel-folded');
+  btn.textContent = folded ? '▲ 開く' : '▼ 仕舞う';
+});
+
+// ===== AI解説 折り畳みトグル =====
+$('btn-ai-toggle').addEventListener('click', () => {
+  const srcAI = $('source-ai');
+  if (srcAI) srcAI.classList.toggle('ai-collapsed');
+});
 
 initApp();
