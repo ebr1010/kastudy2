@@ -2663,3 +2663,16 @@ input[type=file]::file-selector-button:hover {
   transition: background .15s;
 }
 .btn-sync-force:hover { background: rgba(255,255,255,0.15); }
+
+/* ===== 同期ログ表示 ===== */
+.expl-sync-log {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.7);
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-height: 36px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

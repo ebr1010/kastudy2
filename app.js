@@ -3776,6 +3776,125 @@ $('btn-force-import').addEventListener('click', async () => {
 });
 $('btn-back-from-expl-mgmt').addEventListener('click', () => showScreen('setup'));
 
+function setExplSyncLog(msg, isError) {
+  const el = $('expl-sync-log');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? '#fca5a5' : 'rgba(255,255,255,0.7)';
+}
+
+// 解説画像管理画面：強制保存
+$('btn-expl-sync-save').addEventListener('click', async () => {
+  const token = getGHToken();
+  if (!token) { setExplSyncLog('⚠ GitHubトークン未設定', true); return; }
+  const btn = $('btn-expl-sync-save');
+  btn.disabled = true;
+  setExplSyncLog('📤 保存中...');
+
+  try {
+    const imgKeys = await getAllExplKeys();
+    if (!imgKeys.length) { setExplSyncLog('⚠ 登録済み画像がありません', true); btn.disabled = false; return; }
+
+    const ghImgs = await ghListDir(token, 'sync/images').catch(() => []);
+    const existing = {};
+    ghImgs.forEach(f => { existing[f.name] = f.sha; });
+
+    let uploaded = 0, skipped = 0, failed = 0;
+    for (const key of imgKeys) {
+      const blobs = await getExplImages(key);
+      if (!blobs.length) continue;
+      const safeKey = btoa(unescape(encodeURIComponent(key)))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+      for (let i = 0; i < blobs.length; i++) {
+        const fname = safeKey + '_' + i;
+        if (existing[fname]) { skipped++; continue; }
+        setExplSyncLog('📤 アップロード中... ' + (uploaded + 1) + '枚目 / ' + key);
+        try {
+          const b = blobs[i];
+          const b64 = await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result.split(',')[1]);
+            r.onerror = reject;
+            r.readAsDataURL(b instanceof Blob ? b : new Blob([b]));
+          });
+          await ghPutFile(token, 'sync/images/' + fname, b64, null, 'sync img');
+          uploaded++;
+        } catch(e) { failed++; console.error(e); }
+      }
+    }
+
+    const msg = `✅ 完了 — 新規アップ: ${uploaded}枚 / スキップ(既存): ${skipped}枚${failed ? ' / 失敗: ' + failed + '枚' : ''}`;
+    setExplSyncLog(msg, failed > 0);
+    await refreshExplRegisteredList();
+  } catch(e) {
+    setExplSyncLog('⚠ エラー: ' + e.message, true);
+  }
+  btn.disabled = false;
+});
+
+// 解説画像管理画面：強制読込
+$('btn-expl-sync-load').addEventListener('click', async () => {
+  const token = getGHToken();
+  if (!token) { setExplSyncLog('⚠ GitHubトークン未設定', true); return; }
+  const btn = $('btn-expl-sync-load');
+  btn.disabled = true;
+  setExplSyncLog('📥 GitHubのファイル一覧取得中...');
+
+  try {
+    const imgFiles = await ghListDir(token, 'sync/images');
+    if (!imgFiles.length) { setExplSyncLog('ℹ GitHubに画像なし', false); btn.disabled = false; return; }
+
+    setExplSyncLog('📥 ' + imgFiles.length + 'ファイル検出 — ダウンロード中...');
+
+    const byKey = {};
+    imgFiles.forEach(f => {
+      const m = f.name.match(/^(.+)_(\d+)$/);
+      if (!m) return;
+      const safeKey = m[1], idx = parseInt(m[2]);
+      let key;
+      try { key = decodeURIComponent(escape(atob(safeKey.replace(/-/g,'+').replace(/_/g,'/')))); }
+      catch { key = safeKey; }
+      if (!byKey[key]) byKey[key] = [];
+      byKey[key].push({ idx, download_url: f.download_url, name: f.name });
+    });
+
+    let loaded = 0, failed = 0;
+    const totalKeys = Object.keys(byKey).length;
+    let ki = 0;
+    for (const [key, arr] of Object.entries(byKey)) {
+      ki++;
+      setExplSyncLog('📥 読込中 ' + ki + '/' + totalKeys + '問: ' + key);
+      arr.sort((a, b) => a.idx - b.idx);
+      const blobs = [];
+      for (const { download_url } of arr) {
+        try {
+          const r = await fetch(download_url);
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          blobs.push(await r.blob());
+          loaded++;
+        } catch(e) { failed++; console.warn(e); }
+      }
+      if (blobs.length) {
+        const db = await openExplDB();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(EXPL_STORE, 'readwrite');
+          const req = tx.objectStore(EXPL_STORE).put(blobs, key);
+          req.onsuccess = resolve;
+          req.onerror = () => reject(req.error);
+        });
+      }
+    }
+
+    const msg = `✅ 完了 — 読込: ${loaded}枚 / ${totalKeys}問${failed ? ' / 失敗: ' + failed + '枚' : ''}`;
+    setExplSyncLog(msg, failed > 0);
+    await refreshExplRegisteredList();
+    await updateExplImgCountLabel();
+  } catch(e) {
+    setExplSyncLog('⚠ エラー: ' + e.message, true);
+  }
+  btn.disabled = false;
+});
+
 // 解説画像：一括ドロップ
 const bulkDrop = $('expl-bulk-drop');
 bulkDrop.addEventListener('click', () => $('expl-bulk-input').click());
