@@ -2900,10 +2900,9 @@ async function doSyncSave() {
     _syncSha = currentFile ? currentFile.sha : null;
     _syncSha = await ghPutFile(token, GH_SYNC_PATH, toBase64(JSON.stringify(data)), _syncSha, 'sync data');
 
-    // 2. 解説画像保存（新規・変更分のみ）
+    // 2. 解説画像保存
     const imgKeys = await getAllExplKeys();
     if (imgKeys.length) {
-      // GitHub上の既存ファイル一覧を取得
       const existing = {};
       const ghImgs = await ghListDir(token, 'sync/images').catch(() => []);
       ghImgs.forEach(f => { existing[f.name] = f.sha; });
@@ -2911,15 +2910,21 @@ async function doSyncSave() {
       let imgCount = 0;
       for (const key of imgKeys) {
         const blobs = await getExplImages(key);
-        // 日本語を含むキーをASCII安全な名前に変換
-        const safeKey = btoa(unescape(encodeURIComponent(key))).replace(/[+/=]/g, c => ({'+':`-`,'/':'_','=':''}[c]));
+        if (!blobs.length) continue;
+        const safeKey = btoa(unescape(encodeURIComponent(key)))
+          .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
         for (let i = 0; i < blobs.length; i++) {
-          const fname = safeKey + '_' + i;
-          const b64   = await blobToBase64(blobs[i]);
-          const sha   = existing[fname] || null;
-          setSyncStatus('⏫ 画像保存中 ' + (imgCount + 1) + '枚目...');
-          await ghPutFile(token, 'sync/images/' + fname, b64, sha, 'sync img');
           imgCount++;
+          setSyncStatus('⏫ 画像保存中 ' + imgCount + '枚目...');
+          const blob = blobs[i];
+          const b64 = await new Promise((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result.split(',')[1]);
+            r.onerror = reject;
+            r.readAsDataURL(blob instanceof Blob ? blob : new Blob([blob]));
+          });
+          const fname = safeKey + '_' + i;
+          await ghPutFile(token, 'sync/images/' + fname, b64, existing[fname] || null, 'sync img');
         }
       }
     }
