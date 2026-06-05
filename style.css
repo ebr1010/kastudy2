@@ -2620,23 +2620,23 @@ input[type=file]::file-selector-button:hover {
   flex-direction: column;
   overflow: hidden;
 }
-/* PC時のみ横並び */
+/* PC時のみ横並び・均等幅 */
 @media (min-width: 960px) {
   .quiz-body-wrap {
     flex-direction: row;
     align-items: stretch;
-    max-width: 1400px;
-    width: 100%;
-    margin: 0 auto;
   }
+  /* クイズ側：元の幅をそのまま維持 */
   .quiz-body-wrap .quiz-main {
-    max-width: none;
     flex: 1;
     min-width: 0;
+    max-width: 800px; /* 元のmax-widthを維持 */
   }
+  /* 解説パネル：クイズと同じflex:1で均等幅 */
   .expl-panel {
-    width: 340px;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
+    max-width: 800px;
     overflow-y: auto;
     border-left: 1px solid rgba(255,255,255,0.08);
     padding: 12px;
