@@ -2676,3 +2676,12 @@ input[type=file]::file-selector-button:hover {
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+/* ===== 出題設定 2段レイアウト ===== */
+.options-grid-row2 {
+  margin-top: 10px;
+}
+.options-grid-row2 .option-card {
+  flex: 1 1 160px;
+  min-width: 140px;
+}

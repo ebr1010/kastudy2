@@ -9,7 +9,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=45">
+  <link rel="stylesheet" href="style.css?v=46">
 </head>
 <body>
 
@@ -52,6 +52,7 @@
 
       <section class="setup-section">
         <h2>⚙️ 出題設定</h2>
+        <!-- 1段目：問題番号範囲（全幅） -->
         <div class="options-grid">
           <div class="option-card option-card-range">
             <span class="option-label">問題番号範囲</span>
@@ -71,6 +72,9 @@
               <div class="range-dial-hint">ドラッグで範囲を選択</div>
             </div>
           </div>
+        </div>
+        <!-- 2段目：各種設定 -->
+        <div class="options-grid options-grid-row2">
           <label class="option-card">
             <span class="option-label">出題順</span>
             <select id="order-select">
@@ -107,7 +111,7 @@
           <label class="option-card">
             <span class="option-label">📷 解説画像</span>
             <label class="toggle-switch">
-              <input type="checkbox" id="expl-img-mode">
+              <input type="checkbox" id="expl-img-mode" checked>
               <span class="toggle-slider"></span>
             </label>
           </label>
@@ -680,7 +684,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v3.1.4</div>
+  <div class="app-version-badge">v3.1.5</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
