@@ -2786,49 +2786,98 @@ function base64ToBlob(b64, type = 'image/jpeg') {
   return new Blob([arr], { type });
 }
 
-// 現在のSHAを取得（保存前に常に最新を確認）
-async function fetchSyncSha(token) {
-  const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
+// ===== GitHub同期ユーティリティ =====
+async function ghGetFile(token, path) {
+  const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}`;
   const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
-  if (res.status === 404) return null;   // ファイル未作成
-  if (!res.ok) throw new Error('SHA取得失敗 ' + res.status);
-  const file = await res.json();
-  return file.sha;
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(res.status + ' ' + path);
+  return await res.json(); // { sha, content(base64), ... }
 }
 
-// 起動時：GitHubから全データ読み込み（テキストデータのみ）
+async function ghPutFile(token, path, contentBase64, sha, msg) {
+  const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}`;
+  const body = { message: msg || 'sync', content: contentBase64 };
+  if (sha) body.sha = sha;
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(res.status + ': ' + (e.message || ''));
+  }
+  return (await res.json()).content.sha;
+}
+
+async function ghListDir(token, path) {
+  const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}`;
+  const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error(res.status);
+  return await res.json(); // array of { name, path, sha, download_url }
+}
+
+// ===== 起動時：GitHubから全データ読み込み =====
 async function syncLoadFromGitHub() {
   const token = getGHToken();
   if (!token) { setSyncStatus('🔑 トークン未設定'); return; }
   setSyncStatus('⏳ 同期中...');
   try {
-    const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
-    const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
-    if (res.status === 404) {
-      // ファイル未作成 → 現在のデータで即座に初回保存
+    // 1. テキストデータ
+    const dataFile = await ghGetFile(token, GH_SYNC_PATH);
+    if (!dataFile) {
+      // 初回：現在のデータをすぐ保存
       setSyncStatus('⏫ 初回保存中...');
       await doSyncSave();
       return;
     }
-    if (res.status === 401) { setSyncStatus('⚠ トークンエラー'); return; }
-    if (!res.ok) { setSyncStatus('⚠ 読込エラー ' + res.status); return; }
-    const file = await res.json();
-    _syncSha = file.sha;
-    const json = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+    _syncSha = dataFile.sha;
+    const json = decodeURIComponent(escape(atob(dataFile.content.replace(/\n/g, ''))));
     const data = JSON.parse(json);
-    LS_SYNC_KEYS.forEach(k => {
-      if (data[k] != null) localStorage.setItem(k, data[k]);
-    });
-    setSyncStatus('✅ 同期済み ' + new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }));
+    LS_SYNC_KEYS.forEach(k => { if (data[k] != null) localStorage.setItem(k, data[k]); });
+
+    // 2. 解説画像（sync/images/ にある全ファイルを取得）
+    setSyncStatus('⏳ 画像同期中...');
+    const imgFiles = await ghListDir(token, 'sync/images');
+    if (imgFiles.length) {
+      // ファイル名: "{qKey}_{index}" 形式
+      const byKey = {};
+      imgFiles.forEach(f => {
+        const m = f.name.match(/^(.+)_(\d+)$/);
+        if (!m) return;
+        const key = m[1], idx = parseInt(m[2]);
+        if (!byKey[key]) byKey[key] = [];
+        byKey[key].push({ idx, download_url: f.download_url });
+      });
+      for (const [key, arr] of Object.entries(byKey)) {
+        arr.sort((a, b) => a.idx - b.idx);
+        const blobs = await Promise.all(arr.map(async ({ download_url }) => {
+          const r = await fetch(download_url);
+          return await r.blob();
+        }));
+        // IndexedDBに保存（scheduleSyncSaveを呼ばないよう直接DB操作）
+        const db = await openExplDB();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(EXPL_STORE, 'readwrite');
+          tx.objectStore(EXPL_STORE).put(blobs, key).onsuccess = resolve;
+          tx.onerror = reject;
+        });
+      }
+    }
+
+    const t = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+    setSyncStatus('✅ 同期済み ' + t);
   } catch(e) {
     console.error('sync load error', e);
-    setSyncStatus('⚠ 同期エラー: ' + e.message);
+    setSyncStatus('⚠ 読込エラー: ' + e.message);
   }
 }
 
-// データ変更時に呼ぶ（3秒debounce）
+// ===== データ変更時に呼ぶ（3秒debounce） =====
 function scheduleSyncSave() {
-  if (!getGHToken()) return;   // トークン無ければ何もしない
+  if (!getGHToken()) return;
   if (_syncTimer) clearTimeout(_syncTimer);
   _syncTimer = setTimeout(doSyncSave, 3000);
 }
@@ -2839,40 +2888,36 @@ async function doSyncSave() {
   _syncBusy = true;
   setSyncStatus('⏫ 保存中...');
   try {
-    // テキストデータのみ（画像は除外：サイズが大きすぎるため）
+    // 1. テキストデータ保存
     const data = {};
     LS_SYNC_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v) data[k] = v; });
+    const currentFile = await ghGetFile(token, GH_SYNC_PATH);
+    _syncSha = currentFile ? currentFile.sha : null;
+    _syncSha = await ghPutFile(token, GH_SYNC_PATH, toBase64(JSON.stringify(data)), _syncSha, 'sync data');
 
-    // 保存前に必ず最新SHAを取得（SHA競合を防ぐ）
-    _syncSha = await fetchSyncSha(token);
+    // 2. 解説画像保存（新規・変更分のみ）
+    const imgKeys = await getAllExplKeys();
+    if (imgKeys.length) {
+      // GitHub上の既存ファイル一覧を取得
+      const existing = {};
+      const ghImgs = await ghListDir(token, 'sync/images').catch(() => []);
+      ghImgs.forEach(f => { existing[f.name] = f.sha; });
 
-    const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
-    const body = {
-      message: 'sync ' + new Date().toISOString(),
-      content: toBase64(JSON.stringify(data)),
-    };
-    if (_syncSha) body.sha = _syncSha;
-
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (res.ok) {
-      const r = await res.json();
-      _syncSha = r.content.sha;
-      setSyncStatus('✅ 同期済み ' + new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }));
-    } else if (res.status === 409) {
-      // SHA競合：再度SHAを取得してリトライ
-      setSyncStatus('🔄 競合解決中...');
-      _syncSha = await fetchSyncSha(token);
-      _syncBusy = false;
-      scheduleSyncSave();
-      return;
-    } else {
-      const errBody = await res.json().catch(() => ({}));
-      setSyncStatus('⚠ 保存エラー ' + res.status + (errBody.message ? ': ' + errBody.message : ''));
+      let imgCount = 0;
+      for (const key of imgKeys) {
+        const blobs = await getExplImages(key);
+        for (let i = 0; i < blobs.length; i++) {
+          const fname = key + '_' + i;
+          const b64   = await blobToBase64(blobs[i]);
+          const sha   = existing[fname] || null;
+          await ghPutFile(token, 'sync/images/' + fname, b64, sha, 'sync img ' + fname);
+          imgCount++;
+        }
+      }
     }
+
+    const t = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+    setSyncStatus('✅ 同期済み ' + t);
   } catch(e) {
     console.error('sync save error', e);
     setSyncStatus('⚠ 保存エラー: ' + e.message);
