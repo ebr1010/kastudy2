@@ -2554,3 +2554,12 @@ input[type=file]::file-selector-button:hover {
 }
 .btn-ocr-search:hover { background: rgba(59,130,246,0.25); border-color: var(--primary); }
 .btn-ocr-copy:hover   { background: rgba(255,255,255,0.15); }
+
+/* ===== 自動同期ステータスバッジ ===== */
+.sync-status-badge {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+  min-height: 16px;
+  transition: color .3s;
+}

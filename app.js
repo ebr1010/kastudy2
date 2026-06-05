@@ -14,6 +14,7 @@ function getOverrides() {
 function saveOverride(key, answer) {
   const ov = getOverrides(); ov[key] = answer;
   localStorage.setItem(LS.OVERRIDES, JSON.stringify(ov));
+  scheduleSyncSave();
 }
 function getHistory() {
   try { return JSON.parse(localStorage.getItem(LS.HISTORY) || '[]'); } catch { return []; }
@@ -32,6 +33,7 @@ function addHistory(q, chosen, isCorrect) {
     isCorrect,
   });
   localStorage.setItem(LS.HISTORY, JSON.stringify(hist));
+  scheduleSyncSave();
   if (chosen !== null) updateSRS(qKey(q), isCorrect);
 }
 
@@ -54,6 +56,7 @@ function setUnderstanding(key, level) {
     data[key] = level;
   }
   localStorage.setItem(LS_UNDERSTANDING, JSON.stringify(data));
+  scheduleSyncSave();
 }
 
 function getUnderstandingLevel(key) {
@@ -182,7 +185,7 @@ async function getExplImages(key) {
 }
 async function setExplImages(key, blobs) {
   const db = await openExplDB();
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     const tx = db.transaction(EXPL_STORE, 'readwrite');
     const req = blobs.length
       ? tx.objectStore(EXPL_STORE).put(blobs, key)
@@ -190,6 +193,7 @@ async function setExplImages(key, blobs) {
     req.onsuccess = () => resolve();
     req.onerror   = () => reject(req.error);
   });
+  scheduleSyncSave();
 }
 async function getAllExplKeys() {
   const db = await openExplDB();
@@ -470,6 +474,7 @@ function toggleFreqMark(key) {
   const data = getFreqMarks();
   if (data[key]) { delete data[key]; } else { data[key] = 1; }
   localStorage.setItem(LS_FREQ_MARK, JSON.stringify(data));
+  scheduleSyncSave();
 }
 function isFreqMarked(key) {
   return !!getFreqMarks()[key];
@@ -606,6 +611,7 @@ function updateSRS(key, isCorrect) {
   entry.lastDate = new Date().toISOString().slice(0, 10);
   srs[key] = entry;
   localStorage.setItem(LS_SRS, JSON.stringify(srs));
+  scheduleSyncSave();
 }
 
 function getSRSDue(pool) {
@@ -642,6 +648,7 @@ function markDailyDone() {
   else if (streak.lastDate === yest) { streak.count++; streak.lastDate = today; streak.todayDone = true; }
   else { streak.count = 1; streak.lastDate = today; streak.todayDone = true; }
   localStorage.setItem(LS_STREAK, JSON.stringify(streak));
+  scheduleSyncSave();
   return streak;
 }
 
@@ -749,6 +756,16 @@ async function initApp() {
     updateFreqMarkBadges();
     updateExplImgCountLabel();
     renderTopPassScore();
+    syncLoadFromGitHub().then(() => {
+      // 同期後にUI再描画
+      updateRepeatWrongBadge();
+      updateStreakBadge();
+      updateWeakSub();
+      updateUnderstandingBadges();
+      updateFreqMarkBadges();
+      updateExplImgCountLabel();
+      renderResumeBtn();
+    });
     computeFrequentNums();
     renderResumeBtn();
     updateRangeDialMax();
@@ -2686,10 +2703,123 @@ function showFrequentQuestions() {
 }
 
 // ===== GitHub API 連携 =====
-const GH_REPO = 'ebr1010/kastudy2';
+const GH_REPO      = 'ebr1010/kastudy2';
 const GH_TOKEN_KEY = 'kastudy_gh_token';
+const GH_SYNC_PATH = 'sync/userdata.json';
+
+// 同期対象のlocalStorageキー全て
+const LS_SYNC_KEYS = [
+  'kastudy_overrides',
+  'kastudy_history',
+  'kastudy_user_refs',
+  'kastudy_understanding',
+  'kastudy_freq_mark',
+  'kastudy_srs',
+  'kastudy_streak',
+  'kastudy_exam_date',
+  'kastudy_reports',
+];
+
+let _syncSha   = null;
+let _syncTimer = null;
+let _syncBusy  = false;
 
 function getGHToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+
+function blobToBase64(blob) {
+  return new Promise(resolve => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result.split(',')[1]);
+    r.readAsDataURL(blob);
+  });
+}
+function base64ToBlob(b64, type = 'image/jpeg') {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type });
+}
+
+// 起動時：GitHubから全データ読み込み
+async function syncLoadFromGitHub() {
+  const token = getGHToken();
+  if (!token) return;
+  setSyncStatus('⏳ 同期中...');
+  try {
+    const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
+    const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+    if (res.status === 404) { setSyncStatus(''); return; }
+    if (!res.ok) { setSyncStatus('⚠ 同期エラー'); return; }
+    const file = await res.json();
+    _syncSha = file.sha;
+    const data = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
+    // localStorage 全キー復元
+    LS_SYNC_KEYS.forEach(k => {
+      if (data[k] != null) localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
+    });
+    // 解説画像（IndexedDB）復元
+    if (data._images) {
+      for (const [key, b64arr] of Object.entries(data._images)) {
+        const blobs = b64arr.map(b => base64ToBlob(b));
+        await setExplImages(key, blobs);
+      }
+    }
+    setSyncStatus('✅ 同期済み');
+  } catch(e) {
+    console.warn('sync load error', e);
+    setSyncStatus('⚠ 同期エラー');
+  }
+}
+
+// データ変更時に呼ぶ（3秒debounce）
+function scheduleSyncSave() {
+  if (_syncTimer) clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(doSyncSave, 3000);
+}
+
+async function doSyncSave() {
+  const token = getGHToken();
+  if (!token || _syncBusy) return;
+  _syncBusy = true;
+  setSyncStatus('⏫ 保存中...');
+  try {
+    const data = {};
+    LS_SYNC_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v) data[k] = v; });
+    // 解説画像
+    const imgKeys = await getAllExplKeys();
+    if (imgKeys.length) {
+      data._images = {};
+      for (const key of imgKeys) {
+        const blobs = await getExplImages(key);
+        data._images[key] = await Promise.all(blobs.map(blobToBase64));
+      }
+    }
+    const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
+    const body = { message: 'sync ' + new Date().toISOString(), content: toBase64(JSON.stringify(data)) };
+    if (_syncSha) body.sha = _syncSha;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      const r = await res.json();
+      _syncSha = r.content.sha;
+      setSyncStatus('✅ 同期済み');
+    } else {
+      setSyncStatus('⚠ 保存エラー ' + res.status);
+    }
+  } catch(e) {
+    console.warn('sync save error', e);
+    setSyncStatus('⚠ 保存エラー');
+  }
+  _syncBusy = false;
+}
+
+function setSyncStatus(msg) {
+  const el = $('sync-status-badge');
+  if (el) el.textContent = msg;
+}
 
 function updateTokenStatus() {
   const token = getGHToken();
