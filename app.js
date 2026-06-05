@@ -3260,6 +3260,8 @@ function timeoutQuestion() {
   showFeedback(q, 0);
   $('feedback-area').style.display = '';
   updateNextBtn();
+  saveSession();
+  updateExplPanel();
 }
 
 // ===== 結果 =====
