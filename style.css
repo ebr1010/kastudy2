@@ -2468,9 +2468,13 @@ input[type=file]::file-selector-button:hover {
 .expl-mgmt-row { display: flex; gap: 10px; margin-bottom: 14px; }
 .expl-select {
   flex: 1; padding: 8px 12px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: #1e1b4b;
+  border: 1px solid rgba(255,255,255,0.25);
   border-radius: 8px; color: #fff; font-size: 13px;
+}
+.expl-select option {
+  background: #1e1b4b;
+  color: #fff;
 }
 .expl-per-q-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .expl-perq-thumb-wrap { position: relative; }
@@ -2563,3 +2567,34 @@ input[type=file]::file-selector-button:hover {
   min-height: 16px;
   transition: color .3s;
 }
+
+/* ===== 登録済み一覧グループ表示 ===== */
+.expl-reg-group { margin-bottom: 8px; }
+.expl-reg-group-header {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 10px 14px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.expl-reg-group-header:hover { background: rgba(255,255,255,0.13); }
+.expl-reg-group-label { font-size: 14px; font-weight: 700; color: #fff; flex: 1; }
+.expl-reg-group-count { font-size: 12px; color: #86efac; font-weight: 700; }
+.expl-reg-group-arrow { font-size: 11px; color: rgba(255,255,255,0.4); }
+.expl-reg-group-body {
+  padding: 6px 8px 2px;
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.expl-reg-row {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px; padding: 5px 10px;
+}
+.expl-reg-key { font-size: 12px; color: rgba(255,255,255,0.8); }
+.btn-expl-reg-del {
+  font-size: 11px; padding: 2px 8px;
+  background: rgba(239,68,68,0.15);
+  border: 1px solid rgba(239,68,68,0.4);
+  border-radius: 4px; color: #fca5a5; cursor: pointer;
+}
+.btn-expl-reg-del:hover { background: rgba(239,68,68,0.3); }

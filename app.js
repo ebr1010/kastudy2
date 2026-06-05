@@ -315,25 +315,67 @@ async function showExplMgmt() {
 }
 
 async function refreshExplRegisteredList() {
-  const keys  = await getAllExplKeys();
-  const el    = $('expl-registered-list');
-  const cnt   = $('expl-registered-count');
+  const keys = await getAllExplKeys();
+  const el   = $('expl-registered-list');
+  const cnt  = $('expl-registered-count');
   if (cnt) cnt.textContent = keys.length + '問登録済み';
   if (!el) return;
   if (!keys.length) { el.innerHTML = '<div class="stats-empty">まだ登録なし</div>'; return; }
-  el.innerHTML = keys.map(k =>
-    `<div class="expl-reg-row">
-      <span class="expl-reg-key">${k}</span>
-      <button class="btn-expl-reg-del btn-outline" data-key="${k}" style="font-size:11px;padding:3px 8px">🗑</button>
-    </div>`
-  ).join('');
-  el.querySelectorAll('.btn-expl-reg-del').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      if (!confirm(btn.dataset.key + ' の解説画像を削除しますか？')) return;
-      await setExplImages(btn.dataset.key, []);
-      await refreshExplRegisteredList();
-      await updateExplImgCountLabel();
+
+  // 年度ごとにグループ化: key = "YYYY_期_NoN"
+  const groups = {};
+  keys.forEach(k => {
+    const m = k.match(/^(.+?_[^_]+)_No(\d+)$/);
+    if (!m) return;
+    const examKey = m[1]; // "YYYY_期"
+    if (!groups[examKey]) groups[examKey] = [];
+    groups[examKey].push({ key: k, number: parseInt(m[2]) });
+  });
+
+  el.innerHTML = '';
+  Object.entries(groups).sort().forEach(([examKey, items]) => {
+    items.sort((a, b) => a.number - b.number);
+    const examLabel = examKey.replace('_', '年度 ');
+
+    const section = document.createElement('div');
+    section.className = 'expl-reg-group';
+
+    const header = document.createElement('div');
+    header.className = 'expl-reg-group-header';
+    header.innerHTML = `
+      <span class="expl-reg-group-label">📁 ${examLabel}</span>
+      <span class="expl-reg-group-count">${items.length}問</span>
+      <span class="expl-reg-group-arrow">▶</span>`;
+    header.onclick = () => {
+      const body = section.querySelector('.expl-reg-group-body');
+      const arrow = header.querySelector('.expl-reg-group-arrow');
+      const open = body.style.display !== 'none';
+      body.style.display = open ? 'none' : '';
+      arrow.textContent = open ? '▶' : '▼';
+    };
+
+    const body = document.createElement('div');
+    body.className = 'expl-reg-group-body';
+    body.style.display = 'none';
+
+    items.forEach(({ key, number }) => {
+      const row = document.createElement('div');
+      row.className = 'expl-reg-row';
+      row.innerHTML = `
+        <span class="expl-reg-key">No.${number}</span>
+        <button class="btn-expl-reg-del" data-key="${key}">🗑 削除</button>`;
+      row.querySelector('.btn-expl-reg-del').addEventListener('click', async () => {
+        if (!confirm('No.' + number + ' の解説画像を削除しますか？')) return;
+        await setExplImages(key, []);
+        await refreshExplRegisteredList();
+        await updateExplImgCountLabel();
+      });
+      body.appendChild(row);
     });
+
+    section.appendChild(header);
+    section.appendChild(body);
+    el.appendChild(section);
   });
 }
 
