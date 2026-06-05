@@ -2309,31 +2309,7 @@ input[type=file]::file-selector-button:hover {
 }
 
 
-/* ===== 解説画像モード：2カラムラッパー ===== */
-.quiz-content-wrap {
-  /* 通常はただのブロック要素 */
-}
-@media (min-width: 960px) {
-  .quiz-content-wrap {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 0;
-  }
-  .quiz-content-wrap .quiz-main {
-    flex: 1;
-    min-width: 0;
-  }
-  .expl-panel {
-    width: 340px;
-    flex-shrink: 0;
-    align-self: flex-start;
-    position: sticky;
-    top: 70px;
-    max-height: calc(100vh - 80px);
-    overflow-y: auto;
-  }
-}
+/* quiz-content-wrap 廃止済み */
 
 /* ===== 解説パネル（PC右側） ===== */
 .expl-panel {

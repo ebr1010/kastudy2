@@ -9,7 +9,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=40">
+  <link rel="stylesheet" href="style.css?v=41">
 </head>
 <body>
 
@@ -206,9 +206,6 @@
       <button id="btn-freq-mark" class="tag tag-freq-mark" onclick="onFreqMarkClick()">⭐ 頻出</button>
     </div>
 
-    <!-- 解説画像モード：2カラムラッパー -->
-    <div class="quiz-content-wrap" id="quiz-content-wrap">
-
     <main class="quiz-main">
       <div class="question-card" id="question-card">
         <div class="question-image-wrap" id="question-image-wrap">
@@ -283,16 +280,10 @@
       </div>
     </main>
 
-    <!-- 解説画像パネル（PC右側 / タブレットはモーダル） -->
-    <aside class="expl-panel" id="expl-panel" style="display:none">
-      <div class="expl-panel-header">
-        <span class="expl-panel-title">📷 解説画像</span>
-        <span class="expl-panel-count" id="expl-panel-count"></span>
-      </div>
+    <!-- 解説画像パネル（モーダルのみ、サイドパネル廃止） -->
+    <aside id="expl-panel" style="display:none">
       <div class="expl-panel-images" id="expl-panel-images"></div>
     </aside>
-
-    </div><!-- /quiz-content-wrap -->
 
     <footer class="quiz-footer">
       <div class="footer-feedback" id="footer-feedback" style="display:none">
@@ -660,7 +651,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v3.0.1</div>
+  <div class="app-version-badge">v3.0.2</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
