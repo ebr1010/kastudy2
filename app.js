@@ -2944,39 +2944,55 @@ async function doSyncSave() {
   _syncBusy = true;
   setSyncStatus('⏫ 保存中...');
   try {
-    // 1. テキストデータ保存
+    // 1. テキストデータ保存（SHA取得と書き込みを並列化）
     const data = {};
     LS_SYNC_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v) data[k] = v; });
+
+    // 2. 解説画像の新規分を特定（既存はスキップ）
+    const imgKeys = await getAllExplKeys();
+    const ghImgs = imgKeys.length
+      ? await ghListDir(token, 'sync/images').catch(() => [])
+      : [];
+    const existing = {};
+    ghImgs.forEach(f => { existing[f.name] = f.sha; });
+
+    // アップロード対象（GitHub未登録のもの）を収集
+    const uploads = []; // { fname, b64 }
+    for (const key of imgKeys) {
+      const blobs = await getExplImages(key);
+      if (!blobs.length) continue;
+      const safeKey = btoa(unescape(encodeURIComponent(key)))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+      for (let i = 0; i < blobs.length; i++) {
+        const fname = safeKey + '_' + i;
+        if (existing[fname]) continue; // 既にGitHubにある → スキップ
+        const blob = blobs[i];
+        const b64 = await new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result.split(',')[1]);
+          r.onerror = reject;
+          r.readAsDataURL(blob instanceof Blob ? blob : new Blob([blob]));
+        });
+        uploads.push({ fname, b64 });
+      }
+    }
+
+    // テキストデータ保存
     const currentFile = await ghGetFile(token, GH_SYNC_PATH);
     _syncSha = currentFile ? currentFile.sha : null;
     _syncSha = await ghPutFile(token, GH_SYNC_PATH, toBase64(JSON.stringify(data)), _syncSha, 'sync data');
 
-    // 2. 解説画像保存
-    const imgKeys = await getAllExplKeys();
-    if (imgKeys.length) {
-      const existing = {};
-      const ghImgs = await ghListDir(token, 'sync/images').catch(() => []);
-      ghImgs.forEach(f => { existing[f.name] = f.sha; });
-
-      let imgCount = 0;
-      for (const key of imgKeys) {
-        const blobs = await getExplImages(key);
-        if (!blobs.length) continue;
-        const safeKey = btoa(unescape(encodeURIComponent(key)))
-          .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-        for (let i = 0; i < blobs.length; i++) {
-          imgCount++;
-          setSyncStatus('⏫ 画像保存中 ' + imgCount + '枚目...');
-          const blob = blobs[i];
-          const b64 = await new Promise((resolve, reject) => {
-            const r = new FileReader();
-            r.onload = () => resolve(r.result.split(',')[1]);
-            r.onerror = reject;
-            r.readAsDataURL(blob instanceof Blob ? blob : new Blob([blob]));
-          });
-          const fname = safeKey + '_' + i;
-          await ghPutFile(token, 'sync/images/' + fname, b64, existing[fname] || null, 'sync img');
-        }
+    // 新規画像を並列アップロード（5枚ずつバッチ）
+    if (uploads.length) {
+      setSyncStatus('⏫ 新規画像 ' + uploads.length + '枚アップ中...');
+      const BATCH = 5;
+      for (let i = 0; i < uploads.length; i += BATCH) {
+        const batch = uploads.slice(i, i + BATCH);
+        await Promise.all(batch.map(({ fname, b64 }) =>
+          ghPutFile(token, 'sync/images/' + fname, b64, null, 'sync img')
+        ));
+        if (uploads.length > BATCH)
+          setSyncStatus('⏫ 画像アップ中 ' + Math.min(i + BATCH, uploads.length) + '/' + uploads.length);
       }
     }
 
