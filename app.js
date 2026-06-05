@@ -3744,6 +3744,27 @@ $('btn-understand-no-mode').addEventListener('click', () => startUnderstandingQu
 $('btn-freq-mark-mode').addEventListener('click', () => startFreqMarkQuiz(true));
 $('btn-freq-non-mode').addEventListener('click', () => startFreqMarkQuiz(false));
 $('btn-expl-upload').addEventListener('click', () => showExplMgmt());
+
+// 強制エクスポート／インポート
+$('btn-force-export').addEventListener('click', async () => {
+  if (!getGHToken()) { alert('GitHubトークンが設定されていません'); return; }
+  setSyncStatus('⏫ 強制保存中...');
+  _syncBusy = false; // 強制実行なのでロック解除
+  await doSyncSave();
+});
+$('btn-force-import').addEventListener('click', async () => {
+  if (!getGHToken()) { alert('GitHubトークンが設定されていません'); return; }
+  setSyncStatus('⏳ 強制読込中...');
+  await syncLoadFromGitHub();
+  // UI再描画
+  updateRepeatWrongBadge();
+  updateStreakBadge();
+  updateWeakSub();
+  updateUnderstandingBadges();
+  updateFreqMarkBadges();
+  updateExplImgCountLabel();
+  renderResumeBtn();
+});
 $('btn-back-from-expl-mgmt').addEventListener('click', () => showScreen('setup'));
 
 // 解説画像：一括ドロップ
