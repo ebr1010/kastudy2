@@ -2311,31 +2311,27 @@ input[type=file]::file-selector-button:hover {
 
 /* ===== 解説画像モード：2カラムラッパー ===== */
 .quiz-content-wrap {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  /* 通常はただのブロック要素 */
 }
 @media (min-width: 960px) {
   .quiz-content-wrap {
+    display: flex;
     flex-direction: row;
     align-items: flex-start;
     gap: 0;
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 0 12px;
   }
   .quiz-content-wrap .quiz-main {
     flex: 1;
     min-width: 0;
   }
   .expl-panel {
-    width: 360px;
+    width: 340px;
     flex-shrink: 0;
     align-self: flex-start;
     position: sticky;
-    top: 80px;
+    top: 70px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
   }
 }
 
