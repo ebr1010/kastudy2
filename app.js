@@ -2786,18 +2786,22 @@ function base64ToBlob(b64, type = 'image/jpeg') {
   return new Blob([arr], { type });
 }
 
-// ===== GitHub同期ユーティリティ =====
+// ===== GitHub同期ユーティリティ（syncブランチ専用）=====
+// mainブランチへの書き込みはGitHub Pagesのビルドを妨げるため
+// 専用のsyncブランチに読み書きする
+const GH_SYNC_BRANCH = 'sync';
+
 async function ghGetFile(token, path) {
-  const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}`;
+  const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}?ref=${GH_SYNC_BRANCH}`;
   const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(res.status + ' ' + path);
-  return await res.json(); // { sha, content(base64), ... }
+  return await res.json();
 }
 
 async function ghPutFile(token, path, contentBase64, sha, msg) {
   const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}`;
-  const body = { message: msg || 'sync', content: contentBase64 };
+  const body = { message: msg || 'sync', content: contentBase64, branch: GH_SYNC_BRANCH };
   if (sha) body.sha = sha;
   const res = await fetch(url, {
     method: 'PUT',
@@ -2812,11 +2816,11 @@ async function ghPutFile(token, path, contentBase64, sha, msg) {
 }
 
 async function ghListDir(token, path) {
-  const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}`;
+  const url = `https://api.github.com/repos/${GH_REPO}/contents/${path}?ref=${GH_SYNC_BRANCH}`;
   const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
   if (res.status === 404) return [];
   if (!res.ok) throw new Error(res.status);
-  return await res.json(); // array of { name, path, sha, download_url }
+  return await res.json();
 }
 
 // ===== 起動時：GitHubから全データ読み込み =====
