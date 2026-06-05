@@ -2611,3 +2611,35 @@ input[type=file]::file-selector-button:hover {
 }
 .cust-select-item:hover { background: rgba(255,255,255,0.12); }
 .cust-select-placeholder { color: rgba(255,255,255,0.4); font-style: italic; }
+
+/* ===== PC解説画像右パネル ===== */
+.quiz-body-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* PC時のみ横並び */
+@media (min-width: 960px) {
+  .quiz-body-wrap {
+    flex-direction: row;
+    align-items: stretch;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .quiz-body-wrap .quiz-main {
+    max-width: none;
+    flex: 1;
+    min-width: 0;
+  }
+  .expl-panel {
+    width: 340px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    padding: 12px;
+    background: rgba(0,0,0,0.15);
+  }
+}
