@@ -9,7 +9,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=37">
+  <link rel="stylesheet" href="style.css?v=38">
 </head>
 <body>
 
@@ -373,12 +373,14 @@
       <section class="setup-section">
         <h2>📝 問題ごとに登録・編集</h2>
         <div class="expl-mgmt-row">
-          <select id="expl-exam-select" class="expl-select">
-            <option value="">年度を選択</option>
-          </select>
-          <select id="expl-no-select" class="expl-select" disabled>
-            <option value="">問題番号</option>
-          </select>
+          <div class="cust-select-wrap" id="expl-exam-wrap">
+            <div class="cust-select" id="expl-exam-select" data-value="">年度を選択 ▾</div>
+            <div class="cust-select-list" id="expl-exam-list" style="display:none"></div>
+          </div>
+          <div class="cust-select-wrap" id="expl-no-wrap">
+            <div class="cust-select cust-select-disabled" id="expl-no-select" data-value="">問題番号 ▾</div>
+            <div class="cust-select-list" id="expl-no-list" style="display:none"></div>
+          </div>
         </div>
         <div id="expl-per-q-area" style="display:none">
           <div id="expl-per-q-drop" class="expl-drop-zone expl-drop-zone-sm">
@@ -660,7 +662,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v2.9.4</div>
+  <div class="app-version-badge">v2.9.5</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
