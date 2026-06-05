@@ -153,6 +153,8 @@
           <button id="btn-frequent" class="btn-quick">🔥 頻出問題</button>
           <button id="btn-understand-mid-mode" class="btn-quick btn-quick-mid">🟡 中理解問題<span id="understand-mid-badge" class="badge" style="display:none"></span></button>
           <button id="btn-understand-no-mode"  class="btn-quick btn-quick-no">🔴 無理解問題<span id="understand-no-badge"  class="badge" style="display:none"></span></button>
+          <button id="btn-freq-mark-mode" class="btn-quick btn-quick-freq">⭐ 頻出マーク問題<span id="freq-mark-badge" class="badge" style="display:none"></span></button>
+          <button id="btn-freq-non-mode"  class="btn-quick btn-quick-non">📋 非頻出問題</button>
           <button id="btn-stats" class="btn-quick">📊 学習分析</button>
           <button id="btn-correction-list" class="btn-quick">📝 解答修正</button>
           <button id="btn-manage-refs" class="btn-quick">📖 テキスト参照管理</button>
@@ -191,6 +193,7 @@
       <span id="q-freq-tag" class="tag tag-freq" style="display:none">🔥 頻出</span>
       <button id="btn-understand-mid" class="tag tag-understand tag-understand-mid" onclick="onUnderstandingClick('mid')">中理解</button>
       <button id="btn-understand-no"  class="tag tag-understand tag-understand-no"  onclick="onUnderstandingClick('no')">無理解</button>
+      <button id="btn-freq-mark" class="tag tag-freq-mark" onclick="onFreqMarkClick()">⭐ 頻出</button>
     </div>
 
     <main class="quiz-main">
@@ -573,7 +576,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v2.8.4</div>
+  <div class="app-version-badge">v2.8.5</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">

@@ -2274,7 +2274,36 @@ input[type=file]::file-selector-button:hover {
 }
 
 /* ===== 理解度クイックアクションボタン ===== */
-.btn-quick-mid { border-color: rgba(234,179,8,0.4) !important; color: #fde047 !important; }
-.btn-quick-no  { border-color: rgba(239,68,68,0.4)  !important; color: #fca5a5 !important; }
-.btn-quick-mid:hover { background: rgba(234,179,8,0.15) !important; }
-.btn-quick-no:hover  { background: rgba(239,68,68,0.15)  !important; }
+.btn-quick-mid  { border-color: rgba(234,179,8,0.4) !important; color: #fde047 !important; }
+.btn-quick-no   { border-color: rgba(239,68,68,0.4)  !important; color: #fca5a5 !important; }
+.btn-quick-freq { border-color: rgba(99,179,65,0.4)  !important; color: #86efac !important; }
+.btn-quick-non  { border-color: rgba(148,163,184,0.4)!important; color: #cbd5e1 !important; }
+.btn-quick-mid:hover  { background: rgba(234,179,8,0.15) !important; }
+.btn-quick-no:hover   { background: rgba(239,68,68,0.15)  !important; }
+.btn-quick-freq:hover { background: rgba(99,179,65,0.15)  !important; }
+.btn-quick-non:hover  { background: rgba(148,163,184,0.1) !important; }
+
+/* ===== 頻出マークボタン（タグ行） ===== */
+.tag-freq-mark {
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: transparent;
+  color: rgba(255,255,255,0.28);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 20px;
+  transition: all .15s;
+  line-height: 1.7;
+}
+.tag-freq-mark:hover {
+  border-color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.6);
+}
+.tag-freq-mark.active {
+  background: #16a34a;
+  border-color: #86efac;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 0 12px rgba(22,163,74,0.8);
+}

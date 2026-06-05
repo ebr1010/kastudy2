@@ -87,6 +87,64 @@ function onUnderstandingClick(level) {
   renderUnderstandingBtns();
 }
 
+// ===== 頻出マーク =====
+const LS_FREQ_MARK = 'kastudy_freq_mark';
+
+function getFreqMarks() {
+  try { return JSON.parse(localStorage.getItem(LS_FREQ_MARK) || '{}'); } catch { return {}; }
+}
+function toggleFreqMark(key) {
+  const data = getFreqMarks();
+  if (data[key]) { delete data[key]; } else { data[key] = 1; }
+  localStorage.setItem(LS_FREQ_MARK, JSON.stringify(data));
+}
+function isFreqMarked(key) {
+  return !!getFreqMarks()[key];
+}
+function renderFreqMarkBtn() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  const btn = $('btn-freq-mark');
+  if (!btn) return;
+  btn.classList.toggle('active', isFreqMarked(qKey(q)));
+}
+function onFreqMarkClick() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  toggleFreqMark(qKey(q));
+  renderFreqMarkBtn();
+  updateFreqMarkBadges();
+}
+function updateFreqMarkBadges() {
+  const data = getFreqMarks();
+  const cnt = Object.keys(data).length;
+  const b1 = $('freq-mark-badge');
+  const b2 = $('freq-mark-non-badge');
+  if (b1) { b1.textContent = cnt; b1.style.display = cnt ? '' : 'none'; }
+  // 非頻出バッジは全問数から引く（allPool取得後に呼ぶ必要あり、ここでは省略）
+}
+function startFreqMarkQuiz(marked) {
+  const pool = getAllPool(true);
+  if (!pool.length) { alert('年度を選択してください'); return; }
+  const data = getFreqMarks();
+  const filtered = marked
+    ? pool.filter(q => data[qKey(q)])
+    : pool.filter(q => !data[qKey(q)]);
+  if (!filtered.length) {
+    alert((marked ? '頻出' : '非頻出') + 'にマークした問題がありません。\nクイズ中にタグ行の「頻出」ボタンでマークできます。');
+    return;
+  }
+  state.questions = shuffle(filtered);
+  state.currentIndex = 0;
+  state.answers = new Array(state.questions.length).fill(null);
+  state.score = 0; state.wrongQuestions = [];
+  state.isMockMode = false; state.isFlashcardMode = false;
+  showScreen('quiz');
+  $('q-mode-tag').style.display = '';
+  $('q-mode-tag').textContent = marked ? '⭐ 頻出マーク' : '📋 非頻出';
+  renderQuestion();
+}
+
 // ===== SRS / ストリーク 定数 =====
 const LS_SRS       = 'kastudy_srs';
 const LS_STREAK    = 'kastudy_streak';
@@ -315,6 +373,7 @@ async function initApp() {
     updateStreakBadge();
     updateWeakSub();
     updateUnderstandingBadges();
+    updateFreqMarkBadges();
     renderTopPassScore();
     computeFrequentNums();
     renderResumeBtn();
@@ -620,6 +679,8 @@ function renderQuestion() {
 
   // 理解度ボタン状態更新
   renderUnderstandingBtns();
+  // 頻出マークボタン状態更新
+  renderFreqMarkBtn();
 }
 
 function loadQuestionImage(q) {
@@ -2984,6 +3045,8 @@ $('btn-flashcard-mode').addEventListener('click', startFlashcardMode);
 $('btn-plan').addEventListener('click', showPlan);
 $('btn-understand-mid-mode').addEventListener('click', () => startUnderstandingQuiz('mid'));
 $('btn-understand-no-mode').addEventListener('click', () => startUnderstandingQuiz('no'));
+$('btn-freq-mark-mode').addEventListener('click', () => startFreqMarkQuiz(true));
+$('btn-freq-non-mode').addEventListener('click', () => startFreqMarkQuiz(false));
 
 // 直前プラン画面
 $('btn-back-from-plan').addEventListener('click', () => showScreen('setup'));
