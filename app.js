@@ -214,37 +214,18 @@ function isExplMode() {
 }
 
 async function updateExplPanel() {
+  // 自動表示はしない。ボタン表示/非表示のみ制御
   const q = state.questions[state.currentIndex];
-  if (!q) return;
+  const btnMob = $('btn-expl-img');
+  if (!btnMob) return;
+
   const answered = state.answers[state.currentIndex] !== null;
-  const panel   = $('expl-panel');
-  const btnMob  = $('btn-expl-img');
-  const isPC    = window.innerWidth >= 960;
-
-  if (!isExplMode()) {
-    if (panel)  panel.style.display  = 'none';
-    if (btnMob) btnMob.style.display = 'none';
+  if (!isExplMode() || !answered || !q) {
+    btnMob.style.display = 'none';
     return;
   }
-
-  const imgs = answered ? await getExplImages(qKey(q)) : [];
-
-  if (imgs.length === 0) {
-    if (panel)  panel.style.display  = 'none';
-    if (btnMob) btnMob.style.display = 'none';
-    return;
-  }
-
-  if (isPC) {
-    if (panel) {
-      panel.style.display = '';
-      renderExplPanelImages(imgs);
-    }
-    if (btnMob) btnMob.style.display = 'none';
-  } else {
-    if (panel)  panel.style.display  = 'none';
-    if (btnMob) btnMob.style.display = '';
-  }
+  const imgs = await getExplImages(qKey(q));
+  btnMob.style.display = imgs.length ? '' : 'none';
 }
 
 function renderExplPanelImages(blobs) {
