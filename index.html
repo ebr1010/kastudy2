@@ -391,20 +391,6 @@
         </div>
       </section>
 
-      <!-- デバイス間同期 -->
-      <section class="setup-section">
-        <h2>🔄 デバイス間同期</h2>
-        <p class="hint-text">iPadで登録した画像をPCで見る場合は「エクスポート」→「インポート」で移行できます</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button id="btn-expl-export" class="btn-primary">📤 エクスポート（全データ保存）</button>
-          <label class="btn-outline" style="cursor:pointer;display:flex;align-items:center;padding:10px 18px;border-radius:8px">
-            📥 インポート（別デバイスから）
-            <input type="file" id="expl-import-input" accept=".kastu-expl" style="display:none">
-          </label>
-        </div>
-        <div id="expl-sync-status" style="margin-top:10px;font-size:13px;color:var(--text-muted)"></div>
-      </section>
-
       <!-- 登録済み一覧 -->
       <section class="setup-section">
         <h2>📋 登録済み一覧 <span id="expl-registered-count" style="font-size:13px;color:var(--text-muted)"></span></h2>
@@ -674,7 +660,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v2.9.3</div>
+  <div class="app-version-badge">v2.9.4</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
