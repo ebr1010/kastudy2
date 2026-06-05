@@ -300,13 +300,19 @@ let _explPerQBlobs = []; // 現在登録済み + 新規のblobs
 
 async function showExplMgmt() {
   showScreen('expl-mgmt');
-  // 年度セレクト（カスタムドロップダウン）
+  // 年度セレクト（ネイティブselect）
+  const sel = $('expl-exam-select');
+  sel.innerHTML = '<option value="">年度を選択</option>';
   const all = [...state.allExams, ...state.extraExams];
-  const items = all.map(ex => ({ value: ex.meta.id, label: ex.meta.year + '年度 ' + ex.meta.period }));
-  setCustSelectOptions('expl-exam-list', items, '年度を選択');
-  resetCustSelect('expl-exam-select', 'expl-exam-list', '年度を選択');
-  resetCustSelect('expl-no-select',   'expl-no-list',   '問題番号');
-  $('expl-no-select').classList.add('cust-select-disabled');
+  all.forEach(ex => {
+    const opt = document.createElement('option');
+    opt.value = ex.meta.id;
+    opt.textContent = ex.meta.year + '年度 ' + ex.meta.period;
+    sel.appendChild(opt);
+  });
+  const noSel = $('expl-no-select');
+  noSel.innerHTML = '<option value="">問題番号</option>';
+  noSel.disabled = true;
   $('expl-per-q-area').style.display = 'none';
   await refreshExplRegisteredList();
   await updateExplImgCountLabel();
@@ -491,8 +497,8 @@ function renderExplPerQPreview() {
 }
 
 async function savePerQExpl() {
-  const examId = $('expl-exam-select').dataset.value;
-  const noNum  = $('expl-no-select').dataset.value;
+  const examId = $('expl-exam-select').value;
+  const noNum  = $('expl-no-select').value;
   if (!examId || !noNum) return;
   const all  = [...state.allExams, ...state.extraExams];
   const exam = all.find(e => e.meta.id === examId);
@@ -3609,86 +3615,35 @@ bulkDrop.addEventListener('drop', e => {
 $('expl-bulk-input').addEventListener('change', e => handleBulkFiles(e.target.files));
 $('btn-expl-bulk-save').addEventListener('click', saveBulkExpl);
 
-// ===== カスタムドロップダウン =====
-function initCustSelect(triggerId, listId, onSelect) {
-  const trigger = $(triggerId);
-  const list    = $(listId);
-  if (!trigger || !list) return;
-  trigger.addEventListener('click', e => {
-    e.stopPropagation();
-    if (trigger.classList.contains('cust-select-disabled')) return;
-    const open = list.style.display !== 'none';
-    // 他を全部閉じる
-    document.querySelectorAll('.cust-select-list').forEach(l => l.style.display = 'none');
-    list.style.display = open ? 'none' : '';
-  });
-  list.addEventListener('click', e => {
-    const item = e.target.closest('.cust-select-item');
-    if (!item) return;
-    trigger.textContent = item.textContent + ' ▾';
-    trigger.dataset.value = item.dataset.value;
-    list.style.display = 'none';
-    onSelect(item.dataset.value);
-  });
-  document.addEventListener('click', () => { list.style.display = 'none'; });
-}
-
-function setCustSelectOptions(listId, items, placeholder) {
-  const list = $(listId);
-  if (!list) return;
-  list.innerHTML = '';
-  if (placeholder) {
-    const ph = document.createElement('div');
-    ph.className = 'cust-select-item cust-select-placeholder';
-    ph.dataset.value = '';
-    ph.textContent = placeholder;
-    list.appendChild(ph);
-  }
-  items.forEach(({ value, label }) => {
-    const div = document.createElement('div');
-    div.className = 'cust-select-item';
-    div.dataset.value = value;
-    div.textContent = label;
-    list.appendChild(div);
-  });
-}
-
-function resetCustSelect(triggerId, listId, placeholder) {
-  const trigger = $(triggerId);
-  const list    = $(listId);
-  if (trigger) { trigger.textContent = placeholder + ' ▾'; trigger.dataset.value = ''; }
-  if (list) list.style.display = 'none';
-}
-
-// 解説画像：問題ごと（カスタムドロップダウン）
-async function onExplExamSelect(examId) {
-  const noTrigger = $('expl-no-select');
-  resetCustSelect('expl-no-select', 'expl-no-list', '問題番号');
-  noTrigger.classList.add('cust-select-disabled');
+// 解説画像：問題ごと
+$('expl-exam-select').addEventListener('change', async e => {
+  const noSel = $('expl-no-select');
+  noSel.innerHTML = '<option value="">問題番号</option>';
+  noSel.disabled = true;
   $('expl-per-q-area').style.display = 'none';
-  if (!examId) return;
+  if (!e.target.value) return;
   const all  = [...state.allExams, ...state.extraExams];
-  const exam = all.find(ex => ex.meta.id === examId);
+  const exam = all.find(ex => ex.meta.id === e.target.value);
   if (!exam) return;
-  const items = exam.questions.filter(q => q.answer).map(q => ({ value: String(q.number), label: 'No.' + q.number }));
-  setCustSelectOptions('expl-no-list', items, '問題番号を選択');
-  noTrigger.classList.remove('cust-select-disabled');
-}
-
-async function onExplNoSelect(num) {
+  exam.questions.filter(q => q.answer).forEach(q => {
+    const opt = document.createElement('option');
+    opt.value = q.number;
+    opt.textContent = 'No.' + q.number;
+    noSel.appendChild(opt);
+  });
+  noSel.disabled = false;
+});
+$('expl-no-select').addEventListener('change', async e => {
   const area = $('expl-per-q-area');
-  if (!num) { area.style.display = 'none'; return; }
-  const examId = $('expl-exam-select').dataset.value;
+  if (!e.target.value) { area.style.display = 'none'; return; }
+  const examSel = $('expl-exam-select');
   const all  = [...state.allExams, ...state.extraExams];
-  const exam = all.find(ex => ex.meta.id === examId);
+  const exam = all.find(ex => ex.meta.id === examSel.value);
   if (!exam) return;
-  const key = exam.meta.year + '_' + exam.meta.period + '_No' + num;
+  const key = exam.meta.year + '_' + exam.meta.period + '_No' + e.target.value;
   area.style.display = '';
   await loadExplPerQ(key);
-}
-
-initCustSelect('expl-exam-select', 'expl-exam-list', onExplExamSelect);
-initCustSelect('expl-no-select',   'expl-no-list',   onExplNoSelect);
+});
 const perQDrop = $('expl-per-q-drop');
 perQDrop.addEventListener('click', () => $('expl-per-q-input').click());
 perQDrop.addEventListener('dragover', e => { e.preventDefault(); perQDrop.classList.add('drag-over'); });
