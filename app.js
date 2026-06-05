@@ -2804,7 +2804,12 @@ async function syncLoadFromGitHub() {
   try {
     const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
     const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
-    if (res.status === 404) { setSyncStatus('☁ 初回同期待ち'); return; }
+    if (res.status === 404) {
+      // ファイル未作成 → 現在のデータで即座に初回保存
+      setSyncStatus('⏫ 初回保存中...');
+      await doSyncSave();
+      return;
+    }
     if (res.status === 401) { setSyncStatus('⚠ トークンエラー'); return; }
     if (!res.ok) { setSyncStatus('⚠ 読込エラー ' + res.status); return; }
     const file = await res.json();
