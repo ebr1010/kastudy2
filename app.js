@@ -92,9 +92,12 @@ function onUnderstandingClick(level) {
 
 // ===== OCR (Tesseract.js) =====
 const _ocrCache = {}; // 'qKey_imgIdx' → text
+// OCRキャッシュバージョン（変更するとキャッシュが無効化される）
+const OCR_CACHE_VER = 'v2';
 
 async function runOCR(blob, cacheKey) {
-  if (_ocrCache[cacheKey]) return _ocrCache[cacheKey];
+  const vKey = cacheKey + '_' + OCR_CACHE_VER;
+  if (_ocrCache[vKey]) return _ocrCache[vKey];
   try {
     const worker = await Tesseract.createWorker('jpn', 1, {
       workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
@@ -102,8 +105,13 @@ async function runOCR(blob, cacheKey) {
     });
     const { data: { text } } = await worker.recognize(blob);
     await worker.terminate();
-    const cleaned = text.replace(/\s+/g, ' ').trim();
-    _ocrCache[cacheKey] = cleaned;
+    const cleaned = text
+      .split('\n')
+      .map(line => line.replace(/[ \t]+/g, ' ').trim()) // 行内の余分なスペース除去
+      .filter((line, i, arr) => line || (arr[i-1] && arr[i+1])) // 連続空行を1つに
+      .join('\n')
+      .trim();
+    _ocrCache[vKey] = cleaned;
     return cleaned;
   } catch(e) {
     console.error('OCR error', e);
@@ -3228,6 +3236,7 @@ function skipQuestion() {
   showFeedback(q, -1);
   $('feedback-area').style.display = '';
   updateNextBtn();
+  updateExplPanel();
 }
 
 // chosen=0 をタイムアウト専用センチネルとして使用（1-4は正規の選択肢）
