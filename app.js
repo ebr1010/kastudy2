@@ -222,10 +222,11 @@ function isExplMode() {
 }
 
 async function updateExplPanel() {
-  const q      = state.questions[state.currentIndex];
+  const idx    = state.currentIndex;
+  const q      = state.questions[idx];
   const panel  = $('expl-panel');
   const btnMob = $('btn-expl-img');
-  const answered = state.answers[state.currentIndex] !== null;
+  const answered = state.answers[idx] !== null;
 
   // モード無効 or 未回答 or 問題なし → 全て非表示
   if (!isExplMode() || !answered || !q) {
@@ -235,6 +236,10 @@ async function updateExplPanel() {
   }
 
   const imgs = await getExplImages(qKey(q));
+
+  // await中に問題が変わっていたら中断（別の問題の画像を表示しない）
+  if (state.currentIndex !== idx) return;
+
   if (!imgs.length) {
     if (panel)  panel.style.display  = 'none';
     if (btnMob) btnMob.style.display = 'none';
@@ -243,14 +248,12 @@ async function updateExplPanel() {
 
   const isPC = window.innerWidth >= 960;
   if (isPC) {
-    // PC：右パネルに表示
     if (panel) {
       panel.style.display = '';
       renderExplPanelImages(imgs);
     }
     if (btnMob) btnMob.style.display = 'none';
   } else {
-    // タブレット/スマホ：📷ボタンのみ表示
     if (panel)  panel.style.display  = 'none';
     if (btnMob) btnMob.style.display = '';
   }
