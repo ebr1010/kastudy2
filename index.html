@@ -99,6 +99,14 @@
               <option value="60">1分</option>
             </select>
           </label>
+          <label class="option-card">
+            <span class="option-label">📷 解説画像</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="expl-img-mode">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="option-sub" id="expl-img-count-label" style="font-size:11px;color:var(--text-muted)">登録: 0問</span>
+          </label>
         </div>
       </section>
 
@@ -155,6 +163,7 @@
           <button id="btn-understand-no-mode"  class="btn-quick btn-quick-no">🔴 無理解問題<span id="understand-no-badge"  class="badge" style="display:none"></span></button>
           <button id="btn-freq-mark-mode" class="btn-quick btn-quick-freq">⭐ 頻出マーク問題<span id="freq-mark-badge" class="badge" style="display:none"></span></button>
           <button id="btn-freq-non-mode"  class="btn-quick btn-quick-non">📋 非頻出問題</button>
+          <button id="btn-expl-upload" class="btn-quick btn-quick-expl">📷 解説画像を管理</button>
           <button id="btn-stats" class="btn-quick">📊 学習分析</button>
           <button id="btn-correction-list" class="btn-quick">📝 解答修正</button>
           <button id="btn-manage-refs" class="btn-quick">📖 テキスト参照管理</button>
@@ -195,6 +204,9 @@
       <button id="btn-understand-no"  class="tag tag-understand tag-understand-no"  onclick="onUnderstandingClick('no')">無理解</button>
       <button id="btn-freq-mark" class="tag tag-freq-mark" onclick="onFreqMarkClick()">⭐ 頻出</button>
     </div>
+
+    <!-- 解説画像モード：2カラムラッパー -->
+    <div class="quiz-content-wrap" id="quiz-content-wrap">
 
     <main class="quiz-main">
       <div class="question-card" id="question-card">
@@ -270,6 +282,17 @@
       </div>
     </main>
 
+    <!-- 解説画像パネル（PC右側 / タブレットはモーダル） -->
+    <aside class="expl-panel" id="expl-panel" style="display:none">
+      <div class="expl-panel-header">
+        <span class="expl-panel-title">📷 解説画像</span>
+        <span class="expl-panel-count" id="expl-panel-count"></span>
+      </div>
+      <div class="expl-panel-images" id="expl-panel-images"></div>
+    </aside>
+
+    </div><!-- /quiz-content-wrap -->
+
     <footer class="quiz-footer">
       <div class="footer-feedback" id="footer-feedback" style="display:none">
         <span id="footer-feedback-result"></span>
@@ -310,9 +333,69 @@
         <button id="btn-skip" class="btn-outline">スキップ</button>
         <button id="btn-next" class="btn-primary" disabled>次へ ▶</button>
         <button id="btn-pause-quiz" class="btn-pause-quiz" title="中断して保存">⏸</button>
+        <button id="btn-expl-img" class="btn-expl-img" title="解説画像を表示" style="display:none" onclick="openExplModal()">📷</button>
         <button id="btn-ai-ask" class="btn-ai-ask" title="問題+解答ページをコピー" onclick="copyBothPages()">🤖</button>
       </div>
     </footer>
+
+    <!-- 解説画像モーダル（タブレット/モバイル用） -->
+    <div id="expl-modal" class="expl-modal" style="display:none" onclick="closeExplModal(event)">
+      <div class="expl-modal-inner">
+        <button class="expl-modal-close" onclick="closeExplModal()">✕</button>
+        <div class="expl-modal-images" id="expl-modal-images"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 解説画像管理画面 ========== -->
+  <div id="screen-expl-mgmt" class="screen">
+    <div class="setup-container">
+      <div class="screen-header-row">
+        <button id="btn-back-from-expl-mgmt" class="btn-icon">←</button>
+        <h2 style="font-size:18px;font-weight:700">📷 解説画像管理</h2>
+      </div>
+
+      <!-- 一括アップロード -->
+      <section class="setup-section">
+        <h2>📦 一括アップロード（命名規則）</h2>
+        <p class="hint-text">ファイル名を <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px">年度_期_NoN_連番.jpg</code> にすると自動で問題に割り当て<br>例: <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px">2024_後期_No5_1.jpg</code></p>
+        <div id="expl-bulk-drop" class="expl-drop-zone">
+          <div class="expl-drop-icon">📂</div>
+          <div class="expl-drop-text">ここにファイルをドロップ<br>またはタップして選択</div>
+          <input type="file" id="expl-bulk-input" accept="image/*" multiple style="display:none">
+        </div>
+        <div id="expl-bulk-preview" class="expl-bulk-preview"></div>
+        <button id="btn-expl-bulk-save" class="btn-primary" style="display:none;margin-top:10px">💾 一括保存</button>
+      </section>
+
+      <!-- 問題ごとのアップロード -->
+      <section class="setup-section">
+        <h2>📝 問題ごとに登録・編集</h2>
+        <div class="expl-mgmt-row">
+          <select id="expl-exam-select" class="expl-select">
+            <option value="">年度を選択</option>
+          </select>
+          <select id="expl-no-select" class="expl-select" disabled>
+            <option value="">問題番号</option>
+          </select>
+        </div>
+        <div id="expl-per-q-area" style="display:none">
+          <div id="expl-per-q-drop" class="expl-drop-zone expl-drop-zone-sm">
+            <div class="expl-drop-icon">＋</div>
+            <div class="expl-drop-text">画像を追加（最大3枚）</div>
+            <input type="file" id="expl-per-q-input" accept="image/*" multiple style="display:none">
+          </div>
+          <div id="expl-per-q-preview" class="expl-per-q-preview"></div>
+          <button id="btn-expl-per-q-save" class="btn-primary" style="margin-top:10px">💾 保存</button>
+        </div>
+      </section>
+
+      <!-- 登録済み一覧 -->
+      <section class="setup-section">
+        <h2>📋 登録済み一覧 <span id="expl-registered-count" style="font-size:13px;color:var(--text-muted)"></span></h2>
+        <div id="expl-registered-list" class="expl-registered-list"></div>
+      </section>
+    </div>
   </div>
 
   <!-- ========== 結果画面 ========== -->
@@ -576,7 +659,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v2.8.5</div>
+  <div class="app-version-badge">v2.9.0</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">

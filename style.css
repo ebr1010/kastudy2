@@ -2307,3 +2307,208 @@ input[type=file]::file-selector-button:hover {
   font-weight: 800;
   box-shadow: 0 0 12px rgba(22,163,74,0.8);
 }
+
+
+/* ===== 解説画像モード：2カラムラッパー ===== */
+.quiz-content-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+@media (min-width: 960px) {
+  .quiz-content-wrap {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 12px;
+  }
+  .quiz-content-wrap .quiz-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .expl-panel {
+    width: 360px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    position: sticky;
+    top: 80px;
+  }
+}
+
+/* ===== 解説パネル（PC右側） ===== */
+.expl-panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 8px 4px;
+}
+.expl-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+}
+.expl-panel-count {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  margin-left: auto;
+}
+.expl-panel-images {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.expl-panel-img {
+  width: 100%;
+  border-radius: 8px;
+  cursor: zoom-in;
+  transition: transform .2s;
+}
+.expl-panel-img.zoomed {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) scale(1);
+  width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  z-index: 1000;
+  border-radius: 4px;
+  cursor: zoom-out;
+}
+
+/* ===== 解説モーダル（タブレット/モバイル） ===== */
+.btn-expl-img {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(99,179,65,0.2);
+  color: #86efac;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.btn-expl-img:hover { background: rgba(99,179,65,0.35); }
+
+.expl-modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.expl-modal-inner {
+  background: #1a1035;
+  border-radius: 14px;
+  padding: 16px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+}
+.expl-modal-close {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255,255,255,0.1);
+  border: none; border-radius: 50%;
+  width: 32px; height: 32px;
+  color: #fff; font-size: 14px;
+  cursor: pointer;
+}
+.expl-modal-images { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.expl-modal-img { width: 100%; border-radius: 8px; }
+
+/* ===== 解説画像管理画面 ===== */
+.screen-header-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.expl-drop-zone {
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 28px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+  background: rgba(255,255,255,0.03);
+}
+.expl-drop-zone:hover, .expl-drop-zone.drag-over {
+  border-color: var(--primary);
+  background: rgba(59,130,246,0.08);
+}
+.expl-drop-zone-sm { padding: 16px; }
+.expl-drop-icon { font-size: 28px; margin-bottom: 8px; }
+.expl-drop-text { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+.expl-bulk-preview { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.expl-bulk-row {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 12px;
+}
+.expl-bulk-err { border: 1px solid rgba(239,68,68,0.4); color: #fca5a5; }
+.expl-bulk-key { font-weight: 700; color: rgba(255,255,255,0.8); min-width: 150px; }
+.expl-bulk-thumbs { display: flex; gap: 6px; }
+.expl-bulk-thumb {
+  width: 60px; height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.expl-mgmt-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.expl-select {
+  flex: 1; padding: 8px 12px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; color: #fff; font-size: 13px;
+}
+.expl-per-q-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.expl-perq-thumb-wrap { position: relative; }
+.expl-perq-del {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  border-radius: 50%; border: none;
+  background: #ef4444; color: #fff;
+  font-size: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.expl-registered-list { display: flex; flex-direction: column; gap: 8px; }
+.expl-reg-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px; padding: 8px 12px;
+}
+.expl-reg-key { font-size: 13px; color: rgba(255,255,255,0.8); }
+
+/* 解説画像管理ボタン */
+.btn-quick-expl { border-color: rgba(99,179,65,0.4) !important; color: #86efac !important; }
+.btn-quick-expl:hover { background: rgba(99,179,65,0.15) !important; }
+
+/* トグルスイッチ */
+.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.15);
+  border-radius: 24px;
+  cursor: pointer; transition: .2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute; left: 3px; top: 3px;
+  width: 18px; height: 18px;
+  background: #fff; border-radius: 50%;
+  transition: .2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--primary); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }

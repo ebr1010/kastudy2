@@ -87,6 +87,303 @@ function onUnderstandingClick(level) {
   renderUnderstandingBtns();
 }
 
+// ===== 解説画像 (IndexedDB) =====
+const EXPL_DB_NAME  = 'kastudy_explanations';
+const EXPL_DB_VER   = 1;
+const EXPL_STORE    = 'images';
+
+function openExplDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(EXPL_DB_NAME, EXPL_DB_VER);
+    req.onupgradeneeded = e => { e.target.result.createObjectStore(EXPL_STORE); };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror   = e => reject(e.target.error);
+  });
+}
+async function getExplImages(key) {
+  const db = await openExplDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(EXPL_STORE, 'readonly');
+    const req = tx.objectStore(EXPL_STORE).get(key);
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror   = () => reject(req.error);
+  });
+}
+async function setExplImages(key, blobs) {
+  const db = await openExplDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(EXPL_STORE, 'readwrite');
+    const req = blobs.length
+      ? tx.objectStore(EXPL_STORE).put(blobs, key)
+      : tx.objectStore(EXPL_STORE).delete(key);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
+}
+async function getAllExplKeys() {
+  const db = await openExplDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(EXPL_STORE, 'readonly');
+    const req = tx.objectStore(EXPL_STORE).getAllKeys();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+// ===== 解説画像モード =====
+let state_explMode = false;
+
+function isExplMode() {
+  const el = $('expl-img-mode');
+  return el ? el.checked : false;
+}
+
+async function updateExplPanel() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  const answered = state.answers[state.currentIndex] !== null;
+  const panel   = $('expl-panel');
+  const btnMob  = $('btn-expl-img');
+  const isPC    = window.innerWidth >= 960;
+
+  if (!isExplMode()) {
+    if (panel)  panel.style.display  = 'none';
+    if (btnMob) btnMob.style.display = 'none';
+    return;
+  }
+
+  const imgs = answered ? await getExplImages(qKey(q)) : [];
+
+  if (imgs.length === 0) {
+    if (panel)  panel.style.display  = 'none';
+    if (btnMob) btnMob.style.display = 'none';
+    return;
+  }
+
+  if (isPC) {
+    if (panel) {
+      panel.style.display = '';
+      renderExplPanelImages(imgs);
+    }
+    if (btnMob) btnMob.style.display = 'none';
+  } else {
+    if (panel)  panel.style.display  = 'none';
+    if (btnMob) btnMob.style.display = '';
+  }
+}
+
+function renderExplPanelImages(blobs) {
+  const container = $('expl-panel-images');
+  const countEl   = $('expl-panel-count');
+  if (!container) return;
+  container.innerHTML = '';
+  if (countEl) countEl.textContent = blobs.length + '枚';
+  blobs.forEach((blob, i) => {
+    const url = URL.createObjectURL(blob);
+    const img = document.createElement('img');
+    img.src = url;
+    img.className = 'expl-panel-img';
+    img.alt = '解説' + (i + 1);
+    img.onclick = () => img.classList.toggle('zoomed');
+    container.appendChild(img);
+  });
+}
+
+function openExplModal() {
+  const q = state.questions[state.currentIndex];
+  if (!q) return;
+  getExplImages(qKey(q)).then(blobs => {
+    if (!blobs.length) return;
+    const container = $('expl-modal-images');
+    container.innerHTML = '';
+    blobs.forEach((blob, i) => {
+      const url = URL.createObjectURL(blob);
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'expl-modal-img';
+      img.alt = '解説' + (i + 1);
+      container.appendChild(img);
+    });
+    $('expl-modal').style.display = 'flex';
+  });
+}
+function closeExplModal(e) {
+  if (!e || e.target === $('expl-modal') || e.target.classList.contains('expl-modal-close')) {
+    $('expl-modal').style.display = 'none';
+  }
+}
+
+// ===== 解説画像管理画面 =====
+let _explBulkFiles = {}; // key → [File...]
+let _explPerQFiles = []; // [File...]
+let _explPerQBlobs = []; // 現在登録済み + 新規のblobs
+
+async function showExplMgmt() {
+  showScreen('expl-mgmt');
+  // 年度セレクト
+  const sel = $('expl-exam-select');
+  sel.innerHTML = '<option value="">年度を選択</option>';
+  const all = [...state.allExams, ...state.extraExams];
+  all.forEach(ex => {
+    const opt = document.createElement('option');
+    opt.value = ex.meta.id;
+    opt.textContent = ex.meta.year + '年度 ' + ex.meta.period;
+    sel.appendChild(opt);
+  });
+  await refreshExplRegisteredList();
+  await updateExplImgCountLabel();
+}
+
+async function refreshExplRegisteredList() {
+  const keys  = await getAllExplKeys();
+  const el    = $('expl-registered-list');
+  const cnt   = $('expl-registered-count');
+  if (cnt) cnt.textContent = keys.length + '問登録済み';
+  if (!el) return;
+  if (!keys.length) { el.innerHTML = '<div class="stats-empty">まだ登録なし</div>'; return; }
+  el.innerHTML = keys.map(k =>
+    `<div class="expl-reg-row">
+      <span class="expl-reg-key">${k}</span>
+      <button class="btn-expl-reg-del btn-outline" data-key="${k}" style="font-size:11px;padding:3px 8px">🗑</button>
+    </div>`
+  ).join('');
+  el.querySelectorAll('.btn-expl-reg-del').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm(btn.dataset.key + ' の解説画像を削除しますか？')) return;
+      await setExplImages(btn.dataset.key, []);
+      await refreshExplRegisteredList();
+      await updateExplImgCountLabel();
+    });
+  });
+}
+
+async function updateExplImgCountLabel() {
+  const keys = await getAllExplKeys();
+  const el = $('expl-img-count-label');
+  if (el) el.textContent = '登録: ' + keys.length + '問';
+}
+
+// 一括アップロード：ファイル名パース
+function parseExplFilename(filename) {
+  // 例: 2024_後期_No5_1.jpg  or  2024_前期_No12_2.png
+  const base = filename.replace(/\.[^.]+$/, '');
+  const m = base.match(/^(.+?)_(.+?)_No(\d+)_(\d+)$/);
+  if (!m) return null;
+  return { year: m[1], period: m[2], number: parseInt(m[3]), index: parseInt(m[4]) };
+}
+
+function handleBulkFiles(files) {
+  _explBulkFiles = {};
+  const preview = $('expl-bulk-preview');
+  const saveBtn = $('btn-expl-bulk-save');
+  preview.innerHTML = '';
+
+  Array.from(files).forEach(file => {
+    const info = parseExplFilename(file.name);
+    if (!info) {
+      // 命名規則外：警告行
+      const row = document.createElement('div');
+      row.className = 'expl-bulk-row expl-bulk-err';
+      row.textContent = '⚠ ' + file.name + '（命名規則外 — スキップ）';
+      preview.appendChild(row);
+      return;
+    }
+    const all = [...state.allExams, ...state.extraExams];
+    const exam = all.find(e => e.meta.year == info.year && e.meta.period === info.period);
+    if (!exam) {
+      const row = document.createElement('div');
+      row.className = 'expl-bulk-row expl-bulk-err';
+      row.textContent = '⚠ ' + file.name + '（対応する年度データなし — スキップ）';
+      preview.appendChild(row);
+      return;
+    }
+    const key = info.year + '_' + info.period + '_No' + info.number;
+    if (!_explBulkFiles[key]) _explBulkFiles[key] = [];
+    _explBulkFiles[key].push({ file, index: info.index });
+  });
+
+  // プレビュー表示
+  let totalKeys = 0;
+  Object.entries(_explBulkFiles).forEach(([key, arr]) => {
+    totalKeys++;
+    arr.sort((a, b) => a.index - b.index);
+    const row = document.createElement('div');
+    row.className = 'expl-bulk-row';
+    const thumbs = arr.map(({ file }) => {
+      const url = URL.createObjectURL(file);
+      return `<img src="${url}" class="expl-bulk-thumb">`;
+    }).join('');
+    row.innerHTML = `<span class="expl-bulk-key">${key}</span><div class="expl-bulk-thumbs">${thumbs}</div>`;
+    preview.appendChild(row);
+  });
+
+  if (totalKeys > 0) {
+    saveBtn.style.display = '';
+    saveBtn.textContent = '💾 ' + totalKeys + '問分を一括保存';
+  } else {
+    saveBtn.style.display = 'none';
+  }
+}
+
+async function saveBulkExpl() {
+  const btn = $('btn-expl-bulk-save');
+  btn.disabled = true;
+  btn.textContent = '保存中...';
+  for (const [key, arr] of Object.entries(_explBulkFiles)) {
+    arr.sort((a, b) => a.index - b.index);
+    const existing = await getExplImages(key);
+    const newBlobs = await Promise.all(arr.map(({ file }) => file));
+    await setExplImages(key, [...existing, ...newBlobs]);
+  }
+  _explBulkFiles = {};
+  $('expl-bulk-preview').innerHTML = '';
+  btn.style.display = 'none';
+  btn.disabled = false;
+  await refreshExplRegisteredList();
+  await updateExplImgCountLabel();
+  alert('保存しました！');
+}
+
+// 問題ごとのアップロード
+async function loadExplPerQ(key) {
+  _explPerQBlobs = await getExplImages(key);
+  renderExplPerQPreview();
+}
+
+function renderExplPerQPreview() {
+  const container = $('expl-per-q-preview');
+  if (!container) return;
+  container.innerHTML = '';
+  _explPerQBlobs.forEach((blob, i) => {
+    const url = URL.createObjectURL(blob);
+    const wrap = document.createElement('div');
+    wrap.className = 'expl-perq-thumb-wrap';
+    wrap.innerHTML = `<img src="${url}" class="expl-bulk-thumb">
+      <button class="expl-perq-del" data-i="${i}">✕</button>`;
+    container.appendChild(wrap);
+  });
+  container.querySelectorAll('.expl-perq-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _explPerQBlobs.splice(parseInt(btn.dataset.i), 1);
+      renderExplPerQPreview();
+    });
+  });
+}
+
+async function savePerQExpl() {
+  const examSel = $('expl-exam-select');
+  const noSel   = $('expl-no-select');
+  if (!examSel.value || !noSel.value) return;
+  const all  = [...state.allExams, ...state.extraExams];
+  const exam = all.find(e => e.meta.id === examSel.value);
+  if (!exam) return;
+  const key = exam.meta.year + '_' + exam.meta.period + '_No' + noSel.value;
+  await setExplImages(key, _explPerQBlobs);
+  await refreshExplRegisteredList();
+  await updateExplImgCountLabel();
+  alert('保存しました！');
+}
+
 // ===== 頻出マーク =====
 const LS_FREQ_MARK = 'kastudy_freq_mark';
 
@@ -374,6 +671,7 @@ async function initApp() {
     updateWeakSub();
     updateUnderstandingBadges();
     updateFreqMarkBadges();
+    updateExplImgCountLabel();
     renderTopPassScore();
     computeFrequentNums();
     renderResumeBtn();
@@ -681,6 +979,8 @@ function renderQuestion() {
   renderUnderstandingBtns();
   // 頻出マークボタン状態更新
   renderFreqMarkBtn();
+  // 解説画像パネル更新
+  updateExplPanel();
 }
 
 function loadQuestionImage(q) {
@@ -751,6 +1051,7 @@ function onAnswer(chosen) {
   $('score-denom').textContent = '/' + (state.currentIndex + 1);
   updateNextBtn();
   saveSession();  // 回答するたびに状態保存
+  updateExplPanel(); // 解説画像パネル更新
 }
 
 // ===== ページビューアーモーダル =====
@@ -3047,6 +3348,71 @@ $('btn-understand-mid-mode').addEventListener('click', () => startUnderstandingQ
 $('btn-understand-no-mode').addEventListener('click', () => startUnderstandingQuiz('no'));
 $('btn-freq-mark-mode').addEventListener('click', () => startFreqMarkQuiz(true));
 $('btn-freq-non-mode').addEventListener('click', () => startFreqMarkQuiz(false));
+$('btn-expl-upload').addEventListener('click', () => showExplMgmt());
+$('btn-back-from-expl-mgmt').addEventListener('click', () => showScreen('setup'));
+
+// 解説画像：一括ドロップ
+const bulkDrop = $('expl-bulk-drop');
+bulkDrop.addEventListener('click', () => $('expl-bulk-input').click());
+bulkDrop.addEventListener('dragover', e => { e.preventDefault(); bulkDrop.classList.add('drag-over'); });
+bulkDrop.addEventListener('dragleave', () => bulkDrop.classList.remove('drag-over'));
+bulkDrop.addEventListener('drop', e => {
+  e.preventDefault(); bulkDrop.classList.remove('drag-over');
+  handleBulkFiles(e.dataTransfer.files);
+});
+$('expl-bulk-input').addEventListener('change', e => handleBulkFiles(e.target.files));
+$('btn-expl-bulk-save').addEventListener('click', saveBulkExpl);
+
+// 解説画像：問題ごと
+$('expl-exam-select').addEventListener('change', async e => {
+  const noSel = $('expl-no-select');
+  noSel.innerHTML = '<option value="">問題番号</option>';
+  noSel.disabled = true;
+  $('expl-per-q-area').style.display = 'none';
+  if (!e.target.value) return;
+  const all  = [...state.allExams, ...state.extraExams];
+  const exam = all.find(ex => ex.meta.id === e.target.value);
+  if (!exam) return;
+  exam.questions.filter(q => q.answer).forEach(q => {
+    const opt = document.createElement('option');
+    opt.value = q.number;
+    opt.textContent = 'No.' + q.number;
+    noSel.appendChild(opt);
+  });
+  noSel.disabled = false;
+});
+$('expl-no-select').addEventListener('change', async e => {
+  const area = $('expl-per-q-area');
+  if (!e.target.value) { area.style.display = 'none'; return; }
+  const examSel = $('expl-exam-select');
+  const all  = [...state.allExams, ...state.extraExams];
+  const exam = all.find(ex => ex.meta.id === examSel.value);
+  if (!exam) return;
+  const key = exam.meta.year + '_' + exam.meta.period + '_No' + e.target.value;
+  area.style.display = '';
+  await loadExplPerQ(key);
+});
+const perQDrop = $('expl-per-q-drop');
+perQDrop.addEventListener('click', () => $('expl-per-q-input').click());
+perQDrop.addEventListener('dragover', e => { e.preventDefault(); perQDrop.classList.add('drag-over'); });
+perQDrop.addEventListener('dragleave', () => perQDrop.classList.remove('drag-over'));
+perQDrop.addEventListener('drop', e => {
+  e.preventDefault(); perQDrop.classList.remove('drag-over');
+  addPerQFiles(e.dataTransfer.files);
+});
+$('expl-per-q-input').addEventListener('change', e => addPerQFiles(e.target.files));
+$('btn-expl-per-q-save').addEventListener('click', savePerQExpl);
+
+function addPerQFiles(files) {
+  Array.from(files).slice(0, 3 - _explPerQBlobs.length).forEach(f => _explPerQBlobs.push(f));
+  renderExplPerQPreview();
+}
+
+// 解説画像モード切替でパネルリセット
+$('expl-img-mode').addEventListener('change', () => updateExplPanel());
+
+// ウィンドウリサイズでパネル切り替え
+window.addEventListener('resize', () => updateExplPanel());
 
 // 直前プラン画面
 $('btn-back-from-plan').addEventListener('click', () => showScreen('setup'));
