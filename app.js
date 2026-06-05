@@ -2861,20 +2861,38 @@ async function syncLoadFromGitHub() {
         if (!byKey[key]) byKey[key] = [];
         byKey[key].push({ idx, download_url: f.download_url });
       });
+      let loaded = 0, failed = 0;
       for (const [key, arr] of Object.entries(byKey)) {
         arr.sort((a, b) => a.idx - b.idx);
-        const blobs = await Promise.all(arr.map(async ({ download_url }) => {
-          const r = await fetch(download_url);
-          return await r.blob();
-        }));
-        // IndexedDBに保存（scheduleSyncSaveを呼ばないよう直接DB操作）
-        const db = await openExplDB();
-        await new Promise((resolve, reject) => {
-          const tx = db.transaction(EXPL_STORE, 'readwrite');
-          tx.objectStore(EXPL_STORE).put(blobs, key).onsuccess = resolve;
-          tx.onerror = reject;
-        });
+        try {
+          // 1枚ずつ取得（1枚失敗しても他に影響しない）
+          const blobs = [];
+          for (const { download_url } of arr) {
+            try {
+              const r = await fetch(download_url);
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              blobs.push(await r.blob());
+            } catch(imgErr) {
+              console.warn('画像DL失敗:', key, imgErr);
+              failed++;
+            }
+          }
+          if (!blobs.length) continue;
+          // IndexedDBに保存
+          const db = await openExplDB();
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction(EXPL_STORE, 'readwrite');
+            const req = tx.objectStore(EXPL_STORE).put(blobs, key);
+            req.onsuccess = resolve;
+            req.onerror   = () => reject(req.error);
+          });
+          loaded++;
+        } catch(keyErr) {
+          console.warn('キー保存失敗:', key, keyErr);
+          failed++;
+        }
       }
+      if (failed > 0) setSyncStatus('⚠ 画像一部失敗(' + failed + '件) / 成功' + loaded + '件');
     }
 
     const t = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
