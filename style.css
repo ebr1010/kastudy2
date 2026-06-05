@@ -753,7 +753,7 @@ body {
   box-shadow: var(--shadow), var(--inset-hi);
   padding: 16px 20px; margin-bottom: 14px;
 }
-.result-wrong-list { max-height: 300px; overflow-y: auto; }
+.result-wrong-list { }
 .breakdown-row, .wrong-item {
   display: flex; align-items: center; gap: 10px;
   padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;
