@@ -356,11 +356,19 @@
 
       <!-- 一括アップロード -->
       <section class="setup-section">
-        <h2>📦 一括アップロード（命名規則）</h2>
-        <p class="hint-text">ファイル名を <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px">年度_期_NoN_連番.jpg</code> にすると自動で問題に割り当て<br>例: <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px">2024_後期_No5_1.jpg</code></p>
+        <h2>📦 一括アップロード</h2>
+        <p class="hint-text">
+          ① 年度を選択 → ② ファイルをまとめてドロップ<br>
+          ファイル名: <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px">1.jpg</code>（1問目）&nbsp;
+          <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px">2-1.png</code>/<code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px">2-2.png</code>（2問目の複数枚）<br>
+          jpg・png・webp など画像ファイルであれば何でも可
+        </p>
+        <select id="expl-bulk-exam-select" class="expl-select" style="margin-bottom:10px;width:100%">
+          <option value="">① 年度を選択してください</option>
+        </select>
         <div id="expl-bulk-drop" class="expl-drop-zone">
           <div class="expl-drop-icon">📂</div>
-          <div class="expl-drop-text">ここにファイルをドロップ<br>またはタップして選択</div>
+          <div class="expl-drop-text">② ここにファイルをドロップ<br>またはタップして選択</div>
           <input type="file" id="expl-bulk-input" accept="image/*" multiple style="display:none">
         </div>
         <div id="expl-bulk-preview" class="expl-bulk-preview"></div>
@@ -658,7 +666,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v3.0.8</div>
+  <div class="app-version-badge">v3.0.9</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
@@ -696,6 +704,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=48"></script>
+  <script src="app.js?v=49"></script>
 </body>
 </html>

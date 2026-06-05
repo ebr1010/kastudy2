@@ -301,10 +301,21 @@ let _explPerQBlobs = []; // 現在登録済み + 新規のblobs
 
 async function showExplMgmt() {
   showScreen('expl-mgmt');
-  // 年度セレクト（ネイティブselect）
+  const all = [...state.allExams, ...state.extraExams];
+  // 一括アップロード用年度セレクト
+  const bulkSel = $('expl-bulk-exam-select');
+  if (bulkSel) {
+    bulkSel.innerHTML = '<option value="">① 年度を選択してください</option>';
+    all.forEach(ex => {
+      const opt = document.createElement('option');
+      opt.value = ex.meta.id;
+      opt.textContent = ex.meta.year + '年度 ' + ex.meta.period;
+      bulkSel.appendChild(opt);
+    });
+  }
+  // 問題ごと用年度セレクト
   const sel = $('expl-exam-select');
   sel.innerHTML = '<option value="">年度を選択</option>';
-  const all = [...state.allExams, ...state.extraExams];
   all.forEach(ex => {
     const opt = document.createElement('option');
     opt.value = ex.meta.id;
@@ -391,12 +402,16 @@ async function updateExplImgCountLabel() {
 }
 
 // 一括アップロード：ファイル名パース
+// ファイル名パース: "1.jpg" → {number:1, index:0}  "2-1.png" → {number:2, index:1}
 function parseExplFilename(filename) {
-  // 例: 2024_後期_No5_1.jpg  or  2024_前期_No12_2.png
-  const base = filename.replace(/\.[^.]+$/, '');
-  const m = base.match(/^(.+?)_(.+?)_No(\d+)_(\d+)$/);
-  if (!m) return null;
-  return { year: m[1], period: m[2], number: parseInt(m[3]), index: parseInt(m[4]) };
+  const base = filename.replace(/\.[^.]+$/, ''); // 拡張子除去
+  // "{number}-{index}" 形式
+  const m2 = base.match(/^(\d+)-(\d+)$/);
+  if (m2) return { number: parseInt(m2[1]), index: parseInt(m2[2]) };
+  // "{number}" 形式（単体）
+  const m1 = base.match(/^(\d+)$/);
+  if (m1) return { number: parseInt(m1[1]), index: 1 };
+  return null;
 }
 
 function handleBulkFiles(files) {
@@ -405,42 +420,56 @@ function handleBulkFiles(files) {
   const saveBtn = $('btn-expl-bulk-save');
   preview.innerHTML = '';
 
+  // 年度選択を確認
+  const examSel = $('expl-bulk-exam-select');
+  const examId  = examSel ? examSel.value : '';
+  const all     = [...state.allExams, ...state.extraExams];
+  const exam    = all.find(e => e.meta.id === examId);
+
+  if (!exam) {
+    const row = document.createElement('div');
+    row.className = 'expl-bulk-row expl-bulk-err';
+    row.textContent = '⚠ まず年度を選択してください';
+    preview.appendChild(row);
+    saveBtn.style.display = 'none';
+    return;
+  }
+
   Array.from(files).forEach(file => {
+    // 画像ファイルでなければスキップ
+    if (!file.type.startsWith('image/')) return;
+
     const info = parseExplFilename(file.name);
     if (!info) {
-      // 命名規則外：警告行
       const row = document.createElement('div');
       row.className = 'expl-bulk-row expl-bulk-err';
-      row.textContent = '⚠ ' + file.name + '（命名規則外 — スキップ）';
+      row.textContent = '⚠ ' + file.name + '（命名規則外: "35.jpg" or "2-1.png" 形式）';
       preview.appendChild(row);
       return;
     }
-    const all = [...state.allExams, ...state.extraExams];
-    const exam = all.find(e => e.meta.year == info.year && e.meta.period === info.period);
-    if (!exam) {
-      const row = document.createElement('div');
-      row.className = 'expl-bulk-row expl-bulk-err';
-      row.textContent = '⚠ ' + file.name + '（対応する年度データなし — スキップ）';
-      preview.appendChild(row);
-      return;
-    }
-    const key = info.year + '_' + info.period + '_No' + info.number;
+    const key = exam.meta.year + '_' + exam.meta.period + '_No' + info.number;
     if (!_explBulkFiles[key]) _explBulkFiles[key] = [];
     _explBulkFiles[key].push({ file, index: info.index });
   });
 
-  // プレビュー表示
-  let totalKeys = 0;
-  Object.entries(_explBulkFiles).forEach(([key, arr]) => {
-    totalKeys++;
+  // プレビュー（問題番号順に表示）
+  const sortedEntries = Object.entries(_explBulkFiles).sort((a, b) => {
+    const na = parseInt(a[0].match(/No(\d+)$/)?.[1] || 0);
+    const nb = parseInt(b[0].match(/No(\d+)$/)?.[1] || 0);
+    return na - nb;
+  });
+
+  let totalKeys = sortedEntries.length;
+  sortedEntries.forEach(([key, arr]) => {
     arr.sort((a, b) => a.index - b.index);
     const row = document.createElement('div');
     row.className = 'expl-bulk-row';
+    const label = 'No.' + key.match(/No(\d+)$/)?.[1];
     const thumbs = arr.map(({ file }) => {
       const url = URL.createObjectURL(file);
       return `<img src="${url}" class="expl-bulk-thumb">`;
     }).join('');
-    row.innerHTML = `<span class="expl-bulk-key">${key}</span><div class="expl-bulk-thumbs">${thumbs}</div>`;
+    row.innerHTML = `<span class="expl-bulk-key">${label}</span><div class="expl-bulk-thumbs">${thumbs}</div>`;
     preview.appendChild(row);
   });
 
@@ -455,12 +484,11 @@ function handleBulkFiles(files) {
 async function saveBulkExpl() {
   const btn = $('btn-expl-bulk-save');
   btn.disabled = true;
-  btn.textContent = '保存中...';
+  let saved = 0;
   for (const [key, arr] of Object.entries(_explBulkFiles)) {
     arr.sort((a, b) => a.index - b.index);
-    const existing = await getExplImages(key);
-    const newBlobs = await Promise.all(arr.map(({ file }) => file));
-    await setExplImages(key, [...existing, ...newBlobs]);
+    btn.textContent = '保存中... ' + (++saved) + '/' + Object.keys(_explBulkFiles).length + '問';
+    await setExplImages(key, arr.map(({ file }) => file));
   }
   _explBulkFiles = {};
   $('expl-bulk-preview').innerHTML = '';
