@@ -3238,7 +3238,10 @@ function skipQuestion() {
   addHistory(q, -1, false);
   showFeedback(q, -1);
   $('feedback-area').style.display = '';
+  $('score-display').textContent = state.score;
+  $('score-denom').textContent = '/' + (idx + 1);
   updateNextBtn();
+  saveSession();
   updateExplPanel();
 }
 
