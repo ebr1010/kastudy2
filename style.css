@@ -2512,3 +2512,45 @@ input[type=file]::file-selector-button:hover {
 }
 .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
 .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* ===== OCRテキストブロック ===== */
+.ocr-block {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+.ocr-text {
+  font-size: 12px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.75);
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: text;
+  -webkit-user-select: text;
+  outline: none;
+  min-height: 24px;
+}
+.ocr-text[contenteditable="true"] {
+  cursor: text;
+}
+.ocr-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.btn-ocr-search, .btn-ocr-copy {
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.75);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-ocr-search:hover { background: rgba(59,130,246,0.25); border-color: var(--primary); }
+.btn-ocr-copy:hover   { background: rgba(255,255,255,0.15); }

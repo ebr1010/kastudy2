@@ -87,6 +87,77 @@ function onUnderstandingClick(level) {
   renderUnderstandingBtns();
 }
 
+// ===== OCR (Tesseract.js) =====
+const _ocrCache = {}; // 'qKey_imgIdx' → text
+
+async function runOCR(blob, cacheKey) {
+  if (_ocrCache[cacheKey]) return _ocrCache[cacheKey];
+  try {
+    const worker = await Tesseract.createWorker('jpn', 1, {
+      workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+      corePath:   'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core-simd-lstm.wasm.js',
+    });
+    const { data: { text } } = await worker.recognize(blob);
+    await worker.terminate();
+    const cleaned = text.replace(/\s+/g, ' ').trim();
+    _ocrCache[cacheKey] = cleaned;
+    return cleaned;
+  } catch(e) {
+    console.error('OCR error', e);
+    return '';
+  }
+}
+
+function buildOcrBlock(cacheKey, blob, containerEl) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ocr-block';
+
+  const textEl = document.createElement('div');
+  textEl.className = 'ocr-text';
+  textEl.textContent = '🔍 テキスト読取中...';
+
+  const actRow = document.createElement('div');
+  actRow.className = 'ocr-actions';
+  actRow.style.display = 'none';
+
+  const searchBtn = document.createElement('button');
+  searchBtn.className = 'btn-ocr-search';
+  searchBtn.textContent = '🔎 選択範囲を検索';
+  searchBtn.onclick = () => {
+    const sel = window.getSelection().toString().trim();
+    const q = sel || textEl.textContent;
+    if (q) window.open('https://www.google.com/search?q=' + encodeURIComponent(q + ' 土木施工管理'), '_blank');
+  };
+
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'btn-ocr-copy';
+  copyBtn.textContent = '📋 全コピー';
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(textEl.textContent).then(() => {
+      copyBtn.textContent = '✅ コピー済み';
+      setTimeout(() => { copyBtn.textContent = '📋 全コピー'; }, 1800);
+    });
+  };
+
+  actRow.appendChild(searchBtn);
+  actRow.appendChild(copyBtn);
+  wrap.appendChild(textEl);
+  wrap.appendChild(actRow);
+  containerEl.appendChild(wrap);
+
+  // 非同期でOCR実行
+  runOCR(blob, cacheKey).then(text => {
+    if (text) {
+      textEl.textContent = text;
+      textEl.setAttribute('contenteditable', 'true');
+      textEl.setAttribute('spellcheck', 'false');
+      actRow.style.display = '';
+    } else {
+      textEl.textContent = '（テキスト検出なし）';
+    }
+  });
+}
+
 // ===== 解説画像 (IndexedDB) =====
 const EXPL_DB_NAME  = 'kastudy_explanations';
 const EXPL_DB_VER   = 1;
@@ -178,6 +249,8 @@ function renderExplPanelImages(blobs) {
   if (!container) return;
   container.innerHTML = '';
   if (countEl) countEl.textContent = blobs.length + '枚';
+  const q = state.questions[state.currentIndex];
+  const baseKey = q ? qKey(q) : 'unknown';
   blobs.forEach((blob, i) => {
     const url = URL.createObjectURL(blob);
     const img = document.createElement('img');
@@ -186,13 +259,15 @@ function renderExplPanelImages(blobs) {
     img.alt = '解説' + (i + 1);
     img.onclick = () => img.classList.toggle('zoomed');
     container.appendChild(img);
+    buildOcrBlock(baseKey + '_' + i, blob, container);
   });
 }
 
 function openExplModal() {
   const q = state.questions[state.currentIndex];
   if (!q) return;
-  getExplImages(qKey(q)).then(blobs => {
+  const baseKey = qKey(q);
+  getExplImages(baseKey).then(blobs => {
     if (!blobs.length) return;
     const container = $('expl-modal-images');
     container.innerHTML = '';
@@ -203,6 +278,7 @@ function openExplModal() {
       img.className = 'expl-modal-img';
       img.alt = '解説' + (i + 1);
       container.appendChild(img);
+      buildOcrBlock(baseKey + '_' + i, blob, container);
     });
     $('expl-modal').style.display = 'flex';
   });
