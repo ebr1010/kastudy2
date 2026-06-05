@@ -2842,12 +2842,17 @@ async function syncLoadFromGitHub() {
     setSyncStatus('⏳ 画像同期中...');
     const imgFiles = await ghListDir(token, 'sync/images');
     if (imgFiles.length) {
-      // ファイル名: "{qKey}_{index}" 形式
+      // ファイル名: "{encodeKey}_{index}" 形式（日本語をエスケープ）
       const byKey = {};
       imgFiles.forEach(f => {
         const m = f.name.match(/^(.+)_(\d+)$/);
         if (!m) return;
-        const key = m[1], idx = parseInt(m[2]);
+        const safeKey = m[1], idx = parseInt(m[2]);
+        // safeKeyをオリジナルのqKeyに戻す
+        let key;
+        try {
+          key = decodeURIComponent(escape(atob(safeKey.replace(/-/g,'+').replace(/_/g,'/'))));
+        } catch { key = safeKey; }
         if (!byKey[key]) byKey[key] = [];
         byKey[key].push({ idx, download_url: f.download_url });
       });
@@ -2906,11 +2911,14 @@ async function doSyncSave() {
       let imgCount = 0;
       for (const key of imgKeys) {
         const blobs = await getExplImages(key);
+        // 日本語を含むキーをASCII安全な名前に変換
+        const safeKey = btoa(unescape(encodeURIComponent(key))).replace(/[+/=]/g, c => ({'+':`-`,'/':'_','=':''}[c]));
         for (let i = 0; i < blobs.length; i++) {
-          const fname = key + '_' + i;
+          const fname = safeKey + '_' + i;
           const b64   = await blobToBase64(blobs[i]);
           const sha   = existing[fname] || null;
-          await ghPutFile(token, 'sync/images/' + fname, b64, sha, 'sync img ' + fname);
+          setSyncStatus('⏫ 画像保存中 ' + (imgCount + 1) + '枚目...');
+          await ghPutFile(token, 'sync/images/' + fname, b64, sha, 'sync img');
           imgCount++;
         }
       }
