@@ -2786,39 +2786,44 @@ function base64ToBlob(b64, type = 'image/jpeg') {
   return new Blob([arr], { type });
 }
 
-// 起動時：GitHubから全データ読み込み
+// 現在のSHAを取得（保存前に常に最新を確認）
+async function fetchSyncSha(token) {
+  const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
+  const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
+  if (res.status === 404) return null;   // ファイル未作成
+  if (!res.ok) throw new Error('SHA取得失敗 ' + res.status);
+  const file = await res.json();
+  return file.sha;
+}
+
+// 起動時：GitHubから全データ読み込み（テキストデータのみ）
 async function syncLoadFromGitHub() {
   const token = getGHToken();
-  if (!token) return;
+  if (!token) { setSyncStatus('🔑 トークン未設定'); return; }
   setSyncStatus('⏳ 同期中...');
   try {
     const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
     const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
-    if (res.status === 404) { setSyncStatus(''); return; }
-    if (!res.ok) { setSyncStatus('⚠ 同期エラー'); return; }
+    if (res.status === 404) { setSyncStatus('☁ 初回同期待ち'); return; }
+    if (res.status === 401) { setSyncStatus('⚠ トークンエラー'); return; }
+    if (!res.ok) { setSyncStatus('⚠ 読込エラー ' + res.status); return; }
     const file = await res.json();
     _syncSha = file.sha;
-    const data = JSON.parse(decodeURIComponent(escape(atob(file.content.replace(/\n/g,'')))));
-    // localStorage 全キー復元
+    const json = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+    const data = JSON.parse(json);
     LS_SYNC_KEYS.forEach(k => {
-      if (data[k] != null) localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
+      if (data[k] != null) localStorage.setItem(k, data[k]);
     });
-    // 解説画像（IndexedDB）復元
-    if (data._images) {
-      for (const [key, b64arr] of Object.entries(data._images)) {
-        const blobs = b64arr.map(b => base64ToBlob(b));
-        await setExplImages(key, blobs);
-      }
-    }
-    setSyncStatus('✅ 同期済み');
+    setSyncStatus('✅ 同期済み ' + new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }));
   } catch(e) {
-    console.warn('sync load error', e);
-    setSyncStatus('⚠ 同期エラー');
+    console.error('sync load error', e);
+    setSyncStatus('⚠ 同期エラー: ' + e.message);
   }
 }
 
 // データ変更時に呼ぶ（3秒debounce）
 function scheduleSyncSave() {
+  if (!getGHToken()) return;   // トークン無ければ何もしない
   if (_syncTimer) clearTimeout(_syncTimer);
   _syncTimer = setTimeout(doSyncSave, 3000);
 }
@@ -2829,20 +2834,20 @@ async function doSyncSave() {
   _syncBusy = true;
   setSyncStatus('⏫ 保存中...');
   try {
+    // テキストデータのみ（画像は除外：サイズが大きすぎるため）
     const data = {};
     LS_SYNC_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v) data[k] = v; });
-    // 解説画像
-    const imgKeys = await getAllExplKeys();
-    if (imgKeys.length) {
-      data._images = {};
-      for (const key of imgKeys) {
-        const blobs = await getExplImages(key);
-        data._images[key] = await Promise.all(blobs.map(blobToBase64));
-      }
-    }
+
+    // 保存前に必ず最新SHAを取得（SHA競合を防ぐ）
+    _syncSha = await fetchSyncSha(token);
+
     const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_SYNC_PATH}`;
-    const body = { message: 'sync ' + new Date().toISOString(), content: toBase64(JSON.stringify(data)) };
+    const body = {
+      message: 'sync ' + new Date().toISOString(),
+      content: toBase64(JSON.stringify(data)),
+    };
     if (_syncSha) body.sha = _syncSha;
+
     const res = await fetch(url, {
       method: 'PUT',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
@@ -2851,13 +2856,21 @@ async function doSyncSave() {
     if (res.ok) {
       const r = await res.json();
       _syncSha = r.content.sha;
-      setSyncStatus('✅ 同期済み');
+      setSyncStatus('✅ 同期済み ' + new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }));
+    } else if (res.status === 409) {
+      // SHA競合：再度SHAを取得してリトライ
+      setSyncStatus('🔄 競合解決中...');
+      _syncSha = await fetchSyncSha(token);
+      _syncBusy = false;
+      scheduleSyncSave();
+      return;
     } else {
-      setSyncStatus('⚠ 保存エラー ' + res.status);
+      const errBody = await res.json().catch(() => ({}));
+      setSyncStatus('⚠ 保存エラー ' + res.status + (errBody.message ? ': ' + errBody.message : ''));
     }
   } catch(e) {
-    console.warn('sync save error', e);
-    setSyncStatus('⚠ 保存エラー');
+    console.error('sync save error', e);
+    setSyncStatus('⚠ 保存エラー: ' + e.message);
   }
   _syncBusy = false;
 }
