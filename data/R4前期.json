@@ -1,990 +1,1234 @@
-{
-  "meta": {
-    "id": "R4前期",
-    "title": "令和4年度第一次検定（前期）",
-    "year": "令和4",
-    "period": "前期",
-    "source_pdf": "土木2級1次過去問.pdf",
-    "answer_page": 295,
-    "total_questions": 61
-  },
-  "questions": [
-    {
-      "id": "R4前期-1",
-      "number": 1,
-      "page": 207,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-2",
-      "number": 2,
-      "page": 207,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-3",
-      "number": 3,
-      "page": 207,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-4",
-      "number": 4,
-      "page": 207,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-5",
-      "number": 5,
-      "page": 208,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-6",
-      "number": 6,
-      "page": 208,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-7",
-      "number": 7,
-      "page": 208,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-8",
-      "number": 8,
-      "page": 208,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-9",
-      "number": 9,
-      "page": 209,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-10",
-      "number": 10,
-      "page": 209,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-11",
-      "number": 11,
-      "page": 209,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-12",
-      "number": 12,
-      "page": 210,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-13",
-      "number": 13,
-      "page": 210,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-14",
-      "number": 14,
-      "page": 210,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-15",
-      "number": 15,
-      "page": 210,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-16",
-      "number": 16,
-      "page": 211,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-17",
-      "number": 17,
-      "page": 211,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-18",
-      "number": 18,
-      "page": 211,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-19",
-      "number": 19,
-      "page": 211,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-20",
-      "number": 20,
-      "page": 212,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-21",
-      "number": 21,
-      "page": 212,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-22",
-      "number": 22,
-      "page": 212,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-23",
-      "number": 23,
-      "page": 212,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-24",
-      "number": 24,
-      "page": 213,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-25",
-      "number": 25,
-      "page": 213,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-26",
-      "number": 26,
-      "page": 213,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-27",
-      "number": 27,
-      "page": 213,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-28",
-      "number": 28,
-      "page": 214,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-29",
-      "number": 29,
-      "page": 214,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-30",
-      "number": 30,
-      "page": 214,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-31",
-      "number": 31,
-      "page": 214,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-32",
-      "number": 32,
-      "page": 215,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-33",
-      "number": 33,
-      "page": 215,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-34",
-      "number": 34,
-      "page": 215,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-35",
-      "number": 35,
-      "page": 215,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-36",
-      "number": 36,
-      "page": 216,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-37",
-      "number": 37,
-      "page": 216,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-38",
-      "number": 38,
-      "page": 216,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-39",
-      "number": 39,
-      "page": 217,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-40",
-      "number": 40,
-      "page": 217,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-41",
-      "number": 41,
-      "page": 217,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-42",
-      "number": 42,
-      "page": 218,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-43",
-      "number": 43,
-      "page": 219,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-44",
-      "number": 44,
-      "page": 219,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-45",
-      "number": 45,
-      "page": 220,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-46",
-      "number": 46,
-      "page": 220,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-47",
-      "number": 47,
-      "page": 221,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "不正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
-        "正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
-        "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。",
-        "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。"
-      ]
-    },
-    {
-      "id": "R4前期-48",
-      "number": 48,
-      "page": 221,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "不正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
-        "正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
-        "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。",
-        "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。"
-      ]
-    },
-    {
-      "id": "R4前期-49",
-      "number": 49,
-      "page": 221,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-50",
-      "number": 50,
-      "page": 222,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "不正解。CBR試験は路床の強さを判定するために行われるが、アスファルト簡装の品質特性と試験方法の関係で言えば、CBR試験は路床の強さを判定するために行われることは正しい。しかし、アスファルト簡装の品質特性を直接評価するものではない。",
-        "不正解。マーシャル試験は加熱アスファルト混合物の安定度を確認するために行われるが、アスファルト簡装の品質特性と試験方法の関係で言えば、マーシャル試験は加熱アスファルト混合物の安定度を確認するために行われることは正しい。しかし、アスファルト簡装の品質特性を直接評価するものではない。",
-        "不正解。コア採取による測定はアスファルト科目の厚さを認識するために行われるが、アスファルト簡装の品質特性と試験方法の関係で言えば、コア採取による測定はアスファルト科目の厚さを認識するために行われることは正しい。しかし、アスファルト簡装の品質特性を直接評価するものではない。",
-        "正解。プルー・フローミング試験はアスファルト簡装の平坦性を確認するために行われるため、他の選択肢と比較して最も適切な試験方法である。"
-      ]
-    },
-    {
-      "id": "R4前期-51",
-      "number": 51,
-      "page": 222,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "不正解。語 質 管理 に 関す る 記 述 としては、向 の 用 門 税 虚 試 験 結果 は、購 入 者 の 指定 し た 呼び 次 座 の 強 度 値 の 75 % 以上 で あるというのは、実際の規格では85%以上であると規定されている。",
-        "不正解。3 向 の 丘 二 列 虚 試 験 結 泉 の 平均 値 は、財 入 者 の 指定 し た 呼び 絢 度 の 強 訟 値 以 上 で あるが、実際の規格では平均値が指定強度値の85%以上である必要がある。",
-        "不正解。革質 秋 理 の 項目 は、葵 庶、スラ ンプ 又は スラ ンプ フロ ー、堪 化 物 含有 量、光 気 量 の 4 つ で あるが、実際の規格では、空気量ではなく空気量の代わりに、水分量が含まれる。",
-        "正解。語 質 管理 に 関す る 記 述 のうち、夏 項 答 度 試験 は、一 般 に 材 秋 28 日 で 行うが、これは実際の規格では、28日間の加水養生後に試験を行うと規定されている。"
-      ]
-    },
-    {
-      "id": "R4前期-52",
-      "number": 52,
-      "page": 222,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-53",
-      "number": 53,
-      "page": 222,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-54",
-      "number": 54,
-      "page": 223,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-55",
-      "number": 55,
-      "page": 223,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-56",
-      "number": 56,
-      "page": 224,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-57",
-      "number": 57,
-      "page": 224,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-58",
-      "number": 58,
-      "page": 225,
-      "text": "",
-      "options": [],
-      "answer": 4,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-59",
-      "number": 59,
-      "page": 225,
-      "text": "",
-      "options": [],
-      "answer": 1,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-60",
-      "number": 60,
-      "page": 226,
-      "text": "",
-      "options": [],
-      "answer": 3,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "読取失敗",
-        "読取失敗",
-        "読取失敗",
-        "読取失敗"
-      ]
-    },
-    {
-      "id": "R4前期-61",
-      "number": 61,
-      "page": 226,
-      "text": "",
-      "options": [],
-      "answer": 2,
-      "textbook_refs": [],
-      "category": "",
-      "choice_explanations": [
-        "不正解。選択肢1の内容が誤りか具体的に説明。正しくは正確な値・手順・条件。",
-        "正解。選択肢2の内容なぜ正しいか具体的に説明。よくある間違いは混同しやすい知識。",
-        "不正解。選択肢3の内容が誤りか具体的に説明。正しくは正確な値・手順・条件。",
-        "不正解。選択肢4の内容が誤りか具体的に説明。正しくは正確な値・手順・条件。"
-      ],
-      "q_type": "positive"
-    }
-  ]
+﻿{
+    "meta":  {
+                 "id":  "R4前期",
+                 "title":  "令和4年度第一次検定（前期）",
+                 "year":  "令和4",
+                 "period":  "前期",
+                 "source_pdf":  "土木2級1次過去問.pdf",
+                 "answer_page":  295,
+                 "total_questions":  61
+             },
+    "questions":  [
+                      {
+                          "id":  "R4前期-1",
+                          "number":  1,
+                          "page":  207,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-2",
+                          "number":  2,
+                          "page":  207,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-3",
+                          "number":  3,
+                          "page":  207,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-4",
+                          "number":  4,
+                          "page":  207,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-5",
+                          "number":  5,
+                          "page":  208,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-6",
+                          "number":  6,
+                          "page":  208,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-7",
+                          "number":  7,
+                          "page":  208,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-8",
+                          "number":  8,
+                          "page":  208,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-9",
+                          "number":  9,
+                          "page":  209,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-10",
+                          "number":  10,
+                          "page":  209,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-11",
+                          "number":  11,
+                          "page":  209,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-12",
+                          "number":  12,
+                          "page":  210,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-13",
+                          "number":  13,
+                          "page":  210,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-14",
+                          "number":  14,
+                          "page":  210,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-15",
+                          "number":  15,
+                          "page":  210,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-16",
+                          "number":  16,
+                          "page":  211,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-17",
+                          "number":  17,
+                          "page":  211,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-18",
+                          "number":  18,
+                          "page":  211,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-19",
+                          "number":  19,
+                          "page":  211,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-20",
+                          "number":  20,
+                          "page":  212,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-21",
+                          "number":  21,
+                          "page":  212,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-22",
+                          "number":  22,
+                          "page":  212,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-23",
+                          "number":  23,
+                          "page":  212,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-24",
+                          "number":  24,
+                          "page":  213,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-25",
+                          "number":  25,
+                          "page":  213,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-26",
+                          "number":  26,
+                          "page":  213,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-27",
+                          "number":  27,
+                          "page":  213,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-28",
+                          "number":  28,
+                          "page":  214,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-29",
+                          "number":  29,
+                          "page":  214,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-30",
+                          "number":  30,
+                          "page":  214,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-31",
+                          "number":  31,
+                          "page":  214,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-32",
+                          "number":  32,
+                          "page":  215,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-33",
+                          "number":  33,
+                          "page":  215,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-34",
+                          "number":  34,
+                          "page":  215,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-35",
+                          "number":  35,
+                          "page":  216,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-36",
+                          "number":  36,
+                          "page":  216,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-37",
+                          "number":  37,
+                          "page":  216,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-38",
+                          "number":  38,
+                          "page":  216,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-39",
+                          "number":  39,
+                          "page":  217,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-40",
+                          "number":  40,
+                          "page":  217,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-41",
+                          "number":  41,
+                          "page":  217,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-42",
+                          "number":  42,
+                          "page":  218,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-43",
+                          "number":  43,
+                          "page":  219,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-44",
+                          "number":  44,
+                          "page":  219,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-45",
+                          "number":  45,
+                          "page":  220,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-46",
+                          "number":  46,
+                          "page":  220,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-47",
+                          "number":  47,
+                          "page":  221,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "不正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
+                                                      "正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
+                                                      "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。",
+                                                      "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-48",
+                          "number":  48,
+                          "page":  221,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "不正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
+                                                      "正解。なぜなら、地震動の計算は、地震動の計算規則で定められている。",
+                                                      "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。",
+                                                      "不正解。なぜなら、地震動の計算規則は、建築基準法で定められている。"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-49",
+                          "number":  49,
+                          "page":  221,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-50",
+                          "number":  50,
+                          "page":  222,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "不正解。CBR試験は路床の強さを判定するために行われるが、アスファルト簡装の品質特性と試験方法の関係で言えば、CBR試験は路床の強さを判定するために行われることは正しい。しかし、アスファルト簡装の品質特性を直接評価するものではない。",
+                                                      "不正解。マーシャル試験は加熱アスファルト混合物の安定度を確認するために行われるが、アスファルト簡装の品質特性と試験方法の関係で言えば、マーシャル試験は加熱アスファルト混合物の安定度を確認するために行われることは正しい。しかし、アスファルト簡装の品質特性を直接評価するものではない。",
+                                                      "不正解。コア採取による測定はアスファルト科目の厚さを認識するために行われるが、アスファルト簡装の品質特性と試験方法の関係で言えば、コア採取による測定はアスファルト科目の厚さを認識するために行われることは正しい。しかし、アスファルト簡装の品質特性を直接評価するものではない。",
+                                                      "正解。プルー・フローミング試験はアスファルト簡装の平坦性を確認するために行われるため、他の選択肢と比較して最も適切な試験方法である。"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-51",
+                          "number":  51,
+                          "page":  222,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "不正解。語 質 管理 に 関す る 記 述 としては、向 の 用 門 税 虚 試 験 結果 は、購 入 者 の 指定 し た 呼び 次 座 の 強 度 値 の 75 % 以上 で あるというのは、実際の規格では85%以上であると規定されている。",
+                                                      "不正解。3 向 の 丘 二 列 虚 試 験 結 泉 の 平均 値 は、財 入 者 の 指定 し た 呼び 絢 度 の 強 訟 値 以 上 で あるが、実際の規格では平均値が指定強度値の85%以上である必要がある。",
+                                                      "不正解。革質 秋 理 の 項目 は、葵 庶、スラ ンプ 又は スラ ンプ フロ ー、堪 化 物 含有 量、光 気 量 の 4 つ で あるが、実際の規格では、空気量ではなく空気量の代わりに、水分量が含まれる。",
+                                                      "正解。語 質 管理 に 関す る 記 述 のうち、夏 項 答 度 試験 は、一 般 に 材 秋 28 日 で 行うが、これは実際の規格では、28日間の加水養生後に試験を行うと規定されている。"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-52",
+                          "number":  52,
+                          "page":  222,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-53",
+                          "number":  53,
+                          "page":  222,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-54",
+                          "number":  54,
+                          "page":  223,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-55",
+                          "number":  55,
+                          "page":  223,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-56",
+                          "number":  56,
+                          "page":  224,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-57",
+                          "number":  57,
+                          "page":  224,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-58",
+                          "number":  58,
+                          "page":  225,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  4,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-59",
+                          "number":  59,
+                          "page":  225,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  1,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-60",
+                          "number":  60,
+                          "page":  226,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  3,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗",
+                                                      "読取失敗"
+                                                  ]
+                      },
+                      {
+                          "id":  "R4前期-61",
+                          "number":  61,
+                          "page":  226,
+                          "text":  "",
+                          "options":  [
+
+                                      ],
+                          "answer":  2,
+                          "textbook_refs":  [
+
+                                            ],
+                          "category":  "",
+                          "choice_explanations":  [
+                                                      "不正解。選択肢1の内容が誤りか具体的に説明。正しくは正確な値・手順・条件。",
+                                                      "正解。選択肢2の内容なぜ正しいか具体的に説明。よくある間違いは混同しやすい知識。",
+                                                      "不正解。選択肢3の内容が誤りか具体的に説明。正しくは正確な値・手順・条件。",
+                                                      "不正解。選択肢4の内容が誤りか具体的に説明。正しくは正確な値・手順・条件。"
+                                                  ],
+                          "q_type":  "positive"
+                      }
+                  ]
 }
