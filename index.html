@@ -9,7 +9,7 @@
   <title>土木2級1次 過去問クイズ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=47">
+  <link rel="stylesheet" href="style.css?v=47"><!-- v48 not needed, no CSS change -->
 </head>
 <body>
 
@@ -106,6 +106,15 @@
               <option value="30">30秒</option>
               <option value="45">45秒</option>
               <option value="60">1分</option>
+            </select>
+          </label>
+          <label class="option-card">
+            <span class="option-label">🎯 理解度</span>
+            <select id="understand-filter-select">
+              <option value="all" selected>全て</option>
+              <option value="mid">🟡 中理解のみ</option>
+              <option value="no">🔴 無理解のみ</option>
+              <option value="mid_no">🟡🔴 中＋無理解</option>
             </select>
           </label>
           <label class="option-card">
@@ -684,7 +693,7 @@
   </div>
 
   <!-- バージョンバッジ -->
-  <div class="app-version-badge">v3.2.0</div>
+  <div class="app-version-badge">v3.2.1</div>
 
   <!-- 画像範囲選択コピーモーダル -->
   <div id="img-crop-modal" class="page-modal" style="display:none">
@@ -722,6 +731,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="app.js?v=56"></script>
+  <script src="app.js?v=57"></script>
 </body>
 </html>

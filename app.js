@@ -955,9 +955,21 @@ function updateStartButton() {
   const all = [...state.allExams, ...state.extraExams];
   const sel = all.filter(e => state.selectedIds.has(e.meta.id));
   const onlyAns = $('only-with-answer').checked;
+  const uFilter = $('understand-filter-select')?.value || 'all';
+  const uData = uFilter !== 'all' ? getUnderstanding() : null;
   let total = 0;
   sel.forEach(ex => {
-    total += onlyAns ? ex.questions.filter(q => q.answer).length : ex.questions.length;
+    let qs = onlyAns ? ex.questions.filter(q => q.answer) : ex.questions;
+    if (uFilter !== 'all' && uData) {
+      qs = qs.filter(q => {
+        const lvl = uData[ex.meta.id + '_' + q.number];
+        if (uFilter === 'mid') return lvl === 'mid';
+        if (uFilter === 'no') return lvl === 'no';
+        if (uFilter === 'mid_no') return lvl === 'mid' || lvl === 'no';
+        return true;
+      });
+    }
+    total += qs.length;
   });
   const count = $('count-select').value;
   const actual = count === 'all' ? total : Math.min(parseInt(count), total);
@@ -1019,11 +1031,23 @@ function startQuiz() {
   const rangeFrom = parseInt($('range-from')?.value) || 0;
   const rangeTo   = parseInt($('range-to')?.value)   || 9999;
 
+  const understandFilter = $('understand-filter-select')?.value || 'all';
+  const understandData = understandFilter !== 'all' ? getUnderstanding() : null;
+
   let pool = [];
   all.filter(e => state.selectedIds.has(e.meta.id)).forEach(exam => {
     let qs = onlyAns ? exam.questions.filter(q => q.answer) : exam.questions;
     if (rangeFrom > 0 || rangeTo < 9999) {
       qs = qs.filter(q => q.number >= rangeFrom && q.number <= rangeTo);
+    }
+    if (understandFilter !== 'all' && understandData) {
+      qs = qs.filter(q => {
+        const lvl = understandData[exam.meta.id + '_' + q.number];
+        if (understandFilter === 'mid') return lvl === 'mid';
+        if (understandFilter === 'no') return lvl === 'no';
+        if (understandFilter === 'mid_no') return lvl === 'mid' || lvl === 'no';
+        return true;
+      });
     }
     qs.forEach(q => pool.push(Object.assign({}, q, { _meta: exam.meta })));
   });
@@ -3595,6 +3619,7 @@ $('btn-deselect-all').addEventListener('click', () => {
 $('order-select').addEventListener('change', updateStartButton);
 $('count-select').addEventListener('change', updateStartButton);
 $('only-with-answer').addEventListener('change', updateStartButton);
+$('understand-filter-select').addEventListener('change', updateStartButton);
 $('extra-json').addEventListener('change', e => { if (e.target.files.length) handleExtraFiles(e.target.files); });
 $('btn-start').addEventListener('click', startQuiz);
 
