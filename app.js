@@ -4024,4 +4024,181 @@ $('btn-ai-toggle').addEventListener('click', () => {
   if (srcAI) srcAI.classList.toggle('ai-collapsed');
 });
 
+// ===== 問題指定クイズ =====
+
+// 選択状態: Map< examId_Nno → true >
+const customSelected = new Map();
+
+function showCustomSelectScreen() {
+  renderCustomSelectScreen();
+  showScreen('custom-select');
+}
+
+function renderCustomSelectScreen() {
+  const all = [...state.allExams, ...state.extraExams];
+  const uData = getUnderstanding();
+  const fData = getFreqMarks();
+  const container = $('custom-select-exam-list');
+  container.innerHTML = '';
+
+  all.forEach(exam => {
+    const examId = exam.meta.id;
+    const block = document.createElement('div');
+    block.className = 'custom-select-exam-block';
+    block.dataset.examId = examId;
+
+    // ヘッダー
+    const selCount = exam.questions.filter(q => customSelected.has(examId + '_' + q.number)).length;
+    const header = document.createElement('div');
+    header.className = 'custom-select-exam-header';
+    header.innerHTML = `
+      <span class="custom-select-exam-chevron">▼</span>
+      <span class="custom-select-exam-name">${exam.meta.year}年度 ${exam.meta.period}</span>
+      <button class="custom-select-exam-toggle-btn" data-exam="${examId}">全選択</button>
+      <span class="custom-select-exam-count" id="csc-count-${examId}">${selCount} / ${exam.questions.length}</span>
+    `;
+    header.addEventListener('click', e => {
+      if (e.target.classList.contains('custom-select-exam-toggle-btn')) return;
+      block.classList.toggle('open');
+    });
+    header.querySelector('.custom-select-exam-toggle-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      const allSel = exam.questions.every(q => customSelected.has(examId + '_' + q.number));
+      exam.questions.forEach(q => {
+        const key = examId + '_' + q.number;
+        if (allSel) customSelected.delete(key);
+        else customSelected.set(key, true);
+      });
+      e.target.textContent = allSel ? '全選択' : '全解除';
+      refreshCustomSelectCount();
+      updateCustomExamCount(examId, exam.questions);
+      // ボタン再描画
+      block.querySelectorAll('.btn-q-num').forEach(btn => {
+        const k = examId + '_' + btn.dataset.no;
+        btn.classList.toggle('selected', customSelected.has(k));
+      });
+    });
+
+    // 問題番号グリッド
+    const grid = document.createElement('div');
+    grid.className = 'custom-select-q-grid';
+    exam.questions.forEach(q => {
+      const key = examId + '_' + q.number;
+      const uKey = examId + '_' + q.number;
+      const lvl = uData[uKey];
+      const freq = fData[uKey];
+      const btn = document.createElement('button');
+      btn.className = 'btn-q-num';
+      if (lvl === 'mid') btn.classList.add('understand-mid');
+      if (lvl === 'no')  btn.classList.add('understand-no');
+      if (freq)          btn.classList.add('freq-marked');
+      if (customSelected.has(key)) btn.classList.add('selected');
+      btn.dataset.no = q.number;
+      btn.textContent = q.number;
+      btn.addEventListener('click', () => {
+        if (customSelected.has(key)) customSelected.delete(key);
+        else customSelected.set(key, true);
+        btn.classList.toggle('selected', customSelected.has(key));
+        refreshCustomSelectCount();
+        updateCustomExamCount(examId, exam.questions);
+      });
+      grid.appendChild(btn);
+    });
+
+    block.appendChild(header);
+    block.appendChild(grid);
+    container.appendChild(block);
+  });
+
+  refreshCustomSelectCount();
+}
+
+function updateCustomExamCount(examId, questions) {
+  const el = $('csc-count-' + examId);
+  if (!el) return;
+  const cnt = questions.filter(q => customSelected.has(examId + '_' + q.number)).length;
+  el.textContent = cnt + ' / ' + questions.length;
+}
+
+function refreshCustomSelectCount() {
+  const cnt = customSelected.size;
+  $('custom-select-count').textContent = cnt;
+  $('btn-custom-start').disabled = cnt === 0;
+}
+
+function customSelectAll() {
+  const all = [...state.allExams, ...state.extraExams];
+  all.forEach(exam => {
+    exam.questions.forEach(q => customSelected.set(exam.meta.id + '_' + q.number, true));
+  });
+  renderCustomSelectScreen();
+}
+
+function customSelectNone() {
+  customSelected.clear();
+  renderCustomSelectScreen();
+}
+
+function customSelectUnderstand(level) {
+  customSelected.clear();
+  const all = [...state.allExams, ...state.extraExams];
+  const uData = getUnderstanding();
+  all.forEach(exam => {
+    exam.questions.forEach(q => {
+      const lvl = uData[exam.meta.id + '_' + q.number];
+      if (level === 'mid' && lvl === 'mid') customSelected.set(exam.meta.id + '_' + q.number, true);
+      if (level === 'no'  && lvl === 'no')  customSelected.set(exam.meta.id + '_' + q.number, true);
+      if (level === 'mid_no' && (lvl === 'mid' || lvl === 'no')) customSelected.set(exam.meta.id + '_' + q.number, true);
+    });
+  });
+  renderCustomSelectScreen();
+}
+
+function customSelectFreq() {
+  customSelected.clear();
+  const all = [...state.allExams, ...state.extraExams];
+  const fData = getFreqMarks();
+  all.forEach(exam => {
+    exam.questions.forEach(q => {
+      if (fData[exam.meta.id + '_' + q.number]) customSelected.set(exam.meta.id + '_' + q.number, true);
+    });
+  });
+  renderCustomSelectScreen();
+}
+
+function startCustomQuiz() {
+  if (customSelected.size === 0) return;
+  const all = [...state.allExams, ...state.extraExams];
+  const overrides = getOverrides();
+  let pool = [];
+  all.forEach(exam => {
+    exam.questions.forEach(q => {
+      const key = exam.meta.id + '_' + q.number;
+      if (!customSelected.has(key)) return;
+      let qc = Object.assign({}, q, { _meta: exam.meta });
+      if (overrides[qKey(qc)] !== undefined) {
+        qc = Object.assign({}, qc, { answer: overrides[qKey(qc)], _overridden: true });
+      }
+      pool.push(qc);
+    });
+  });
+
+  // 設定画面の出題順設定を参照
+  if ($('order-select')?.value === 'random') pool = shuffle(pool);
+
+  state.questions = pool;
+  state.currentIndex = 0;
+  state.answers = new Array(pool.length).fill(null);
+  state.score = 0;
+  state.wrongQuestions = [];
+  state.settings.timeAttack = 0; // タイムアタックはデフォルトなし
+  stopTimeAttack();
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
+$('btn-custom-select').addEventListener('click', showCustomSelectScreen);
+$('btn-back-from-custom-select').addEventListener('click', () => showScreen('setup'));
+
 initApp();
