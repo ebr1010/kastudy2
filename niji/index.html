@@ -190,6 +190,9 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .kb .ka{font-weight:900;color:var(--success-hi);background:rgba(16,185,129,.14);border-bottom:2px solid var(--success);padding:0 4px;border-radius:3px}
 .hid .kb:not(.open) .ka{color:transparent;background:rgba(245,158,11,.12);border-bottom-color:rgba(245,158,11,.6);user-select:none}
 .hid .rv{display:none}
+#kAll,.ktg{display:block;width:100%;flex:1 1 100%;min-height:52px;padding:14px 16px;font-size:17px;border-radius:12px}
+.kcard .ktg{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;border:0;box-shadow:0 4px 16px rgba(59,130,246,.4)}
+.kcard.hid .ktg{background:linear-gradient(135deg,#10b981,#06b6d4)}
 .kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
 .kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
@@ -487,6 +490,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.7.4</b>解説の「答えを表示／隠す」ボタンを横幅いっぱいの大きいボタンに</li>
         <li><b>v1.7.3</b>解説の検索を全語句に拡大（題名・誤りの選択肢・記述の解答例・工程名もタップで検索、その他の文字は長押し選択→「選択した語句を検索」）</li>
         <li><b>v1.7.2</b>「PDF」タブを追加（R1〜R7の問題用紙PDF・解答PDFを一覧から開ける）</li>
         <li><b>v1.7.1</b>検索メニューに「土木2級 試験 想定問題」を追加</li>
@@ -517,7 +521,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.7.3</div>
+  <div class="ver" aria-label="バージョン">v1.7.4</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -530,11 +534,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.7.3"></script>
+<script src="kaisetsu.js?v=1.7.4"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.7.3";
+var APP_VER="1.7.4";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -703,7 +707,7 @@ function renderK(){
   $("kList").innerHTML=list.map(function(k,i){
     var h='<section class="sec kcard'+(kHideAll?' hid':'')+'" id="k'+k.y+'-'+k.q+'" data-t="'+esc(k.t)+'"><h3><span class="tag">'+k.y+'</span><span class="tag">問'+k.q+'</span><span class="tag t">'+TYPEN[k.type]+'</span><span class="tt" data-w="'+esc(k.t)+'">'+esc(k.t)+'</span></h3>';
     h+='<div class="srcrow" style="margin:0"><a class="srcbtn" href="q/'+k.y+'-'+k.q+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">この問題（問題用紙）↗</a>'+qLinks(k.y,k.q)+aLink(k.y,k.q)+'</div>';
-    h+='<div class="row" style="margin-top:10px"><button class="btn ghost ktg" type="button">'+(kHideAll?"答えを表示":"答えを隠す")+'</button></div>';
+    h+='<div style="margin-top:10px"><button class="btn ghost ktg" type="button">'+(kHideAll?"答えを表示":"答えを隠す")+'</button></div>';
     h+='<p class="lead">'+esc(k.lead)+'</p>';
     if(k.type==="fill"){
       h+='<ol class="ks">'+k.s.map(function(x){return '<li>'+kSentence(x)+'</li>'}).join("")+'</ol>';
