@@ -466,6 +466,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.7.1</b>検索メニューに「土木2級 試験 想定問題」を追加</li>
         <li><b>v1.7.0</b>解説の答えの語句をタップするとGoogle検索できるように。問題用紙PDFをアプリ内に置き、ページ指定で開けるビューアを追加。解答の原本リンクにページ番号を表示</li>
         <li><b>v1.6.1</b>解説を原本と照合して修正（R1問6の問題文、R3問3・R3問8・R4問5・R4問8・R4問9・R5問3の解答例を解答試案どおりに。解答試案にない解答例には「補足」と表示）</li>
         <li><b>v1.6.0</b>「解説」タブを追加（R1〜R7の問2〜問9の全56問。穴埋めは答えを埋めた問題文、記述は解答例、工程表は日程。ワンタップで答えの表示・非表示、原本は別タブ）</li>
@@ -493,10 +494,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.7.0</div>
+  <div class="ver" aria-label="バージョン">v1.7.1</div>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
     <a id="shA" href="#" target="_blank" rel="noopener">「」をGoogleで検索</a>
+    <a id="shC" class="sub" href="#" target="_blank" rel="noopener">「」で検索</a>
     <a id="shB" class="sub" href="#" target="_blank" rel="noopener">「」で検索</a>
     <button class="btn ghost" id="shX" type="button">閉じる</button>
   </div>
@@ -504,11 +506,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.7.0"></script>
+<script src="kaisetsu.js?v=1.7.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.7.0";
+var APP_VER="1.7.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -709,12 +711,14 @@ function openSheet(w,t){
   var q1=w+" 土木2級 試験 解説",q2=w;
   $("shW").textContent=w;
   $("shA").href="https://www.google.com/search?q="+encodeURIComponent(q1);$("shA").textContent="「"+q1+"」で検索";
+  var q3=w+" 土木2級 試験 想定問題";$("shC").href="https://www.google.com/search?q="+encodeURIComponent(q3);$("shC").textContent="「"+q3+"」で検索";
   $("shB").href="https://www.google.com/search?q="+encodeURIComponent(q2);$("shB").textContent="「"+q2+"」だけで検索";
   $("sheet").hidden=false;
 }
 $("shX").addEventListener("click",function(){$("sheet").hidden=true});
 $("shA").addEventListener("click",function(){$("sheet").hidden=true});
 $("shB").addEventListener("click",function(){$("sheet").hidden=true});
+$("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 $("kAll").addEventListener("click",function(){kHideAll=!kHideAll;$("kAll").textContent=kHideAll?"すべての答えを表示":"すべての答えを隠す";renderK()});
 renderK();
