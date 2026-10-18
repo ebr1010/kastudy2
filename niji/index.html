@@ -212,6 +212,14 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .sheet .w{font-weight:900;font-size:18px;color:var(--success-hi)}
 .sheet a{display:block;text-align:center;text-decoration:none;font:700 14px var(--f-jp);color:#fff;background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:12px;padding:12px}
 .sheet a.sub{background:rgba(255,255,255,.06);color:var(--accent-hi);border:1px solid rgba(6,182,212,.4)}
+.plist{display:grid;gap:8px;margin-top:10px}
+.prow{display:grid;grid-template-columns:6.5em minmax(0,1fr);gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.035)}
+.prow b{font-size:14px}
+.prow .bt{display:flex;flex-wrap:wrap;gap:6px}
+.prow .bt a{flex:1 1 9em;text-align:center;text-decoration:none;font:700 13px var(--f-jp);border-radius:10px;padding:10px 8px}
+.prow .bt a.q{color:#fff;background:linear-gradient(135deg,#3b82f6,#06b6d4)}
+.prow .bt a.a{color:var(--accent-hi);border:1px solid rgba(6,182,212,.45);background:rgba(6,182,212,.08)}
+.prow small{grid-column:2;font-size:11px;color:var(--muted)}
 .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 </style>
 </head>
@@ -229,6 +237,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <button role="tab" data-v="home" aria-selected="true">ホーム</button>
     <button role="tab" data-v="quiz" aria-selected="false">穴埋め</button>
     <button role="tab" data-v="kai" aria-selected="false">解説</button>
+    <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
     <button role="tab" data-v="nums" aria-selected="false">数値</button>
     <button role="tab" data-v="bar" aria-selected="false">工程表</button>
@@ -349,6 +358,15 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <div class="view" id="kList"></div>
   </div>
 
+  <!-- ===== PDF ===== -->
+  <div class="view" id="v-pdf" hidden>
+    <section class="sec">
+      <h2><b>PDF</b>問題用紙・解答のPDF</h2>
+      <p class="hint">どちらも別タブで開きます。問題用紙はアプリ内のビューアで表示します（スマホ可）。解答は資格学校が公開しているPDFを開きます。</p>
+      <div class="plist" id="pList"></div>
+    </section>
+  </div>
+
   <!-- ===== WRITE ===== -->
   <div class="view" id="v-write" hidden>
     <section class="sec">
@@ -466,6 +484,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.7.2</b>「PDF」タブを追加（R1〜R7の問題用紙PDF・解答PDFを一覧から開ける）</li>
         <li><b>v1.7.1</b>検索メニューに「土木2級 試験 想定問題」を追加</li>
         <li><b>v1.7.0</b>解説の答えの語句をタップするとGoogle検索できるように。問題用紙PDFをアプリ内に置き、ページ指定で開けるビューアを追加。解答の原本リンクにページ番号を表示</li>
         <li><b>v1.6.1</b>解説を原本と照合して修正（R1問6の問題文、R3問3・R3問8・R4問5・R4問8・R4問9・R5問3の解答例を解答試案どおりに。解答試案にない解答例には「補足」と表示）</li>
@@ -494,7 +513,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.7.1</div>
+  <div class="ver" aria-label="バージョン">v1.7.2</div>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
     <a id="shA" href="#" target="_blank" rel="noopener">「」をGoogleで検索</a>
@@ -506,11 +525,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.7.1"></script>
+<script src="kaisetsu.js?v=1.7.2"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.7.1";
+var APP_VER="1.7.2";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -722,6 +741,11 @@ $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 $("kAll").addEventListener("click",function(){kHideAll=!kHideAll;$("kAll").textContent=kHideAll?"すべての答えを表示":"すべての答えを隠す";renderK()});
 renderK();
+
+/* ---------- PDF一覧 ---------- */
+$("pList").innerHTML=["R7","R6","R5","R4","R3","R2","R1"].map(function(y){
+  return '<div class="prow"><b>'+YN[y]+'</b><div class="bt"><a class="q" href="pdf.html?f='+y+'&p=1&v='+APP_VER+'" target="_blank" rel="noopener">問題用紙PDF ↗</a><a class="a" href="'+SRC[y].u+'" target="_blank" rel="noopener">解答PDF ↗</a></div><small>解答：'+esc(SRC[y].n)+'</small></div>';
+}).join("");
 
 /* ---------- 記述 ---------- */
 var WREF={"移動式クレーン": ["R5-8", "R7-8"], "玉掛け作業": ["R5-8"], "土止め支保工の組立": ["R1-8", "R6-8"], "墜落防止（高さ2m以上）": ["R4-8", "R2-7"], "騒音防止（ブルドーザ・バックホウ）": ["R4-9"], "バーチャート": ["R1-9", "R3-9", "R6-9", "R7-3"], "ガントチャート": ["R1-9", "R3-9", "R6-9"], "ネットワーク式工程表": ["R1-9", "R3-9", "R6-9"], "グラフ式工程表": ["R7-3"], "出来高累計曲線": ["R7-3"], "コールドジョイント": ["R2-5", "R5-5", "R7-5"], "ワーカビリティー": ["R2-5", "R5-5", "R7-5"], "スランプ": ["R5-5"], "ブリーディング": ["R7-5"], "スペーサ": ["R7-5"], "アルカリシリカ反応": ["R5-5"], "移動式クレーン（作業着手前）": ["R3-3"], "架空線の損傷事故防止": ["R3-8"], "打込み時の留意点": ["R3-5"], "締固め時の留意点": ["R3-5"], "暑中・寒中・マスコンクリート": ["R2-8"], "レイタンス・かぶり": ["R2-5"], "誤り訂正（施工）": ["R1-5"], "法面保護工": ["R1-3"], "軟弱地盤対策工法": ["R2-3", "R6-5"], "締固め度の試験": ["R6-3"], "盛土材料の条件": ["R4-5"], "建設リサイクル法": ["R5-3"], "施工計画の事前調査": ["R4-3"]};
