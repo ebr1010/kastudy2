@@ -165,6 +165,9 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .modal .mb.z img{width:1000px;max-width:none}
 .modal .mb img{cursor:zoom-in}.modal .mb.z img{cursor:zoom-out}
 .modal .mb p{margin:0;font-size:12px;color:var(--muted);text-align:center}
+.ver{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:30;font:700 11px 'Barlow Condensed',monospace;letter-spacing:.14em;color:rgba(167,139,250,.8);background:rgba(15,10,30,.72);border:1px solid rgba(139,92,246,.35);border-radius:6px;padding:3px 9px;pointer-events:none}
+.log{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:13px}
+.log b{font-family:var(--f-din);color:var(--accent-hi);margin-right:8px;font-size:14px}
 .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 </style>
 </head>
@@ -392,6 +395,18 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
       <div class="checks" id="checks"></div>
     </section>
     <section class="sec">
+      <h2><b>CHANGELOG</b>更新履歴</h2>
+      <ul class="log">
+        <li><b>v1.4.1</b>バージョン表示を追加</li>
+        <li><b>v1.4.0</b>問題用紙の画像（問題の原本）と解答試案PDFへのリンク（解答の原本）を追加</li>
+        <li><b>v1.3.1</b>記述の出題年表記を修正（ガントチャート）</li>
+        <li><b>v1.3.0</b>語群の欠けた数字を補完、バーチャート過去問（R2・R5・R7）を追加</li>
+        <li><b>v1.2.0</b>R3の穴埋めを追加（全140問）</li>
+        <li><b>v1.1.0</b>R1・R2・R4の穴埋めと記述を追加、R3/R4の取り違えを修正</li>
+        <li><b>v1.0.0</b>公開（R5〜R7の穴埋め60問）</li>
+      </ul>
+    </section>
+    <section class="sec">
       <h2><b>LINKS</b>資料</h2>
       <ul class="links">
         <li><a href="https://www.jctc.jp/mondai/" target="_blank" rel="noopener">全国建設研修センター 試験問題（公式・最新年度のみ）</a></li>
@@ -408,6 +423,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <div class="mb" id="srcBody"></div>
   </div>
 
+  <div class="ver" aria-label="バージョン">v1.4.1</div>
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
