@@ -201,6 +201,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .kitems{margin:0 0 8px;padding-left:1.2em;font-size:14px}
 .kans{display:grid;gap:8px;margin-top:8px}
 .kans .g{border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.06);border-radius:10px;padding:8px 12px}
+.kans li.sup{color:var(--muted)}.kans li.sup em{font-style:normal;font-size:11px;color:#fde68a;border:1px solid rgba(245,158,11,.5);border-radius:6px;padding:0 5px;margin-left:4px}
 .kans .g b{display:block;font-size:13px;color:var(--success-hi);margin-bottom:2px}
 .kans ul{margin:0;padding-left:1.2em;font-size:14px;display:grid;gap:3px}
 .khide{display:none;font-size:13px;color:var(--muted);border:1px dashed rgba(245,158,11,.5);border-radius:10px;padding:10px;text-align:center;cursor:pointer}
@@ -459,6 +460,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.6.1</b>解説を原本と照合して修正（R1問6の問題文、R3問3・R3問8・R4問5・R4問8・R4問9・R5問3の解答例を解答試案どおりに。解答試案にない解答例には「補足」と表示）</li>
         <li><b>v1.6.0</b>「解説」タブを追加（R1〜R7の問2〜問9の全56問。穴埋めは答えを埋めた問題文、記述は解答例、工程表は日程。ワンタップで答えの表示・非表示、原本は別タブ）</li>
         <li><b>v1.5.0</b>穴埋めを本番形式に変更（問題用紙の画像を表示し、(イ)〜(ホ)を語群から選ぶ）。年度・問題番号は自分で選ぶ形に、シャッフルは初期オフに。原本はすべて別タブで開くように変更</li>
         <li><b>v1.4.2</b>古い画面が表示され続ける問題を修正（新しい版があれば自動で読み込み直す）</li>
@@ -484,11 +486,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.6.0</div>
+  <div class="ver" aria-label="バージョン">v1.6.1</div>
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.6.0"></script>
+<script src="kaisetsu.js?v=1.6.1"></script>
 <script>
 (function(){
 "use strict";
@@ -670,7 +672,7 @@ function renderK(){
       h+='<div class="khide">解説は答えを表示すると出ます（タップで表示）</div><ul class="kex rv">'+L.map(function(l,j){return '<li><span class="lb">('+l+')</span><b>'+esc(m[l])+'</b>：'+esc(k.ex[j])+'</li>'}).join("")+'</ul>';
     }else if(k.type==="write"){
       if(k.items.length)h+='<ul class="kitems">'+k.items.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>';
-      h+='<div class="khide">解答例は隠しています（タップで表示）</div><div class="kans rv">'+k.ans.map(function(g){return '<div class="g"><b>'+esc(g[0])+'</b><ul>'+g[1].map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul></div>'}).join("")+'</div>';
+      h+='<div class="khide">解答例は隠しています（タップで表示）</div><div class="kans rv">'+k.ans.map(function(g){return '<div class="g"><b>'+esc(g[0])+'</b><ul>'+g[1].map(function(x){return /^【補足】/.test(x)?'<li class="sup">'+esc(x.replace("【補足】",""))+' <em>補足</em></li>':'<li>'+esc(x)+'</li>'}).join("")+'</ul></div>'}).join("")+'</div><p class="hint rv" style="margin:6px 0 0">「補足」が付いていない解答例は、資格学校の解答試案に載っている内容です。</p>';
     }else{
       h+='<p style="font-size:14px;margin:0 0 8px">'+esc(k.cond)+'</p><div class="khide">工程表と全所要日数は隠しています（タップで表示）</div><div class="rv"><div class="h" style="font-weight:700;color:var(--success-hi);margin-bottom:6px">全所要日数 '+k.total+'日（'+esc(k.calc)+'）</div>'+k.rows.map(function(r){var pad=(r[1]-1)/k.total*100,w=(r[2]-r[1]+1)/k.total*100;return '<div style="display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px;margin-bottom:5px"><span>'+r[0]+'</span><span style="position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px"><span style="position:absolute;left:'+pad+'%;width:'+w+'%;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></span></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")+'</div>';
     }
@@ -776,7 +778,7 @@ C.forEach(function(x,i){var l=document.createElement("label");l.innerHTML='<inpu
 $("checks").addEventListener("change",function(e){ck[e.target.id.slice(2)]=e.target.checked;save("d2check",ck)});
 
 /* ---------- 新しい版の自動読み込み ---------- */
-var APP_VER="1.6.0";
+var APP_VER="1.6.1";
 try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){
   if(j&&j.v&&j.v!==APP_VER){var k="d2reload"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
     location.replace(location.pathname+"?v="+j.v+location.hash)}
