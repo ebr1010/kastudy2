@@ -152,6 +152,19 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .checks b{font-family:var(--f-din);color:var(--accent-hi);margin-right:6px;font-size:14px}
 .links{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}
 .links a{color:var(--accent-hi);word-break:break-all}
+.srcrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.srcbtn{font:700 12px var(--f-jp);color:#fde68a;background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.45);border-radius:10px;padding:6px 10px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.srcbtn:hover{background:rgba(245,158,11,.2)}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(2,8,18,.9);display:flex;flex-direction:column}
+.modal[hidden]{display:none!important}
+.modal .mh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));padding-top:max(10px,env(safe-area-inset-top,0px));background:rgba(8,18,36,.97);border-bottom:1px solid rgba(255,255,255,.12)}
+.modal .mh b{flex:1 1 12em;min-width:0;font-size:14px}
+.modal .mb{flex:1;overflow:auto;padding:12px max(12px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));display:grid;gap:12px;justify-items:center;align-content:start}
+.modal .mb img{width:100%;max-width:820px;height:auto;background:#fff;border-radius:6px;box-shadow:0 6px 30px rgba(0,0,0,.6)}
+.modal .mb.z{justify-items:start}
+.modal .mb.z img{width:1000px;max-width:none}
+.modal .mb img{cursor:zoom-in}.modal .mb.z img{cursor:zoom-out}
+.modal .mb p{margin:0;font-size:12px;color:var(--muted);text-align:center}
 .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 </style>
 </head>
@@ -227,7 +240,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
           <button class="chip" id="optShuffle" aria-pressed="true">シャッフル</button>
           <button class="chip" id="optMiss" aria-pressed="false">要復習だけ</button>
         </div>
-        <p class="hint" style="margin-top:10px">本番と同じく、問題ごとの15語の語群から選びます。</p>
+        <p class="hint" style="margin-top:10px">本番と同じく、問題ごとの15語の語群から選びます。答えると「問題の原本」（実際の問題用紙）と「解答の原本」（資格学校の解答試案PDFの該当ページ）を開けます。</p>
       </section>
       <button class="btn wide" id="startBtn">スタート</button>
       <button class="btn ghost" id="resetBtn" type="button">記録をリセット</button>
@@ -326,7 +339,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
       <h2><b>PAST EXAM</b>過去問で練習</h2>
       <p class="hint">条件を見て自分で線を引き、全所要日数を出してから答えを開く。</p>
       <div class="wlist" id="barList"></div>
-      <p class="hint" style="margin-top:8px">日数と解答の出典：資格試験対策.net（R5・R7の全所要日数は各資格学校の解答試案と一致）。</p>
+      <p class="hint" style="margin-top:8px">日数と工程の出典：資格試験対策.net。条件は「問題の原本」で、R5・R7の全所要日数は「解答の原本」で確認できます（R2は解答試案に答えの記載なし）。</p>
     </section>
   </div>
 
@@ -390,6 +403,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     </section>
   </div>
 
+  <div class="modal" id="srcModal" hidden role="dialog" aria-modal="true" aria-labelledby="srcTitle">
+    <div class="mh"><b id="srcTitle">原本</b><a class="srcbtn" id="srcAns" href="#" target="_blank" rel="noopener">解答の原本 ↗</a><button class="btn ghost" id="srcClose" type="button" style="padding:6px 14px">閉じる</button></div>
+    <div class="mb" id="srcBody"></div>
+  </div>
+
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
@@ -439,6 +457,24 @@ SETS.forEach(function(st){
     ans.forEach(function(a,k){ITEMS.push({id:st.y+st.q+"-"+si+"-"+k,set:st,sent:sent,k:k,ans:a})});
   });
 });
+
+var SRC={"R1":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[5,6],"6":[6],"7":[7],"8":[8],"9":[8]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":2,"8":2,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2019-02_jitti.pdf","n":"九州建設専門学院 解答試案"},"R2":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":3,"8":3,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2020-02_jitti.pdf","n":"九州建設専門学院 解答試案"},"R3":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":3,"7":3,"8":3,"9":4},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2021-02-02_02.pdf","n":"九州建設専門学院 解答試案"},"R4":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2,"7":2,"8":2,"9":2},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2022-02-02.pdf","n":"九州建設専門学院 解答試案"},"R5":{"q":{"1":[2],"2":[3],"3":[4],"4":[5],"5":[6,7],"6":[7],"7":[8],"8":[9],"9":[9]},"a":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2,"7":2,"8":2,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2023-02-02.pdf","n":"九州建設専門学院 解答試案"},"R6":{"q":{"1":[2,3],"2":[4],"3":[5],"4":[5],"5":[6,7],"6":[7],"7":[8],"8":[9],"9":[9]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":2,"8":3,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2024-02-02.pdf","n":"九州建設専門学院 解答試案"},"R7":{"q":{"1":[2,3],"2":[4],"3":[5],"4":[6],"5":[7,8],"6":[8],"7":[9],"8":[10],"9":[10]},"a":{"1":2,"2":2,"3":2,"4":3,"5":3,"6":4,"7":4,"8":5,"9":5},"u":"https://www.cic-ct.co.jp/wp-content/uploads/2025/11/r7_2cgOfkQ6fhFhBfvI.pdf","n":"CIC日本建設情報センター 解答試案"}};
+function ansUrl(y,q){var r=SRC[y];return r.u+"#page="+(r.a[q]||1)}
+function srcButtons(y,q,label){
+  var qq=String(q).replace("問","");label=label||"";
+  return '<button class="srcbtn" type="button" data-src="'+y+'-'+qq+'">'+label+'問題の原本</button><a class="srcbtn" href="'+ansUrl(y,qq)+'" target="_blank" rel="noopener">'+label+'解答の原本 ↗</a>';
+}
+function openSrc(y,q){
+  var r=SRC[y],pg=r.q[q]||[];
+  $("srcTitle").textContent=y+" 問"+q+"（2級二次 問題用紙）";
+  $("srcAns").href=ansUrl(y,q);$("srcAns").textContent=r.n+" "+y+" 問"+q+" ↗";
+  $("srcBody").innerHTML=pg.map(function(n){return '<img loading="lazy" src="src/'+y+'-'+n+'.jpg" alt="'+y+' 問題用紙 '+n+'ページ"><p>'+y+' 問題用紙 PDF '+n+'ページ（画像をタップで拡大・縮小）</p>'}).join("");$("srcBody").classList.remove("z");
+  $("srcModal").hidden=false;$("srcBody").scrollTop=0;$("srcClose").focus();
+}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-src]");if(b){e.preventDefault();var k=b.dataset.src.split("-");openSrc(k[0],k[1])}});
+$("srcClose").addEventListener("click",function(){$("srcModal").hidden=true});
+$("srcBody").addEventListener("click",function(e){if(e.target.tagName==="IMG")$("srcBody").classList.toggle("z")});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("srcModal").hidden=true});
 
 /* ---------- 頻出ランク ---------- */
 [["工程表（特徴・穴埋め・バーチャート）",7],["盛土の締固め（管理・試験・施工）",5],["コンクリートの打込み・締固め・養生",4],["鉄筋・型枠",4],["生コンの受入れ検査",3],["土の原位置試験",3],["コンクリート用語",3],["法面（切土・保護工）",3],["盛土（施工・材料）",3],["移動式クレーン",3],["土止め支保工",2],["墜落防止・高所作業",2],["軟弱地盤対策",2]].forEach(function(x){
@@ -528,7 +564,7 @@ function pick(btn,x){
   if(!ok)btn.classList.add("ng");
   $("qText").innerHTML=sentenceHTML(it,ok?"ok":"ng");
   $("scoreBadge").textContent=score;
-  $("qVerdict").innerHTML='<div class="verdict '+(ok?"ok":"ng")+'">'+(ok?"正解":"不正解　正解は「"+esc(it.ans)+"」")+'<small>'+it.set.y+" "+it.set.q+"（2級二次）"+'</small></div>';
+  $("qVerdict").innerHTML='<div class="verdict '+(ok?"ok":"ng")+'">'+(ok?"正解":"不正解　正解は「"+esc(it.ans)+"」")+'<small>'+it.set.y+" "+it.set.q+"（2級二次）"+'</small></div><div class="srcrow">'+srcButtons(it.set.y,it.set.q)+'</div>';
   $("nextBtn").disabled=false;$("nextBtn").focus();
 }
 $("nextBtn").addEventListener("click",function(){if(qi<Q.length-1){qi++;render()}else finish()});
@@ -544,6 +580,7 @@ function back(){$("q-play").hidden=true;$("q-result").hidden=true;$("q-setup").h
 $("againBtn").addEventListener("click",back);
 
 /* ---------- 記述 ---------- */
+var WREF={"移動式クレーン": ["R5-8", "R7-8"], "玉掛け作業": ["R5-8"], "土止め支保工の組立": ["R1-8", "R6-8"], "墜落防止（高さ2m以上）": ["R4-8", "R2-7"], "騒音防止（ブルドーザ・バックホウ）": ["R4-9"], "バーチャート": ["R1-9", "R3-9", "R6-9", "R7-3"], "ガントチャート": ["R1-9", "R3-9", "R6-9"], "ネットワーク式工程表": ["R1-9", "R3-9", "R6-9"], "グラフ式工程表": ["R7-3"], "出来高累計曲線": ["R7-3"], "コールドジョイント": ["R2-5", "R5-5", "R7-5"], "ワーカビリティー": ["R2-5", "R5-5", "R7-5"], "スランプ": ["R5-5"], "ブリーディング": ["R7-5"], "スペーサ": ["R7-5"], "アルカリシリカ反応": ["R5-5"], "移動式クレーン（作業着手前）": ["R3-3"], "架空線の損傷事故防止": ["R3-8"], "打込み時の留意点": ["R3-5"], "締固め時の留意点": ["R3-5"], "暑中・寒中・マスコンクリート": ["R2-8"], "レイタンス・かぶり": ["R2-5"], "誤り訂正（施工）": ["R1-5"], "法面保護工": ["R1-3"], "軟弱地盤対策工法": ["R2-3", "R6-5"], "締固め度の試験": ["R6-3"], "盛土材料の条件": ["R4-5"], "建設リサイクル法": ["R5-3"], "施工計画の事前調査": ["R4-3"]};
 var W=[
  ["安全","移動式クレーン","事業者が実施すべき留意点を2つ（玉掛けは除く）","R3・R5・R7",["定格荷重を超える荷重をかけて使用しない。","アウトリガーは最大限に張り出す。","設置地盤が軟弱な場合は、敷鉄板等で支持力を確保する。","一定の合図を定め、合図を行う者を指名して合図させる。","上部旋回体と接触するおそれのある箇所への立入りを禁止する。","強風で危険が予想されるときは作業を中止する。"]],
  ["安全","玉掛け作業","事業者が実施すべき安全対策を2つ","R5",["ワイヤロープの安全係数は6以上とする。","その日の作業開始前に、ワイヤロープ等の異常の有無を点検する。","つり荷の下に労働者を立ち入らせない。","玉掛け技能講習の修了者に作業を行わせる。"]],
@@ -592,7 +629,7 @@ function renderWrite(){
     d.innerHTML='<summary><b>'+esc(w[1])+'</b><small>'+esc(w[2])+'　｜　'+w[3]+'</small><span class="st'+(done?' done':'')+'">'+(done?'DONE':w[0])+'</span></summary>'+
       '<div class="in"><label class="hint" for="ta'+i+'">自分の答え</label><textarea id="ta'+i+'" placeholder="ここに書く"></textarea>'+
       '<div class="row"><button class="btn ghost" type="button" data-a="show">模範解答を見る</button><button class="btn ghost" type="button" data-a="done">'+(done?'書けた を取消':'書けた')+'</button></div>'+
-      '<div class="model"><div class="h">模範解答（この中から書ければ正解）</div><ul>'+w[4].map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul></div></div>';
+      '<div class="model"><div class="h">模範解答（この中から書ければ正解）</div><ul>'+w[4].map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul><div class="srcrow">'+(WREF[w[1]]||[]).map(function(r){var k=r.split("-");return srcButtons(k[0],k[1],k[0]+"問"+k[1]+" ")}).join("")+'</div></div></div>';
     var ta=d.querySelector("textarea");ta.value=drafts[i]||"";
     ta.addEventListener("input",function(){drafts[i]=ta.value;save("d2draft",drafts)});
     d.querySelector('[data-a="show"]').addEventListener("click",function(e){var m=d.querySelector(".model");m.classList.toggle("show");e.target.textContent=m.classList.contains("show")?"模範解答を隠す":"模範解答を見る"});
@@ -618,7 +655,7 @@ var BAR=[
 BAR.forEach(function(b){
   var d=document.createElement("details");d.className="w";
   var rows=b[3].map(function(r){var pad=(r[1]-1)/b[4]*100,w=(r[2]-r[1]+1)/b[4]*100;return '<div style="display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px"><span>'+r[0]+'</span><span style="position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px"><span style="position:absolute;left:'+pad+'%;width:'+w+'%;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></span></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("");
-  d.innerHTML='<summary><b>'+b[1]+'</b><small>'+b[0]+'</small><span class="st">'+b[0].slice(0,2)+'</span></summary><div class="in"><p style="font-size:14px;margin:0">'+b[2]+'</p><div class="row"><button class="btn ghost" type="button">答えを見る</button></div><div class="model"><div class="h">全所要日数 '+b[4]+'日（'+b[5]+'）</div><div style="display:grid;gap:6px;margin-top:6px">'+rows+'</div></div></div>';
+  d.innerHTML='<summary><b>'+b[1]+'</b><small>'+b[0]+'</small><span class="st">'+b[0].slice(0,2)+'</span></summary><div class="in"><p style="font-size:14px;margin:0">'+b[2]+'</p><div class="row"><button class="btn ghost" type="button">答えを見る</button></div><div class="model"><div class="h">全所要日数 '+b[4]+'日（'+b[5]+'）</div><div style="display:grid;gap:6px;margin-top:6px">'+rows+'</div><div class="srcrow">'+srcButtons(b[0].slice(0,2),b[0].replace(/.*問/,""))+'</div></div></div>';
   d.querySelector("button").addEventListener("click",function(e){var m=d.querySelector(".model");m.classList.toggle("show");e.target.textContent=m.classList.contains("show")?"答えを隠す":"答えを見る"});
   $("barList").appendChild(d);
 });
