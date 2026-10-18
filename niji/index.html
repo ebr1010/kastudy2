@@ -2,6 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>2級土木 二次検定ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -397,6 +400,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.4.2</b>古い画面が表示され続ける問題を修正（新しい版があれば自動で読み込み直す）</li>
         <li><b>v1.4.1</b>バージョン表示を追加</li>
         <li><b>v1.4.0</b>問題用紙の画像（問題の原本）と解答試案PDFへのリンク（解答の原本）を追加</li>
         <li><b>v1.3.1</b>記述の出題年表記を修正（ガントチャート）</li>
@@ -423,7 +427,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <div class="mb" id="srcBody"></div>
   </div>
 
-  <div class="ver" aria-label="バージョン">v1.4.1</div>
+  <div class="ver" aria-label="バージョン">v1.4.2</div>
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
@@ -484,7 +488,7 @@ function openSrc(y,q){
   var r=SRC[y],pg=r.q[q]||[];
   $("srcTitle").textContent=y+" 問"+q+"（2級二次 問題用紙）";
   $("srcAns").href=ansUrl(y,q);$("srcAns").textContent=r.n+" "+y+" 問"+q+" ↗";
-  $("srcBody").innerHTML=pg.map(function(n){return '<img loading="lazy" src="src/'+y+'-'+n+'.jpg" alt="'+y+' 問題用紙 '+n+'ページ"><p>'+y+' 問題用紙 PDF '+n+'ページ（画像をタップで拡大・縮小）</p>'}).join("");$("srcBody").classList.remove("z");
+  $("srcBody").innerHTML=pg.map(function(n){return '<img loading="lazy" src="src/'+y+'-'+n+'.jpg?v='+APP_VER+'" alt="'+y+' 問題用紙 '+n+'ページ"><p>'+y+' 問題用紙 PDF '+n+'ページ（画像をタップで拡大・縮小）</p>'}).join("");$("srcBody").classList.remove("z");
   $("srcModal").hidden=false;$("srcBody").scrollTop=0;$("srcClose").focus();
 }
 document.addEventListener("click",function(e){var b=e.target.closest("[data-src]");if(b){e.preventDefault();var k=b.dataset.src.split("-");openSrc(k[0],k[1])}});
@@ -682,6 +686,12 @@ var ck=load("d2check",{});
 C.forEach(function(x,i){var l=document.createElement("label");l.innerHTML='<input type="checkbox" id="ck'+i+'"'+(ck[i]?" checked":"")+'><span><b>'+x[0]+'</b>'+x[1]+'</span>';$("checks").appendChild(l)});
 $("checks").addEventListener("change",function(e){ck[e.target.id.slice(2)]=e.target.checked;save("d2check",ck)});
 
+/* ---------- 新しい版の自動読み込み ---------- */
+var APP_VER="1.4.2";
+try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){
+  if(j&&j.v&&j.v!==APP_VER){var k="d2reload"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
+    location.replace(location.pathname+"?v="+j.v+location.hash)}
+}).catch(function(){})}catch(e){}
 stats();
 var t0=load("d2tab","home");if(document.querySelector('.tabs button[data-v="'+t0+'"]'))show(t0);
 })();
