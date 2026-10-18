@@ -171,6 +171,17 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .ver{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:30;font:700 11px 'Barlow Condensed',monospace;letter-spacing:.14em;color:rgba(167,139,250,.8);background:rgba(15,10,30,.72);border:1px solid rgba(139,92,246,.35);border-radius:6px;padding:3px 9px;pointer-events:none}
 .log{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:13px}
 .log b{font-family:var(--f-din);color:var(--accent-hi);margin-right:8px;font-size:14px}
+.qimg{display:block;background:#fff;border-radius:10px;overflow:hidden}
+.qimg img{display:block;width:100%;height:auto}
+.ansgrid{display:grid;gap:8px}
+.arow{display:grid;grid-template-columns:3.2em minmax(0,1fr);gap:4px 8px;align-items:center}
+.arow .lb{font-weight:900;font-size:16px;color:#fde68a;text-align:center}
+.arow select{width:100%;min-width:0;font:700 15px var(--f-jp);color:var(--text);background:rgba(2,11,23,.7);border:1.5px solid var(--border);border-radius:10px;padding:10px}
+.arow select:disabled{opacity:1}
+.arow.ok select{border-color:var(--success);background:rgba(16,185,129,.16)}
+.arow.ng select{border-color:var(--danger);background:rgba(248,113,113,.12)}
+.arow .mk{grid-column:2;font-size:13px;font-weight:700}.arow .mk:empty{display:none}
+.arow.ok .mk{color:var(--success-hi)}.arow.ng .mk{color:#fecaca}
 .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 </style>
 </head>
@@ -237,18 +248,22 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <div class="view" id="v-quiz" hidden>
     <div id="q-setup" class="view">
       <section class="sec">
-        <h2><b>YEAR</b>年度の選択</h2>
+        <h2><b>YEAR</b>年度を選ぶ</h2>
         <div class="chips" id="yearChips"></div>
+      </section>
+      <section class="sec">
+        <h2><b>NUMBER</b>問題番号を選ぶ</h2>
+        <div class="chips" id="numChips"></div>
       </section>
       <section class="sec">
         <h2><b>MODE</b>出題設定</h2>
         <div class="chips">
-          <button class="chip" id="optShuffle" aria-pressed="true">シャッフル</button>
-          <button class="chip" id="optMiss" aria-pressed="false">要復習だけ</button>
+          <button class="chip" id="optShuffle" type="button" aria-pressed="false">シャッフル</button>
+          <button class="chip" id="optMiss" type="button" aria-pressed="false">要復習だけ</button>
         </div>
-        <p class="hint" style="margin-top:10px">本番と同じく、問題ごとの15語の語群から選びます。答えると「問題の原本」（実際の問題用紙）と「解答の原本」（資格学校の解答試案PDFの該当ページ）を開けます。</p>
+        <p class="hint" style="margin-top:10px">本番の問題用紙をそのまま表示します。(イ)〜(ホ)の答えを語群から選んで「採点」。1画面＝1問です。</p>
       </section>
-      <button class="btn wide" id="startBtn">スタート</button>
+      <button class="btn wide" id="startBtn" type="button" disabled>年度と問題番号を選んでください</button>
       <button class="btn ghost" id="resetBtn" type="button">記録をリセット</button>
       <p class="hint" id="resetMsg" hidden></p>
     </div>
@@ -262,13 +277,19 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
       </section>
       <section class="sec">
         <div class="tags" id="qTags"></div>
-        <p class="qtext" id="qText"></p>
-        <div class="words" id="qWords"></div>
+        <div class="srcrow" id="qSrc" style="margin:0 0 10px"></div>
+        <a id="qImgLink" href="#" target="_blank" rel="noopener" class="qimg"><img id="qImg" alt="問題用紙"></a>
+        <p class="hint" style="margin:6px 0 0">画像をタップすると別タブで大きく表示します。</p>
+      </section>
+      <section class="sec">
+        <h2><b>ANSWER</b>解答欄</h2>
+        <div class="ansgrid" id="qAns"></div>
         <div id="qVerdict"></div>
       </section>
       <div class="row">
         <button class="btn ghost" id="quitBtn" type="button">やめる</button>
-        <button class="btn" id="nextBtn" style="flex:1" disabled>次へ</button>
+        <button class="btn" id="gradeBtn" type="button" style="flex:1">採点</button>
+        <button class="btn" id="nextBtn" type="button" style="flex:1" hidden>次へ</button>
       </div>
     </div>
 
@@ -279,7 +300,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
         <p id="rPct" class="hint"></p>
         <div class="miss" id="rMiss"></div>
       </section>
-      <button class="btn wide" id="againBtn">設定に戻る</button>
+      <button class="btn wide" id="againBtn" type="button">設定に戻る</button>
     </div>
   </div>
 
@@ -400,6 +421,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.5.0</b>穴埋めを本番形式に変更（問題用紙の画像を表示し、(イ)〜(ホ)を語群から選ぶ）。年度・問題番号は自分で選ぶ形に、シャッフルは初期オフに。原本はすべて別タブで開くように変更</li>
         <li><b>v1.4.2</b>古い画面が表示され続ける問題を修正（新しい版があれば自動で読み込み直す）</li>
         <li><b>v1.4.1</b>バージョン表示を追加</li>
         <li><b>v1.4.0</b>問題用紙の画像（問題の原本）と解答試案PDFへのリンク（解答の原本）を追加</li>
@@ -422,12 +444,8 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     </section>
   </div>
 
-  <div class="modal" id="srcModal" hidden role="dialog" aria-modal="true" aria-labelledby="srcTitle">
-    <div class="mh"><b id="srcTitle">原本</b><a class="srcbtn" id="srcAns" href="#" target="_blank" rel="noopener">解答の原本 ↗</a><button class="btn ghost" id="srcClose" type="button" style="padding:6px 14px">閉じる</button></div>
-    <div class="mb" id="srcBody"></div>
-  </div>
-
-  <div class="ver" aria-label="バージョン">v1.4.2</div>
+  
+  <div class="ver" aria-label="バージョン">v1.5.0</div>
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
@@ -480,21 +498,13 @@ SETS.forEach(function(st){
 
 var SRC={"R1":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[5,6],"6":[6],"7":[7],"8":[8],"9":[8]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":2,"8":2,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2019-02_jitti.pdf","n":"九州建設専門学院 解答試案"},"R2":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":3,"8":3,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2020-02_jitti.pdf","n":"九州建設専門学院 解答試案"},"R3":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":3,"7":3,"8":3,"9":4},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2021-02-02_02.pdf","n":"九州建設専門学院 解答試案"},"R4":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2,"7":2,"8":2,"9":2},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2022-02-02.pdf","n":"九州建設専門学院 解答試案"},"R5":{"q":{"1":[2],"2":[3],"3":[4],"4":[5],"5":[6,7],"6":[7],"7":[8],"8":[9],"9":[9]},"a":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2,"7":2,"8":2,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2023-02-02.pdf","n":"九州建設専門学院 解答試案"},"R6":{"q":{"1":[2,3],"2":[4],"3":[5],"4":[5],"5":[6,7],"6":[7],"7":[8],"8":[9],"9":[9]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":2,"8":3,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2024-02-02.pdf","n":"九州建設専門学院 解答試案"},"R7":{"q":{"1":[2,3],"2":[4],"3":[5],"4":[6],"5":[7,8],"6":[8],"7":[9],"8":[10],"9":[10]},"a":{"1":2,"2":2,"3":2,"4":3,"5":3,"6":4,"7":4,"8":5,"9":5},"u":"https://www.cic-ct.co.jp/wp-content/uploads/2025/11/r7_2cgOfkQ6fhFhBfvI.pdf","n":"CIC日本建設情報センター 解答試案"}};
 function ansUrl(y,q){var r=SRC[y];return r.u+"#page="+(r.a[q]||1)}
-function srcButtons(y,q,label){
-  var qq=String(q).replace("問","");label=label||"";
-  return '<button class="srcbtn" type="button" data-src="'+y+'-'+qq+'">'+label+'問題の原本</button><a class="srcbtn" href="'+ansUrl(y,qq)+'" target="_blank" rel="noopener">'+label+'解答の原本 ↗</a>';
+function pageUrl(y,n){return "src/"+y+"-"+n+".jpg?v="+APP_VER}
+function qLinks(y,q,label){
+  label=label||"";var pg=SRC[y].q[q]||[];
+  return pg.map(function(n,i){return '<a class="srcbtn" href="'+pageUrl(y,n)+'" target="_blank" rel="noopener">'+label+'問題の原本'+(pg.length>1?'（'+(i+1)+'/'+pg.length+'）':'')+' ↗</a>'}).join("");
 }
-function openSrc(y,q){
-  var r=SRC[y],pg=r.q[q]||[];
-  $("srcTitle").textContent=y+" 問"+q+"（2級二次 問題用紙）";
-  $("srcAns").href=ansUrl(y,q);$("srcAns").textContent=r.n+" "+y+" 問"+q+" ↗";
-  $("srcBody").innerHTML=pg.map(function(n){return '<img loading="lazy" src="src/'+y+'-'+n+'.jpg?v='+APP_VER+'" alt="'+y+' 問題用紙 '+n+'ページ"><p>'+y+' 問題用紙 PDF '+n+'ページ（画像をタップで拡大・縮小）</p>'}).join("");$("srcBody").classList.remove("z");
-  $("srcModal").hidden=false;$("srcBody").scrollTop=0;$("srcClose").focus();
-}
-document.addEventListener("click",function(e){var b=e.target.closest("[data-src]");if(b){e.preventDefault();var k=b.dataset.src.split("-");openSrc(k[0],k[1])}});
-$("srcClose").addEventListener("click",function(){$("srcModal").hidden=true});
-$("srcBody").addEventListener("click",function(e){if(e.target.tagName==="IMG")$("srcBody").classList.toggle("z")});
-document.addEventListener("keydown",function(e){if(e.key==="Escape")$("srcModal").hidden=true});
+function aLink(y,q,label){return '<a class="srcbtn" href="'+ansUrl(y,q)+'" target="_blank" rel="noopener">'+(label||"")+'解答の原本 ↗</a>'}
+function srcButtons(y,q,label){var qq=String(q).replace("問","");return qLinks(y,qq,label)+aLink(y,qq,label)}
 
 /* ---------- 頻出ランク ---------- */
 [["工程表（特徴・穴埋め・バーチャート）",7],["盛土の締固め（管理・試験・施工）",5],["コンクリートの打込み・締固め・養生",4],["鉄筋・型枠",4],["生コンの受入れ検査",3],["土の原位置試験",3],["コンクリート用語",3],["法面（切土・保護工）",3],["盛土（施工・材料）",3],["移動式クレーン",3],["土止め支保工",2],["墜落防止・高所作業",2],["軟弱地盤対策",2]].forEach(function(x){
@@ -517,27 +527,33 @@ tabs.forEach(function(b){b.addEventListener("click",function(){show(b.dataset.v)
 var hist=load("d2hist",{}); // id -> {n,ok,last}
 var wdone=load("d2write",{});
 function stats(){
-  var n=0,ok=0,miss=0;Object.keys(hist).forEach(function(k){n+=hist[k].n;ok+=hist[k].ok;if(hist[k].last===0)miss++});
+  var n=0,ok=0,miss=0;Object.keys(hist).forEach(function(k){if(!/^R\d-\d-/.test(k))return;n+=hist[k].n;ok+=hist[k].ok;if(hist[k].last===0)miss++});
   $("s-ans").textContent=n;$("s-rate").textContent=n?Math.round(ok/n*100)+"%":"—";$("s-miss").textContent=miss;
   $("s-write").textContent=Object.keys(wdone).filter(function(k){return wdone[k]}).length;
 }
 
 /* ---------- クイズ設定 ---------- */
-var years={R7:true,R6:true,R5:true,R4:true,R3:true,R2:true,R1:true};
+var LBL=["イ","ロ","ハ","ニ","ホ"];
+var PROBS=SETS.map(function(st){var ans=[];st.s.forEach(function(x){x.replace(/\{([^}]+)\}/g,function(_,a){ans.push(a)})});
+  return {y:st.y,q:st.q.replace("問",""),t:st.t,w:st.w.split(","),ans:ans}});
+function pid(p){return p.y+"-"+p.q}
+function pMiss(p){return p.ans.some(function(_,k){var h=hist[pid(p)+"-"+LBL[k]];return h&&h.last===0})}
+var selY={},selQ={};
+var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度"};
 ["R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){
-  var c=ITEMS.filter(function(i){return i.set.y===y}).length;
-  var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","true");
-  b.innerHTML=({R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度"}[y])+'<span class="n">'+c+'問</span>';
-  b.addEventListener("click",function(){years[y]=!years[y];b.setAttribute("aria-pressed",years[y]);upd()});
-  $("yearChips").appendChild(b);
+  var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");b.textContent=YN[y];
+  b.addEventListener("click",function(){selY[y]=!selY[y];b.setAttribute("aria-pressed",!!selY[y]);upd()});$("yearChips").appendChild(b);
+});
+[["2","問2（必須）"],["4","問4（必須）"],["6","問6（選択1）"],["7","問7（選択1）"]].forEach(function(x){
+  var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");b.textContent=x[1];
+  b.addEventListener("click",function(){selQ[x[0]]=!selQ[x[0]];b.setAttribute("aria-pressed",!!selQ[x[0]]);upd()});$("numChips").appendChild(b);
 });
 function tog(id){var b=$(id);b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");upd()})}
 tog("optShuffle");tog("optMiss");
-function pool(){
-  var missOnly=$("optMiss").getAttribute("aria-pressed")==="true";
-  return ITEMS.filter(function(i){return years[i.set.y]&&(!missOnly||(hist[i.id]&&hist[i.id].last===0))});
-}
-function upd(){var n=pool().length;$("startBtn").textContent=n?"スタート（"+n+"問）":"該当する問題がありません";$("startBtn").disabled=!n}
+function pool(){var mo=$("optMiss").getAttribute("aria-pressed")==="true";
+  return PROBS.filter(function(p){return selY[p.y]&&selQ[p.q]&&(!mo||pMiss(p))}).sort(function(a,b){return a.y===b.y?(+a.q)-(+b.q):(a.y<b.y?1:-1)})}
+function upd(){var n=pool().length;var sel=Object.keys(selY).some(function(k){return selY[k]})&&Object.keys(selQ).some(function(k){return selQ[k]});
+  $("startBtn").disabled=!n;$("startBtn").textContent=!sel?"年度と問題番号を選んでください":n?"スタート（"+n+"問）":"該当する問題がありません"}
 upd();
 $("resetBtn").addEventListener("click",function(){
   var m=$("resetMsg");
@@ -545,55 +561,46 @@ $("resetBtn").addEventListener("click",function(){
   hist={};wdone={};save("d2hist",hist);save("d2write",wdone);m.textContent="記録を消しました。";m.dataset.arm="";renderWrite();upd();
 });
 
-/* ---------- クイズ本体 ---------- */
-var Q=[],qi=0,score=0,answered=false,missed=[];
+/* ---------- クイズ本体（本番形式） ---------- */
+var Q=[],qi=0,score=0,total=0,missed=[];
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 $("startBtn").addEventListener("click",function(){
   Q=pool().slice();if($("optShuffle").getAttribute("aria-pressed")==="true")shuffle(Q);
-  qi=0;score=0;missed=[];$("q-setup").hidden=true;$("q-result").hidden=true;$("q-play").hidden=false;render();
+  qi=0;score=0;total=0;missed=[];$("q-setup").hidden=true;$("q-result").hidden=true;$("q-play").hidden=false;render();window.scrollTo(0,0);
 });
-function sentenceHTML(it,state){
-  var k=-1;
-  return esc(it.sent).replace(/\{([^}]+)\}/g,function(_,a){
-    k++;if(k===it.k){
-      if(!state)return '<span class="q">？</span>';
-      return '<span class="q '+state+'">'+a+'</span>';
-    }
-    return '<span class="fill">'+a+'</span>';
-  });
-}
 function render(){
-  var it=Q[qi];answered=false;
-  $("pText").textContent=(qi+1)+" / "+Q.length;$("pFill").style.width=(qi/Q.length*100)+"%";
-  $("scoreBadge").textContent=score;
-  $("qTags").innerHTML='<span class="tag">'+it.set.y+'</span><span class="tag">'+it.set.q+'</span><span class="tag t">'+esc(it.set.t)+'</span>';
-  $("qText").innerHTML=sentenceHTML(it,null);
-  var w=$("qWords");w.innerHTML="";
-  it.set.w.split(",").forEach(function(x){
-    var b=document.createElement("button");b.className="word";b.type="button";b.textContent=x;
-    b.addEventListener("click",function(){pick(b,x)});w.appendChild(b);
+  var p=Q[qi];
+  $("pText").textContent=(qi+1)+" / "+Q.length;$("pFill").style.width=(qi/Q.length*100)+"%";$("scoreBadge").textContent=score+" / "+total;
+  $("qTags").innerHTML='<span class="tag">'+p.y+'</span><span class="tag">問'+p.q+'</span><span class="tag t">'+esc(p.t)+'</span>';
+  $("qSrc").innerHTML=qLinks(p.y,p.q);
+  $("qImg").src="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;$("qImg").alt=p.y+" 問"+p.q+" 問題用紙";
+  $("qImgLink").href="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;
+  var opts='<option value="">選択してください</option>'+p.w.map(function(x){return '<option>'+esc(x)+'</option>'}).join("");
+  $("qAns").innerHTML=p.ans.map(function(_,k){return '<div class="arow" id="ar'+k+'"><span class="lb">('+LBL[k]+')</span><select id="as'+k+'" aria-label="('+LBL[k]+')の答え">'+opts+'</select><span class="mk"></span></div>'}).join("");
+  $("qVerdict").innerHTML="";$("gradeBtn").hidden=false;$("nextBtn").hidden=true;
+}
+$("gradeBtn").addEventListener("click",function(){
+  var p=Q[qi],ok=0,wrong=[];
+  p.ans.forEach(function(a,k){
+    var v=$("as"+k).value,good=v===a,row=$("ar"+k);
+    row.classList.add(good?"ok":"ng");$("as"+k).disabled=true;
+    row.querySelector(".mk").textContent=good?"正解":"正解："+a;
+    var id=pid(p)+"-"+LBL[k],h=hist[id]||{n:0,ok:0,last:0};h.n++;if(good)h.ok++;h.last=good?1:0;hist[id]=h;
+    if(good)ok++;else wrong.push("("+LBL[k]+") "+a+(v?"（あなた："+v+"）":"（未回答）"));
   });
-  $("qVerdict").innerHTML="";$("nextBtn").disabled=true;$("nextBtn").textContent=qi===Q.length-1?"結果を見る":"次へ";
-}
-function pick(btn,x){
-  if(answered)return;answered=true;
-  var it=Q[qi],ok=x===it.ans;
-  var h=hist[it.id]||{n:0,ok:0,last:0};h.n++;if(ok)h.ok++;h.last=ok?1:0;hist[it.id]=h;save("d2hist",hist);
-  if(ok)score++;else missed.push(it);
-  document.querySelectorAll("#qWords .word").forEach(function(b){b.disabled=true;if(b.textContent===it.ans)b.classList.add("ok")});
-  if(!ok)btn.classList.add("ng");
-  $("qText").innerHTML=sentenceHTML(it,ok?"ok":"ng");
-  $("scoreBadge").textContent=score;
-  $("qVerdict").innerHTML='<div class="verdict '+(ok?"ok":"ng")+'">'+(ok?"正解":"不正解　正解は「"+esc(it.ans)+"」")+'<small>'+it.set.y+" "+it.set.q+"（2級二次）"+'</small></div><div class="srcrow">'+srcButtons(it.set.y,it.set.q)+'</div>';
-  $("nextBtn").disabled=false;$("nextBtn").focus();
-}
-$("nextBtn").addEventListener("click",function(){if(qi<Q.length-1){qi++;render()}else finish()});
-$("quitBtn").addEventListener("click",function(){Q=Q.slice(0,qi+(answered?1:0));if(Q.length)finish();else back()});
+  save("d2hist",hist);score+=ok;total+=p.ans.length;
+  if(wrong.length)missed.push({p:p,w:wrong});
+  $("scoreBadge").textContent=score+" / "+total;
+  $("qVerdict").innerHTML='<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div><div class="srcrow">'+aLink(p.y,p.q)+'</div>';
+  $("gradeBtn").hidden=true;$("nextBtn").hidden=false;$("nextBtn").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";$("nextBtn").focus();
+});
+$("nextBtn").addEventListener("click",function(){if(qi<Q.length-1){qi++;render();window.scrollTo(0,0)}else finish()});
+$("quitBtn").addEventListener("click",function(){if(total)finish();else back()});
 function finish(){
-  $("q-play").hidden=true;$("q-result").hidden=false;
-  $("rBig").innerHTML=score+'<small> / '+Q.length+'</small>';
-  $("rPct").textContent="正答率 "+Math.round(score/Q.length*100)+"%"+(score/Q.length>=.6?"（合格ライン60%以上）":"（合格ライン60%に届かず）");
-  $("rMiss").innerHTML=missed.length?missed.map(function(it){return '<div>'+sentenceHTML(it,null).replace('<span class="q">？</span>','<b>'+esc(it.ans)+'</b>')+'</div>'}).join(""):'<p class="hint" style="text-align:center">全問正解です。</p>';
+  $("q-play").hidden=true;$("q-result").hidden=false;window.scrollTo(0,0);
+  $("rBig").innerHTML=score+'<small> / '+total+'</small>';
+  $("rPct").textContent="正答率 "+Math.round(score/total*100)+"%"+(score/total>=.6?"（合格ライン60%以上）":"（合格ライン60%に届かず）");
+  $("rMiss").innerHTML=missed.length?missed.map(function(m){return '<div><b style="color:var(--text)">'+m.p.y+' 問'+m.p.q+' '+esc(m.p.t)+'</b><br>'+m.w.map(esc).join("<br>")+'<div class="srcrow">'+qLinks(m.p.y,m.p.q)+aLink(m.p.y,m.p.q)+'</div></div>'}).join(""):'<p class="hint" style="text-align:center">全問正解です。</p>';
   upd();
 }
 function back(){$("q-play").hidden=true;$("q-result").hidden=true;$("q-setup").hidden=false;upd()}
@@ -681,13 +688,13 @@ BAR.forEach(function(b){
 });
 
 /* ---------- 直前 ---------- */
-var C=[["1日目","穴埋めを全年度1周。間違えた問題は「要復習だけ」でもう1周"],["2日目","数値タブを声に出して確認。コンクリートの時間・養生日数・受入れ検査"],["3日目","記述：クレーン・土止め・墜落防止を各3つ書く"],["4日目","記述：工程表5種類とコンクリート用語6つを書く"],["5日目","バーチャート：R2・R5・R7の3問を自力で解く"],["6日目","経験記述3テーマを時間を計って書く（各40分以内）。［◯］を埋める"],["前日","要復習の穴埋めと数値だけ見直す。受検票・会場・持ち物を確認"],["当日","選択問題は1問だけ解く（2問解くと減点）。選択欄に○を忘れない"]];
+var C=[["1日目","穴埋めを全年度・全問題番号で1周。間違えた問題は「要復習だけ」でもう1周"],["2日目","数値タブを声に出して確認。コンクリートの時間・養生日数・受入れ検査"],["3日目","記述：クレーン・土止め・墜落防止を各3つ書く"],["4日目","記述：工程表5種類とコンクリート用語6つを書く"],["5日目","バーチャート：R2・R5・R7の3問を自力で解く"],["6日目","経験記述3テーマを時間を計って書く（各40分以内）。［◯］を埋める"],["前日","要復習の穴埋めと数値だけ見直す。受検票・会場・持ち物を確認"],["当日","選択問題は1問だけ解く（2問解くと減点）。選択欄に○を忘れない"]];
 var ck=load("d2check",{});
 C.forEach(function(x,i){var l=document.createElement("label");l.innerHTML='<input type="checkbox" id="ck'+i+'"'+(ck[i]?" checked":"")+'><span><b>'+x[0]+'</b>'+x[1]+'</span>';$("checks").appendChild(l)});
 $("checks").addEventListener("change",function(e){ck[e.target.id.slice(2)]=e.target.checked;save("d2check",ck)});
 
 /* ---------- 新しい版の自動読み込み ---------- */
-var APP_VER="1.4.2";
+var APP_VER="1.5.0";
 try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){
   if(j&&j.v&&j.v!==APP_VER){var k="d2reload"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
     location.replace(location.pathname+"?v="+j.v+location.hash)}
