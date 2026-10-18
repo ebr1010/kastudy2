@@ -214,6 +214,7 @@ button,.chip,.srcbtn,.kb,.khide,summary{touch-action:manipulation;-webkit-tap-hi
 #kAll,.ktg,.khide{-webkit-user-select:none;user-select:none}
 html{overflow-anchor:none}
 #kPad{height:0}
+a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:2px 1px;touch-action:manipulation}
 .kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
 .kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
@@ -542,6 +543,7 @@ html{overflow-anchor:none}
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.8.2</b>出題確率の「過去7年で◯回（R7…）」の年度・問題番号をリンクに。押すとその問題の問題用紙が別タブで開く</li>
         <li><b>v1.8.1</b>解説の「答えを表示／隠す」を連打すると画面がずれる不具合を修正（押したボタンの位置を固定、ダブルタップ拡大と文字選択を無効化）</li>
         <li><b>v1.8.0</b>「予想」タブを追加（予想問題：穴埋め30・記述12・工程表1、テーマ・分野ごとの今年の出題確率）。穴埋め・解説・記述・工程表の各問題に出題確率を表示。解説に「出題確率の高い順」の並べ替えを追加</li>
         <li><b>v1.7.4</b>解説の「答えを表示／隠す」ボタンを横幅いっぱいの大きいボタンに</li>
@@ -575,7 +577,7 @@ html{overflow-anchor:none}
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.8.1</div>
+  <div class="ver" aria-label="バージョン">v1.8.2</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -588,12 +590,12 @@ html{overflow-anchor:none}
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.8.1"></script>
-<script src="yosou.js?v=1.8.1"></script>
+<script src="kaisetsu.js?v=1.8.2"></script>
+<script src="yosou.js?v=1.8.2"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.8.1";
+var APP_VER="1.8.2";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -654,10 +656,13 @@ var YM={};YOSOU.forEach(function(k){k.y="予想";YM[k.q]=k});
 function thYears(th){var o={};Object.keys(QTHEME).forEach(function(id){if(QTHEME[id].indexOf(th)>=0)o[id.split("-")[0]]=1});return YRS.filter(function(y){return o[y]})}
 function pOf(ys){var s=0;ys.forEach(function(y){s+=YWT[y]});return Math.round((s+.5)/(YWS+1)*100)}
 function thProb(th){return pOf(thYears(th))}
+function thIds(th){return Object.keys(QTHEME).filter(function(id){return QTHEME[id].indexOf(th)>=0})}
+function yLinks(ids){var by={};ids.forEach(function(id){var a=id.split("-");(by[a[0]]=by[a[0]]||[]).push(a[1])});
+  return YRS.filter(function(y){return by[y]}).map(function(y){return by[y].sort().map(function(q,i){return '<a class="ylink" href="q/'+y+'-'+q+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener" title="'+y+' 問'+q+'の問題用紙を開く">'+(i?'':y+' ')+'問'+q+'</a>'}).join("/")}).join("・")}
 function lv(p){return p>=60?"hi":p>=40?"md":"lo"}
 function qTh(y,q){return y==="予想"?(YM[q]||{}).th:(QTHEME[y+"-"+q]||[])[0]}
 function probHTML(th){if(!th||!THEMES[th])return "";var p=thProb(th),ys=thYears(th);
-  return '<div class="prob '+lv(p)+'"><div class="pt"><b>今年の出題確率 '+p+'%</b><span>（同じテーマが出る確率の目安）</span></div><div class="pb"><i style="width:'+p+'%"></i></div><small>テーマ「'+esc(THEMES[th].n)+'」：過去7年で'+ys.length+'回'+(ys.length?'（'+ys.join("・")+'）':'（未出題）')+'</small></div>'}
+  return '<div class="prob '+lv(p)+'"><div class="pt"><b>今年の出題確率 '+p+'%</b><span>（同じテーマが出る確率の目安）</span></div><div class="pb"><i style="width:'+p+'%"></i></div><small>テーマ「'+esc(THEMES[th].n)+'」：過去7年で'+ys.length+'回'+(ys.length?'（'+yLinks(thIds(th))+'）':'（未出題）')+'</small></div>'}
 function simBtns(k){return '<div class="basis"><b>根拠：</b>'+esc(k.basis||"")+'</div>'+(k.sim&&k.sim.length?k.sim.map(function(id){var a=id.split("-");return '<button class="srcbtn jump" type="button" data-j="'+id+'">似ている過去問 '+a[0]+' 問'+a[1]+'</button>'}).join(""):'<div class="basis">似ている過去問：なし（7年間未出題のテーマ）</div>')}
 
 /* ---------- 頻出ランク ---------- */
@@ -942,11 +947,11 @@ BAR.forEach(function(b){
 (function(){
   var F={};Object.keys(THEMES).forEach(function(th){var f=THEMES[th].f;F[f]=F[f]||{};thYears(th).forEach(function(y){F[f][y]=1})});
   ["工程","安全","土工","コンクリート","計画・環境","品質"].forEach(function(f){var ys=YRS.filter(function(y){return F[f]&&F[f][y]}),p=pOf(ys);
-    var d=document.createElement("div");d.className="r "+lv(p);d.innerHTML='<span>'+f+'</span><i>'+p+'%</i><div class="pb"><span style="width:'+p+'%"></span></div><small>過去7年で'+ys.length+'回'+(ys.length?'（'+ys.join("・")+'）':'')+'</small>';$("yField").appendChild(d)});
+    var d=document.createElement("div");d.className="r "+lv(p);d.innerHTML='<span>'+f+'</span><i>'+p+'%</i><div class="pb"><span style="width:'+p+'%"></span></div><small>過去7年で'+ys.length+'回'+(ys.length?'（'+yLinks(Object.keys(QTHEME).filter(function(id){return QTHEME[id].some(function(t){return THEMES[t].f===f})}))+'）':'')+'</small>';$("yField").appendChild(d)});
   Object.keys(THEMES).map(function(th){return [thProb(th),th]}).sort(function(a,b){return b[0]-a[0]}).forEach(function(x){
     var th=x[1],p=x[0],ys=thYears(th),past=Object.keys(QTHEME).filter(function(id){return QTHEME[id][0]===th}),yo=YOSOU.filter(function(k){return k.th===th});
     var d=document.createElement("div");d.className="r "+lv(p);
-    d.innerHTML='<span><b>'+esc(THEMES[th].n)+'</b>　<span class="hint" style="font-size:12px">'+THEMES[th].f+'</span></span><i>'+p+'%</i><div class="pb"><span style="width:'+p+'%"></span></div><small>過去7年で'+ys.length+'回'+(ys.length?'（'+ys.join("・")+'）':'（未出題）')+'　｜　予想問題 '+yo.length+'問</small>'+
+    d.innerHTML='<span><b>'+esc(THEMES[th].n)+'</b>　<span class="hint" style="font-size:12px">'+THEMES[th].f+'</span></span><i>'+p+'%</i><div class="pb"><span style="width:'+p+'%"></span></div><small>過去7年で'+ys.length+'回'+(ys.length?'（'+yLinks(thIds(th))+'）':'（未出題）')+'　｜　予想問題 '+yo.length+'問</small>'+
       '<div class="srcrow go" style="margin:0">'+(yo.length?'<button class="srcbtn jump" type="button" data-j="予想-'+yo[0].q+'">予想問題を見る（'+yo.length+'問）</button>':'')+past.map(function(id){var a=id.split("-");return '<button class="srcbtn jump" type="button" data-j="'+id+'">'+a[0]+' 問'+a[1]+'</button>'}).join("")+'</div>';
     $("yTheme").appendChild(d)});
   $("ySolve").addEventListener("click",function(){Object.keys(selY).forEach(function(y){selY[y]=false;yChip[y].setAttribute("aria-pressed","false")});selY["予想"]=true;yChip["予想"].setAttribute("aria-pressed","true");back();show("quiz");upd();window.scrollTo(0,0)});
