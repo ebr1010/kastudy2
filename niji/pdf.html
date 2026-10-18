@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>問題用紙ビューア｜2級土木 二次検定ノート</title>
+<style>
+:root{color-scheme:dark;--bg:#020b17;--text:#e0f2fe;--muted:rgba(224,242,254,.6);--accent:#67e8f9;--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box}
+html,body{margin:0;background:#1b2530;color:var(--text);font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px max(12px,env(safe-area-inset-right,0px)) 8px max(12px,env(safe-area-inset-left,0px));padding-top:max(8px,env(safe-area-inset-top,0px));background:rgba(2,11,23,.96);border-bottom:1px solid var(--line)}
+header b{flex:1 1 10em;min-width:0;font-size:14px}
+button,a.btn{font:700 13px inherit;font-family:inherit;color:var(--accent);background:rgba(255,255,255,.05);border:1px solid rgba(6,182,212,.45);border-radius:9px;padding:6px 10px;cursor:pointer;text-decoration:none;white-space:nowrap}
+#pg{font-size:13px;color:var(--muted);white-space:nowrap}
+main{display:grid;gap:14px;justify-items:center;padding:14px max(8px,env(safe-area-inset-right,0px)) 40px max(8px,env(safe-area-inset-left,0px))}
+.page{position:relative;width:100%;max-width:900px;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.page canvas{display:block;width:100%;height:auto}
+.page .no{position:absolute;top:6px;right:8px;font-size:11px;color:#333;background:rgba(255,255,255,.85);padding:1px 6px;border-radius:4px}
+.page.hit{outline:3px solid #f59e0b;outline-offset:3px}
+#msg{color:var(--muted);font-size:14px;padding:30px;text-align:center}
+main.z .page{max-width:none;width:1100px}
+main.z{justify-items:start;overflow-x:auto}
+</style>
+</head>
+<body>
+<header>
+  <b id="ttl">問題用紙</b>
+  <span id="pg"></span>
+  <button id="prev" type="button">前のページ</button>
+  <button id="next" type="button">次のページ</button>
+  <button id="zoom" type="button">拡大</button>
+  <a class="btn" id="raw" href="#" target="_blank" rel="noopener">PDFファイルを直接開く</a>
+</header>
+<main id="main"><div id="msg">読み込み中…</div></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function(){
+  var q=new URLSearchParams(location.search),f=(q.get("f")||"").replace(/[^R0-9]/g,""),p=parseInt(q.get("p")||"1",10)||1;
+  var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度"};
+  var main=document.getElementById("main"),msg=document.getElementById("msg");
+  if(!YN[f]){msg.textContent="ファイルが指定されていません。";return}
+  var url="pdf/"+f+".pdf";
+  document.getElementById("ttl").textContent=YN[f]+" 2級土木 第二次検定 問題用紙"+(q.get("q")?"（問"+q.get("q")+"）":"");
+  document.title=f+" 問題用紙｜2級土木 二次検定ノート";
+  document.getElementById("raw").href=url;
+  if(!window.pdfjsLib){msg.innerHTML='ビューアを読み込めませんでした。「PDFファイルを直接開く」で開いてください。';return}
+  pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  var pages=[],cur=p,total=0;
+  function go(n){n=Math.max(1,Math.min(total,n));cur=n;var el=pages[n-1];if(el)el.scrollIntoView({block:"start"});upd()}
+  function upd(){document.getElementById("pg").textContent=cur+" / "+total+" ページ"}
+  pdfjsLib.getDocument(url).promise.then(function(doc){
+    total=doc.numPages;msg.remove();
+    var scale=Math.min(2.2,(window.devicePixelRatio||1)*1.4);
+    var chain=Promise.resolve();
+    for(var i=1;i<=total;i++){(function(n){
+      var box=document.createElement("div");box.className="page"+(n===p?" hit":"");box.id="p"+n;
+      box.innerHTML='<span class="no">'+n+'ページ</span>';main.appendChild(box);pages.push(box);
+      chain=chain.then(function(){return doc.getPage(n).then(function(pg){
+        var vp=pg.getViewport({scale:scale}),c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;box.appendChild(c);
+        return pg.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
+      }).then(function(){if(n===p)go(p)})});
+    })(i)}
+    upd();
+  }).catch(function(){msg.textContent="PDFを読み込めませんでした。「PDFファイルを直接開く」で開いてください。"});
+  document.getElementById("prev").addEventListener("click",function(){go(cur-1)});
+  document.getElementById("next").addEventListener("click",function(){go(cur+1)});
+  document.getElementById("zoom").addEventListener("click",function(e){var z=main.classList.toggle("z");e.target.textContent=z?"縮小":"拡大";go(cur)});
+  window.addEventListener("scroll",function(){var y=window.innerHeight*0.3;for(var i=0;i<pages.length;i++){var r=pages[i].getBoundingClientRect();if(r.top<=y&&r.bottom>y){if(cur!==i+1){cur=i+1;upd()}break}}},{passive:true});
+})();
+</script>
+</body>
+</html>
