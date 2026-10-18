@@ -226,7 +226,13 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .kex{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}
 .kex b{color:var(--success-hi)}
 .kex .lb{color:#fde68a;font-weight:900;margin-right:4px}
-.kpt{margin-top:10px;font-size:13px;border-left:3px solid var(--warning);padding:6px 10px;background:rgba(245,158,11,.07);border-radius:0 8px 8px 0}
+.kpt{margin-top:12px;font-size:14px;border-left:3px solid var(--warning);padding:10px 12px;background:rgba(245,158,11,.07);border-radius:0 10px 10px 0;line-height:1.7}
+.kpt .kh{display:block;color:#fde68a;font-size:13px;margin:10px 0 3px}.kpt .kh:first-child{margin-top:0}
+.kpt p{margin:0}.kpt ul{margin:0;padding-left:1.2em;display:grid;gap:3px}
+.kpt .kw2 li{color:var(--success-hi)}
+.qblock{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-top:8px;background:rgba(255,255,255,.02)}
+.qblock .ks{margin-top:0}.qblock .kw{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.15)}
+.qblock .kw span.kwl{display:block;width:100%;font-size:12px;color:var(--muted);margin-bottom:2px;border:0;padding:0;background:none;font-weight:700}
 .kitems{margin:0 0 8px;padding-left:1.2em;font-size:14px}
 .kans{display:grid;gap:8px;margin-top:8px}
 .kans .g{border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.06);border-radius:10px;padding:8px 12px}
@@ -547,6 +553,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.8.5</b>解説の黄色い欄を拡充（覚えておくこと・そのまま書ける短い答え・合格へのアドバイス）。穴埋めは問題文と語群を1つの枠にまとめ、「ほぼ同じ文章の過去問」は解説の下へ移動</li>
         <li><b>v1.8.4</b>穴埋めで「ほぼ同じ文章が出た過去問」を表示（解説の各文と問題ごと、穴埋めの採点後）。年度・問題番号は問題用紙へのリンク、「解説へ」で移動</li>
         <li><b>v1.8.3</b>解説ページを最初から「答えを隠す」状態で表示するように</li>
         <li><b>v1.8.2</b>出題確率の「過去7年で◯回（R7…）」の年度・問題番号をリンクに。押すとその問題の問題用紙が別タブで開く</li>
@@ -583,7 +590,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.8.4</div>
+  <div class="ver" aria-label="バージョン">v1.8.5</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -596,12 +603,13 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.8.4"></script>
-<script src="yosou.js?v=1.8.4"></script>
+<script src="kaisetsu.js?v=1.8.5"></script>
+<script src="yosou.js?v=1.8.5"></script>
+<script src="advice.js?v=1.8.5"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.8.4";
+var APP_VER="1.8.5";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -828,18 +836,22 @@ function renderK(){
     h+='<p class="lead">'+esc(k.lead)+'</p>';
     if(k.type==="fill"){
       var kid=k.y+"-"+k.q;
-      h+='<ol class="ks">'+k.s.map(function(x,ii){return '<li>'+kSentence(x)+repBadge(kid,ii)+'</li>'}).join("")+'</ol>'+repBox(kid);
+      h+='<div class="qblock"><ol class="ks">'+k.s.map(function(x,ii){return '<li>'+kSentence(x)+repBadge(kid,ii)+'</li>'}).join("")+'</ol>';
       var ans={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){ans[a]=1});
-      h+='<div class="kw">'+k.w.split(",").map(function(w){return '<span class="'+(ans[w]?"ok":"")+'" data-w="'+esc(w)+'">'+esc(w)+'</span>'}).join("")+'</div>';
+      h+='<div class="kw"><span class="kwl">［語句又は数値］から選ぶ</span>'+k.w.split(",").map(function(w){return '<span class="'+(ans[w]?"ok":"")+'" data-w="'+esc(w)+'">'+esc(w)+'</span>'}).join("")+'</div></div>';
       var L=["イ","ロ","ハ","ニ","ホ"],m={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){m[l]=a});
-      h+='<div class="khide">解説は答えを表示すると出ます（タップで表示）</div><ul class="kex rv">'+L.map(function(l,j){return '<li><span class="lb">('+l+')</span><b class="sw" data-w="'+esc(m[l])+'">'+esc(m[l])+'</b>：'+esc(k.ex[j])+'</li>'}).join("")+'</ul>';
+      h+='<div class="khide">解説は答えを表示すると出ます（タップで表示）</div><ul class="kex rv">'+L.map(function(l,j){return '<li><span class="lb">('+l+')</span><b class="sw" data-w="'+esc(m[l])+'">'+esc(m[l])+'</b>：'+esc(k.ex[j])+'</li>'}).join("")+'</ul>'+repBox(kid);
     }else if(k.type==="write"){
       if(k.items.length)h+='<ul class="kitems">'+k.items.map(function(x){return '<li data-w="'+esc(x)+'">'+esc(x)+'</li>'}).join("")+'</ul>';
       h+='<div class="khide">解答例は隠しています（タップで表示）</div><div class="kans rv">'+k.ans.map(function(g){return '<div class="g"><b data-w="'+esc(g[0])+'">'+esc(g[0])+'</b><ul>'+g[1].map(function(x){var y=x.replace("【補足】","");return /^【補足】/.test(x)?'<li class="sup"><span data-w="'+esc(y)+'">'+esc(y)+'</span> <em>補足</em></li>':'<li data-w="'+esc(x)+'">'+esc(x)+'</li>'}).join("")+'</ul></div>'}).join("")+'</div><p class="hint rv" style="margin:6px 0 0">「補足」が付いていない解答例は、資格学校の解答試案に載っている内容です。</p>';
     }else{
       h+='<p style="font-size:14px;margin:0 0 8px">'+esc(k.cond)+'</p><div class="khide">工程表と全所要日数は隠しています（タップで表示）</div><div class="rv"><div class="h" style="font-weight:700;color:var(--success-hi);margin-bottom:6px">全所要日数 '+k.total+'日（'+esc(k.calc)+'）</div>'+k.rows.map(function(r){var pad=(r[1]-1)/k.total*100,w=(r[2]-r[1]+1)/k.total*100;return '<div style="display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px;margin-bottom:5px"><span data-w="'+esc(r[0])+'">'+r[0]+'</span><span style="position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px"><span style="position:absolute;left:'+pad+'%;width:'+w+'%;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></span></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")+'</div>';
     }
-    h+='<div class="kpt">'+esc(k.pt)+'</div></section>';
+    var ad=ADV[(k.y==="予想"?"予想-":k.y+"-")+k.q]||{};
+    h+='<div class="khide">ポイントと合格へのアドバイスは、答えを表示すると出ます（タップで表示）</div><div class="kpt rv"><b class="kh">ポイント</b><p>'+esc(k.pt)+'</p>'+
+      (ad.k?'<b class="kh">覚えておくこと</b><ul>'+ad.k.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+
+      (ad.w?'<b class="kh">そのまま書ける短い答え</b><ul class="kw2">'+ad.w.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+
+      (ad.a?'<b class="kh">合格へのアドバイス</b><p>'+esc(ad.a)+'</p>':'')+'</div></section>';
     return h;
   }).join("")||'<section class="sec"><p class="hint">該当する問題がありません。</p></section>';
 }
