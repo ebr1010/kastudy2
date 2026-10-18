@@ -193,6 +193,23 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 #kAll,.ktg{display:block;width:100%;flex:1 1 100%;min-height:52px;padding:14px 16px;font-size:17px;border-radius:12px}
 .kcard .ktg{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;border:0;box-shadow:0 4px 16px rgba(59,130,246,.4)}
 .kcard.hid .ktg{background:linear-gradient(135deg,#10b981,#06b6d4)}
+.prob{margin:8px 0 10px;padding:9px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+.prob .pt{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.prob .pt b{font-size:16px}.prob .pt span{font-size:11px;color:var(--muted)}
+.prob .pb{height:7px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin:6px 0 5px}.prob .pb i{display:block;height:100%;border-radius:4px}
+.prob small{display:block;font-size:12px;color:var(--muted);line-height:1.5}
+.prob.hi{border-color:rgba(248,113,113,.55);background:rgba(248,113,113,.08)}.prob.hi b{color:#fca5a5}.prob.hi .pb i{background:linear-gradient(90deg,#f59e0b,#f87171)}
+.prob.md{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.07)}.prob.md b{color:#fde68a}.prob.md .pb i{background:linear-gradient(90deg,#06b6d4,#f59e0b)}
+.prob.lo b{color:var(--accent-hi)}.prob.lo .pb i{background:linear-gradient(90deg,#3b82f6,#06b6d4)}
+.ytext{font-size:15px;line-height:1.9}.ytext p{margin:0 0 6px}.ytext .lead{color:var(--muted);font-size:14px}
+.ytext .qb{display:inline-block;min-width:4.5em;margin:0 3px;padding:0 6px;border-bottom:2px solid var(--warning);color:#fde68a;font-weight:700;text-align:left}
+.wgrp{margin-top:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px}.wgrp b{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.basis{font-size:13px;color:var(--muted);margin:2px 0 6px;width:100%}.basis b{color:var(--text)}
+button.srcbtn{font-family:inherit;cursor:pointer}
+.ythm{display:grid;gap:10px}.ythm .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 10px;font-size:14px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.03)}
+.ythm .r i{font-style:normal;font-family:var(--f-din);font-size:18px;font-weight:700}.ythm .r.hi i{color:#fca5a5}.ythm .r.md i{color:#fde68a}.ythm .r.lo i{color:var(--accent-hi)}
+.ythm .r .pb{grid-column:1/-1;height:7px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}.ythm .r .pb span{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#3b82f6,#06b6d4)}
+.ythm .r.hi .pb span{background:linear-gradient(90deg,#f59e0b,#f87171)}.ythm .r.md .pb span{background:linear-gradient(90deg,#06b6d4,#f59e0b)}
+.ythm .r small{grid-column:1/-1;color:var(--muted);font-size:12px}.ythm .r .go{grid-column:1/-1;justify-self:start;margin-top:4px}
 .kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
 .kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
@@ -243,6 +260,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <button role="tab" data-v="home" aria-selected="true">ホーム</button>
     <button role="tab" data-v="quiz" aria-selected="false">穴埋め</button>
     <button role="tab" data-v="kai" aria-selected="false">解説</button>
+    <button role="tab" data-v="yosou" aria-selected="false">予想</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
     <button role="tab" data-v="nums" aria-selected="false">数値</button>
@@ -324,8 +342,10 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
       <section class="sec">
         <div class="tags" id="qTags"></div>
         <div class="srcrow" id="qSrc" style="margin:0 0 10px"></div>
-        <a id="qImgLink" href="#" target="_blank" rel="noopener" class="qimg"><img id="qImg" alt="問題用紙"></a>
-        <p class="hint" style="margin:6px 0 0">画像をタップすると別タブで大きく表示します。</p>
+        <div id="qProb"></div>
+        <div id="qImgBox"><a id="qImgLink" href="#" target="_blank" rel="noopener" class="qimg"><img id="qImg" alt="問題用紙"></a>
+        <p class="hint" style="margin:6px 0 0">画像をタップすると別タブで大きく表示します。</p></div>
+        <div id="qText" class="ytext" hidden></div>
       </section>
       <section class="sec">
         <h2><b>ANSWER</b>解答欄</h2>
@@ -353,15 +373,42 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <!-- ===== KAISETSU ===== -->
   <div class="view" id="v-kai" hidden>
     <section class="sec">
-      <h2><b>EXPLAIN</b>過去問解説（R1〜R7 問2〜問9）</h2>
+      <h2><b>EXPLAIN</b>過去問・予想問題の解説</h2>
       <div class="chips" id="kYear"></div>
       <div class="chips" id="kNum" style="margin-top:8px"></div>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="kSort" type="button" aria-pressed="false">出題確率の高い順に並べる</button></div>
       <div class="row" style="margin-top:12px">
         <button class="btn ghost" id="kAll" type="button">すべての答えを隠す</button>
       </div>
       <p class="hint" style="margin-top:8px">答えを埋めた状態で表示しています。点線の下線が付いた語句（題名・選択肢・解答例・工程名など）はタップでGoogle検索できます。それ以外の文字も、長押しで選択すると上に出る「選択した語句を検索」で調べられます。「答えを隠す」で空欄に戻し、空欄をタップするとその欄だけ答えが出ます。原本はすべて別タブで開きます。</p>
     </section>
     <div class="view" id="kList"></div>
+  </div>
+
+  <!-- ===== 予想 ===== -->
+  <div class="view" id="v-yosou" hidden>
+    <section class="sec">
+      <h2><b>FORECAST</b>今年（令和8年度）の出題予想</h2>
+      <p style="margin:0 0 10px">過去7年（R1〜R7）の二次検定の出題から、テーマごとに「今年出る確率の目安」を出しました。確率の高いテーマを中心に、まだ聞かれていない内容で予想問題（穴埋め30問・記述12問・工程表1問）を作っています。</p>
+      <div style="display:grid;gap:8px">
+        <button class="btn" id="ySolve" type="button">予想問題を解く（穴埋め30問）</button>
+        <button class="btn ghost" id="yRead" type="button" style="width:100%">予想問題の解説を見る（全43問）</button>
+      </div>
+    </section>
+    <section class="sec">
+      <h2><b>FIELD</b>分野ごとの出題確率</h2>
+      <div class="ythm" id="yField"></div>
+    </section>
+    <section class="sec">
+      <h2><b>THEME</b>テーマごとの出題確率</h2>
+      <div class="ythm" id="yTheme"></div>
+    </section>
+    <section class="sec">
+      <h2><b>METHOD</b>確率の出し方</h2>
+      <p style="font-size:14px;margin:0 0 8px">過去7年でそのテーマが出た年を数え、新しい年ほど重く数えています（R7を1として、1年さかのぼるごとに0.85倍）。一度も出ていないテーマも0%にならないよう補正しています。</p>
+      <p style="font-size:14px;margin:0 0 8px">計算式：（出た年の重みの合計＋0.5）÷（7年分の重みの合計＋1）</p>
+      <p class="hint" style="margin:0">同じ問題がそのまま出る確率ではなく、「同じテーマが出る確率」の目安です。公式の予想ではありません。一次検定のデータは文字の読み取りが崩れていて正確に数えられないため、確率の計算には使っていません。</p>
+    </section>
   </div>
 
   <!-- ===== PDF ===== -->
@@ -490,6 +537,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.8.0</b>「予想」タブを追加（予想問題：穴埋め30・記述12・工程表1、テーマ・分野ごとの今年の出題確率）。穴埋め・解説・記述・工程表の各問題に出題確率を表示。解説に「出題確率の高い順」の並べ替えを追加</li>
         <li><b>v1.7.4</b>解説の「答えを表示／隠す」ボタンを横幅いっぱいの大きいボタンに</li>
         <li><b>v1.7.3</b>解説の検索を全語句に拡大（題名・誤りの選択肢・記述の解答例・工程名もタップで検索、その他の文字は長押し選択→「選択した語句を検索」）</li>
         <li><b>v1.7.2</b>「PDF」タブを追加（R1〜R7の問題用紙PDF・解答PDFを一覧から開ける）</li>
@@ -521,7 +569,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.7.4</div>
+  <div class="ver" aria-label="バージョン">v1.8.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -534,11 +582,12 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.7.4"></script>
+<script src="kaisetsu.js?v=1.8.0"></script>
+<script src="yosou.js?v=1.8.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.7.4";
+var APP_VER="1.8.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -593,6 +642,18 @@ function qLinks(y,q,label){
 function aLink(y,q,label){var r=SRC[y];return '<a class="srcbtn" href="'+ansUrl(y,q)+'" target="_blank" rel="noopener">'+(label||"")+'解答の原本（'+(r.a[q]||1)+'ページ）↗</a>'}
 function srcButtons(y,q,label){var qq=String(q).replace("問","");return qLinks(y,qq,label)+aLink(y,qq,label)}
 
+/* ---------- 出題確率 ---------- */
+var YWT={R7:1,R6:.85,R5:.7225,R4:.614125,R3:.52200625,R2:.4437053,R1:.37714951},YWS=0,YRS=["R7","R6","R5","R4","R3","R2","R1"];YRS.forEach(function(y){YWS+=YWT[y]});
+var YM={};YOSOU.forEach(function(k){k.y="予想";YM[k.q]=k});
+function thYears(th){var o={};Object.keys(QTHEME).forEach(function(id){if(QTHEME[id].indexOf(th)>=0)o[id.split("-")[0]]=1});return YRS.filter(function(y){return o[y]})}
+function pOf(ys){var s=0;ys.forEach(function(y){s+=YWT[y]});return Math.round((s+.5)/(YWS+1)*100)}
+function thProb(th){return pOf(thYears(th))}
+function lv(p){return p>=60?"hi":p>=40?"md":"lo"}
+function qTh(y,q){return y==="予想"?(YM[q]||{}).th:(QTHEME[y+"-"+q]||[])[0]}
+function probHTML(th){if(!th||!THEMES[th])return "";var p=thProb(th),ys=thYears(th);
+  return '<div class="prob '+lv(p)+'"><div class="pt"><b>今年の出題確率 '+p+'%</b><span>（同じテーマが出る確率の目安）</span></div><div class="pb"><i style="width:'+p+'%"></i></div><small>テーマ「'+esc(THEMES[th].n)+'」：過去7年で'+ys.length+'回'+(ys.length?'（'+ys.join("・")+'）':'（未出題）')+'</small></div>'}
+function simBtns(k){return '<div class="basis"><b>根拠：</b>'+esc(k.basis||"")+'</div>'+(k.sim&&k.sim.length?k.sim.map(function(id){var a=id.split("-");return '<button class="srcbtn jump" type="button" data-j="'+id+'">似ている過去問 '+a[0]+' 問'+a[1]+'</button>'}).join(""):'<div class="basis">似ている過去問：なし（7年間未出題のテーマ）</div>')}
+
 /* ---------- 頻出ランク ---------- */
 [["工程表（特徴・穴埋め・バーチャート）",7],["盛土の締固め（管理・試験・施工）",5],["コンクリートの打込み・締固め・養生",4],["鉄筋・型枠",4],["生コンの受入れ検査",3],["土の原位置試験",3],["コンクリート用語",3],["法面（切土・保護工）",3],["盛土（施工・材料）",3],["移動式クレーン",3],["土止め支保工",2],["墜落防止・高所作業",2],["軟弱地盤対策",2]].forEach(function(x){
   var d=document.createElement("div");d.className="r";
@@ -614,7 +675,7 @@ tabs.forEach(function(b){b.addEventListener("click",function(){show(b.dataset.v)
 var hist=load("d2hist",{}); // id -> {n,ok,last}
 var wdone=load("d2write",{});
 function stats(){
-  var n=0,ok=0,miss=0;Object.keys(hist).forEach(function(k){if(!/^R\d-\d-/.test(k))return;n+=hist[k].n;ok+=hist[k].ok;if(hist[k].last===0)miss++});
+  var n=0,ok=0,miss=0;Object.keys(hist).forEach(function(k){if(!/^(R\d-\d|予想-Y\d+)-/.test(k))return;n+=hist[k].n;ok+=hist[k].ok;if(hist[k].last===0)miss++});
   $("s-ans").textContent=n;$("s-rate").textContent=n?Math.round(ok/n*100)+"%":"—";$("s-miss").textContent=miss;
   $("s-write").textContent=Object.keys(wdone).filter(function(k){return wdone[k]}).length;
 }
@@ -623,12 +684,16 @@ function stats(){
 var LBL=["イ","ロ","ハ","ニ","ホ"];
 var PROBS=SETS.map(function(st){var ans=[];st.s.forEach(function(x){x.replace(/\{([^}]+)\}/g,function(_,a){ans.push(a)})});
   return {y:st.y,q:st.q.replace("問",""),t:st.t,w:st.w.split(","),ans:ans}});
+PROBS.forEach(function(p){p.th=qTh(p.y,p.q)});
+YOSOU.forEach(function(k){if(k.type!=="fill")return;var m={},L=[];k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){if(!m[l]){m[l]=a;L.push(l)}});
+  PROBS.push({y:"予想",q:k.q,t:k.t,w:k.w.split(","),ans:L.map(function(l){return m[l]}),k:k,th:k.th})});
 function pid(p){return p.y+"-"+p.q}
 function pMiss(p){return p.ans.some(function(_,k){var h=hist[pid(p)+"-"+LBL[k]];return h&&h.last===0})}
 var selY={},selQ={};
-var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度"};
-["R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){
-  var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");b.textContent=YN[y];
+var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度","予想":"予想問題"};
+var yChip={};
+["予想","R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){
+  var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");b.textContent=YN[y];yChip[y]=b;
   b.addEventListener("click",function(){selY[y]=!selY[y];b.setAttribute("aria-pressed",!!selY[y]);upd()});$("yearChips").appendChild(b);
 });
 [["2","問2（必須）"],["4","問4（必須）"],["6","問6（選択1）"],["7","問7（選択1）"]].forEach(function(x){
@@ -638,8 +703,8 @@ var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年�
 function tog(id){var b=$(id);b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");upd()})}
 tog("optShuffle");tog("optMiss");
 function pool(){var mo=$("optMiss").getAttribute("aria-pressed")==="true";
-  return PROBS.filter(function(p){return selY[p.y]&&selQ[p.q]&&(!mo||pMiss(p))}).sort(function(a,b){return a.y===b.y?(+a.q)-(+b.q):(a.y<b.y?1:-1)})}
-function upd(){var n=pool().length;var sel=Object.keys(selY).some(function(k){return selY[k]})&&Object.keys(selQ).some(function(k){return selQ[k]});
+  return PROBS.filter(function(p){return selY[p.y]&&(p.y==="予想"||selQ[p.q])&&(!mo||pMiss(p))}).sort(function(a,b){return a.y===b.y?(a.y==="予想"?(a.q<b.q?-1:1):(+a.q)-(+b.q)):(a.y<b.y?1:-1)})}
+function upd(){var n=pool().length;var sel=Object.keys(selY).some(function(k){return selY[k]})&&(selY["予想"]||Object.keys(selQ).some(function(k){return selQ[k]}));
   $("startBtn").disabled=!n;$("startBtn").textContent=!sel?"年度と問題番号を選んでください":n?"スタート（"+n+"問）":"該当する問題がありません"}
 upd();
 $("resetBtn").addEventListener("click",function(){
@@ -658,10 +723,16 @@ $("startBtn").addEventListener("click",function(){
 function render(){
   var p=Q[qi];
   $("pText").textContent=(qi+1)+" / "+Q.length;$("pFill").style.width=(qi/Q.length*100)+"%";$("scoreBadge").textContent=score+" / "+total;
-  $("qTags").innerHTML='<span class="tag">'+p.y+'</span><span class="tag">問'+p.q+'</span><span class="tag t">'+esc(p.t)+'</span>';
+  var yo=p.y==="予想";
+  $("qTags").innerHTML=yo?'<span class="tag">予想</span><span class="tag">'+p.q+'</span><span class="tag t">'+esc(p.t)+'</span>':'<span class="tag">'+p.y+'</span><span class="tag">問'+p.q+'</span><span class="tag t">'+esc(p.t)+'</span>';
+  $("qProb").innerHTML=probHTML(p.th);
+  $("qImgBox").hidden=yo;$("qText").hidden=!yo;
+  if(yo){$("qSrc").innerHTML=simBtns(p.k);
+    $("qText").innerHTML='<p class="lead">'+esc(p.k.lead)+'</p>'+p.k.s.map(function(x){return '<p>'+esc(x).replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l){return '<span class="qb">('+l+')</span>'})+'</p>'}).join("")+'<div class="wgrp"><b>［語句又は数値］</b>'+p.w.map(esc).join("、　")+'</div>';
+  }else{
   $("qSrc").innerHTML=qLinks(p.y,p.q);
   $("qImg").src="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;$("qImg").alt=p.y+" 問"+p.q+" 問題用紙";
-  $("qImgLink").href="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;
+  $("qImgLink").href="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;}
   var opts='<option value="">選択してください</option>'+p.w.map(function(x){return '<option>'+esc(x)+'</option>'}).join("");
   $("qAns").innerHTML=p.ans.map(function(_,k){return '<div class="arow" id="ar'+k+'"><span class="lb">('+LBL[k]+')</span><select id="as'+k+'" aria-label="('+LBL[k]+')の答え">'+opts+'</select><span class="mk"></span></div>'}).join("");
   $("qVerdict").innerHTML="";$("gradeBtn").hidden=false;$("nextBtn").hidden=true;
@@ -678,7 +749,7 @@ $("gradeBtn").addEventListener("click",function(){
   save("d2hist",hist);score+=ok;total+=p.ans.length;
   if(wrong.length)missed.push({p:p,w:wrong});
   $("scoreBadge").textContent=score+" / "+total;
-  $("qVerdict").innerHTML='<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div><div class="srcrow">'+aLink(p.y,p.q)+'</div>';
+  $("qVerdict").innerHTML=p.y==="予想"?'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>本アプリの予想問題（根拠：'+esc(p.k.basis)+'）</small></div><ul class="kex" style="font-size:13px">'+p.k.ex.map(function(x,j){return '<li><span class="lb">('+LBL[j]+')</span>'+esc(x)+'</li>'}).join("")+'</ul>':'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div><div class="srcrow">'+aLink(p.y,p.q)+'</div>';
   $("gradeBtn").hidden=true;$("nextBtn").hidden=false;$("nextBtn").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";$("nextBtn").focus();
 });
 $("nextBtn").addEventListener("click",function(){if(qi<Q.length-1){qi++;render();window.scrollTo(0,0)}else finish()});
@@ -687,7 +758,7 @@ function finish(){
   $("q-play").hidden=true;$("q-result").hidden=false;window.scrollTo(0,0);
   $("rBig").innerHTML=score+'<small> / '+total+'</small>';
   $("rPct").textContent="正答率 "+Math.round(score/total*100)+"%"+(score/total>=.6?"（合格ライン60%以上）":"（合格ライン60%に届かず）");
-  $("rMiss").innerHTML=missed.length?missed.map(function(m){return '<div><b style="color:var(--text)">'+m.p.y+' 問'+m.p.q+' '+esc(m.p.t)+'</b><br>'+m.w.map(esc).join("<br>")+'<div class="srcrow">'+qLinks(m.p.y,m.p.q)+aLink(m.p.y,m.p.q)+'</div></div>'}).join(""):'<p class="hint" style="text-align:center">全問正解です。</p>';
+  $("rMiss").innerHTML=missed.length?missed.map(function(m){return '<div><b style="color:var(--text)">'+(m.p.y==="予想"?"予想 "+m.p.q:m.p.y+' 問'+m.p.q)+' '+esc(m.p.t)+'</b><br>'+m.w.map(esc).join("<br>")+(m.p.y==="予想"?'':'<div class="srcrow">'+qLinks(m.p.y,m.p.q)+aLink(m.p.y,m.p.q)+'</div>')+'</div>'}).join(""):'<p class="hint" style="text-align:center">全問正解です。</p>';
   upd();
 }
 function back(){$("q-play").hidden=true;$("q-result").hidden=true;$("q-setup").hidden=false;upd()}
@@ -695,7 +766,9 @@ $("againBtn").addEventListener("click",back);
 
 /* ---------- 解説 ---------- */
 var kY=load("d2kY","R7"),kQ={},kHideAll=false;
-["R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=YN[y];b.dataset.y=y;b.setAttribute("aria-pressed",y===kY);
+var KDATA=KAISETSU.concat(YOSOU),kSort=false;
+function setKY(y){kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.y===y)});renderK()}
+["予想","R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=YN[y];b.dataset.y=y;b.setAttribute("aria-pressed",y===kY);
   b.addEventListener("click",function(){kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});renderK()});$("kYear").appendChild(b)});
 ["2","3","4","5","6","7","8","9"].forEach(function(q){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent="問"+q;b.setAttribute("aria-pressed","false");
   b.addEventListener("click",function(){kQ[q]=!kQ[q];b.setAttribute("aria-pressed",!!kQ[q]);renderK()});$("kNum").appendChild(b)});
@@ -703,10 +776,13 @@ var TYPEN={fill:"穴埋め",write:"記述",bar:"工程表作成"};
 function kSentence(t){return esc(t).replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){return '<span class="kb" role="button" tabindex="0" data-w="'+a+'"><span class="kl">('+l+')</span><span class="ka">'+a+'</span></span>'})}
 function renderK(){
   var anyQ=Object.keys(kQ).some(function(k){return kQ[k]});
-  var list=KAISETSU.filter(function(k){return k.y===kY&&(!anyQ||kQ[k.q])});
+  var list=KDATA.filter(function(k){return k.y===kY&&(k.y==="予想"||!anyQ||kQ[k.q])});
+  if(kSort)list=list.slice().sort(function(a,b){return thProb(qTh(b.y,b.q))-thProb(qTh(a.y,a.q))});
   $("kList").innerHTML=list.map(function(k,i){
-    var h='<section class="sec kcard'+(kHideAll?' hid':'')+'" id="k'+k.y+'-'+k.q+'" data-t="'+esc(k.t)+'"><h3><span class="tag">'+k.y+'</span><span class="tag">問'+k.q+'</span><span class="tag t">'+TYPEN[k.type]+'</span><span class="tt" data-w="'+esc(k.t)+'">'+esc(k.t)+'</span></h3>';
-    h+='<div class="srcrow" style="margin:0"><a class="srcbtn" href="q/'+k.y+'-'+k.q+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">この問題（問題用紙）↗</a>'+qLinks(k.y,k.q)+aLink(k.y,k.q)+'</div>';
+    var yo=k.y==="予想",th=qTh(k.y,k.q);
+    var h='<section class="sec kcard'+(kHideAll?' hid':'')+'" id="k'+k.y+'-'+k.q+'" data-th="'+th+'" data-t="'+esc(k.t)+'"><h3>'+(yo?'<span class="tag">予想</span><span class="tag">'+k.q+'</span>':'<span class="tag">'+k.y+'</span><span class="tag">問'+k.q+'</span>')+'<span class="tag t">'+TYPEN[k.type]+'</span><span class="tt" data-w="'+esc(k.t)+'">'+esc(k.t)+'</span></h3>';
+    h+=probHTML(th);
+    h+=yo?'<div class="srcrow" style="margin:0">'+simBtns(k)+'</div>':'<div class="srcrow" style="margin:0"><a class="srcbtn" href="q/'+k.y+'-'+k.q+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">この問題（問題用紙）↗</a>'+qLinks(k.y,k.q)+aLink(k.y,k.q)+'</div>';
     h+='<div style="margin-top:10px"><button class="btn ghost ktg" type="button">'+(kHideAll?"答えを表示":"答えを隠す")+'</button></div>';
     h+='<p class="lead">'+esc(k.lead)+'</p>';
     if(k.type==="fill"){
@@ -725,7 +801,11 @@ function renderK(){
     return h;
   }).join("")||'<section class="sec"><p class="hint">該当する問題がありません。</p></section>';
 }
+function jumpTo(id){var a=id.split("-");show("kai");setKY(a[0]);setTimeout(function(){var el=$("k"+id);if(el)el.scrollIntoView({block:"start"});window.scrollBy(0,-70)},30)}
+document.addEventListener("click",function(e){var j=e.target.closest(".jump");if(j){e.preventDefault();jumpTo(j.dataset.j)}});
+$("kSort").addEventListener("click",function(){kSort=!kSort;this.setAttribute("aria-pressed",kSort);renderK()});
 $("kList").addEventListener("click",function(e){
+  if(e.target.closest(".jump"))return;
   var c=e.target.closest(".kcard");if(!c)return;
   if(e.target.closest(".ktg")){var hid=c.classList.toggle("hid");c.querySelectorAll(".kb.open").forEach(function(b){b.classList.remove("open")});e.target.closest(".ktg").textContent=hid?"答えを表示":"答えを隠す";return}
   var b=e.target.closest(".kb");
@@ -809,8 +889,9 @@ function renderWrite(){
     if(wcat!=="すべて"&&w[0]!==wcat)return;
     var d=document.createElement("details");d.className="w";
     var done=!!wdone[i];
-    d.innerHTML='<summary><b>'+esc(w[1])+'</b><small>'+esc(w[2])+'　｜　'+w[3]+'</small><span class="st'+(done?' done':'')+'">'+(done?'DONE':w[0])+'</span></summary>'+
-      '<div class="in"><label class="hint" for="ta'+i+'">自分の答え</label><textarea id="ta'+i+'" placeholder="ここに書く"></textarea>'+
+    var wth=WREF[w[1]]?qTh(WREF[w[1]][0].split("-")[0],WREF[w[1]][0].split("-")[1]):null;
+    d.innerHTML='<summary><b>'+esc(w[1])+'</b><small>'+esc(w[2])+'　｜　'+w[3]+(wth?'　｜　出題確率 '+thProb(wth)+'%':'')+'</small><span class="st'+(done?' done':'')+'">'+(done?'DONE':w[0])+'</span></summary>'+
+      '<div class="in">'+probHTML(wth)+'<label class="hint" for="ta'+i+'">自分の答え</label><textarea id="ta'+i+'" placeholder="ここに書く"></textarea>'+
       '<div class="row"><button class="btn ghost" type="button" data-a="show">模範解答を見る</button><button class="btn ghost" type="button" data-a="done">'+(done?'書けた を取消':'書けた')+'</button></div>'+
       '<div class="model"><div class="h">模範解答（この中から書ければ正解）</div><ul>'+w[4].map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul><div class="srcrow">'+(WREF[w[1]]||[]).map(function(r){var k=r.split("-");return srcButtons(k[0],k[1],k[0]+"問"+k[1]+" ")}).join("")+'</div></div></div>';
     var ta=d.querySelector("textarea");ta.value=drafts[i]||"";
@@ -838,10 +919,25 @@ var BAR=[
 BAR.forEach(function(b){
   var d=document.createElement("details");d.className="w";
   var rows=b[3].map(function(r){var pad=(r[1]-1)/b[4]*100,w=(r[2]-r[1]+1)/b[4]*100;return '<div style="display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px"><span>'+r[0]+'</span><span style="position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px"><span style="position:absolute;left:'+pad+'%;width:'+w+'%;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></span></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("");
-  d.innerHTML='<summary><b>'+b[1]+'</b><small>'+b[0]+'</small><span class="st">'+b[0].slice(0,2)+'</span></summary><div class="in"><p style="font-size:14px;margin:0">'+b[2]+'</p><div class="row"><button class="btn ghost" type="button">答えを見る</button></div><div class="model"><div class="h">全所要日数 '+b[4]+'日（'+b[5]+'）</div><div style="display:grid;gap:6px;margin-top:6px">'+rows+'</div><div class="srcrow">'+srcButtons(b[0].slice(0,2),b[0].replace(/.*問/,""))+'</div></div></div>';
+  d.innerHTML='<summary><b>'+b[1]+'</b><small>'+b[0]+'　｜　出題確率 '+thProb("bar")+'%</small><span class="st">'+b[0].slice(0,2)+'</span></summary><div class="in">'+probHTML("bar")+'<p style="font-size:14px;margin:0">'+b[2]+'</p><div class="row"><button class="btn ghost" type="button">答えを見る</button></div><div class="model"><div class="h">全所要日数 '+b[4]+'日（'+b[5]+'）</div><div style="display:grid;gap:6px;margin-top:6px">'+rows+'</div><div class="srcrow">'+srcButtons(b[0].slice(0,2),b[0].replace(/.*問/,""))+'</div></div></div>';
   d.querySelector("button").addEventListener("click",function(e){var m=d.querySelector(".model");m.classList.toggle("show");e.target.textContent=m.classList.contains("show")?"答えを隠す":"答えを見る"});
   $("barList").appendChild(d);
 });
+
+/* ---------- 予想タブ ---------- */
+(function(){
+  var F={};Object.keys(THEMES).forEach(function(th){var f=THEMES[th].f;F[f]=F[f]||{};thYears(th).forEach(function(y){F[f][y]=1})});
+  ["工程","安全","土工","コンクリート","計画・環境","品質"].forEach(function(f){var ys=YRS.filter(function(y){return F[f]&&F[f][y]}),p=pOf(ys);
+    var d=document.createElement("div");d.className="r "+lv(p);d.innerHTML='<span>'+f+'</span><i>'+p+'%</i><div class="pb"><span style="width:'+p+'%"></span></div><small>過去7年で'+ys.length+'回'+(ys.length?'（'+ys.join("・")+'）':'')+'</small>';$("yField").appendChild(d)});
+  Object.keys(THEMES).map(function(th){return [thProb(th),th]}).sort(function(a,b){return b[0]-a[0]}).forEach(function(x){
+    var th=x[1],p=x[0],ys=thYears(th),past=Object.keys(QTHEME).filter(function(id){return QTHEME[id][0]===th}),yo=YOSOU.filter(function(k){return k.th===th});
+    var d=document.createElement("div");d.className="r "+lv(p);
+    d.innerHTML='<span><b>'+esc(THEMES[th].n)+'</b>　<span class="hint" style="font-size:12px">'+THEMES[th].f+'</span></span><i>'+p+'%</i><div class="pb"><span style="width:'+p+'%"></span></div><small>過去7年で'+ys.length+'回'+(ys.length?'（'+ys.join("・")+'）':'（未出題）')+'　｜　予想問題 '+yo.length+'問</small>'+
+      '<div class="srcrow go" style="margin:0">'+(yo.length?'<button class="srcbtn jump" type="button" data-j="予想-'+yo[0].q+'">予想問題を見る（'+yo.length+'問）</button>':'')+past.map(function(id){var a=id.split("-");return '<button class="srcbtn jump" type="button" data-j="'+id+'">'+a[0]+' 問'+a[1]+'</button>'}).join("")+'</div>';
+    $("yTheme").appendChild(d)});
+  $("ySolve").addEventListener("click",function(){Object.keys(selY).forEach(function(y){selY[y]=false;yChip[y].setAttribute("aria-pressed","false")});selY["予想"]=true;yChip["予想"].setAttribute("aria-pressed","true");back();show("quiz");upd();window.scrollTo(0,0)});
+  $("yRead").addEventListener("click",function(){show("kai");setKY("予想");window.scrollTo(0,0)});
+})();
 
 /* ---------- 直前 ---------- */
 var C=[["1日目","穴埋めを全年度・全問題番号で1周。間違えた問題は「要復習だけ」でもう1周"],["2日目","数値タブを声に出して確認。コンクリートの時間・養生日数・受入れ検査"],["3日目","記述：クレーン・土止め・墜落防止を各3つ書く"],["4日目","記述：工程表5種類とコンクリート用語6つを書く"],["5日目","バーチャート：R2・R5・R7の3問を自力で解く"],["6日目","経験記述3テーマを時間を計って書く（各40分以内）。［◯］を埋める"],["前日","要復習の穴埋めと数値だけ見直す。受検票・会場・持ち物を確認"],["当日","選択問題は1問だけ解く（2問解くと減点）。選択欄に○を忘れない"]];
