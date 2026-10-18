@@ -383,9 +383,9 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <div class="chips" id="kNum" style="margin-top:8px"></div>
       <div class="chips" style="margin-top:8px"><button class="chip" id="kSort" type="button" aria-pressed="false">出題確率の高い順に並べる</button></div>
       <div class="row" style="margin-top:12px">
-        <button class="btn ghost" id="kAll" type="button">すべての答えを隠す</button>
+        <button class="btn ghost" id="kAll" type="button">すべての答えを表示</button>
       </div>
-      <p class="hint" style="margin-top:8px">答えを埋めた状態で表示しています。点線の下線が付いた語句（題名・選択肢・解答例・工程名など）はタップでGoogle検索できます。それ以外の文字も、長押しで選択すると上に出る「選択した語句を検索」で調べられます。「答えを隠す」で空欄に戻し、空欄をタップするとその欄だけ答えが出ます。原本はすべて別タブで開きます。</p>
+      <p class="hint" style="margin-top:8px">最初は答えを隠した状態で表示します。「答えを表示」で答えが出ます。点線の下線が付いた語句（題名・選択肢・解答例・工程名など）はタップでGoogle検索できます。それ以外の文字も、長押しで選択すると上に出る「選択した語句を検索」で調べられます。空欄をタップするとその欄だけ答えが出ます。原本はすべて別タブで開きます。</p>
     </section>
     <div class="view" id="kList"></div>
     <div id="kPad"></div>
@@ -543,6 +543,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.8.3</b>解説ページを最初から「答えを隠す」状態で表示するように</li>
         <li><b>v1.8.2</b>出題確率の「過去7年で◯回（R7…）」の年度・問題番号をリンクに。押すとその問題の問題用紙が別タブで開く</li>
         <li><b>v1.8.1</b>解説の「答えを表示／隠す」を連打すると画面がずれる不具合を修正（押したボタンの位置を固定、ダブルタップ拡大と文字選択を無効化）</li>
         <li><b>v1.8.0</b>「予想」タブを追加（予想問題：穴埋め30・記述12・工程表1、テーマ・分野ごとの今年の出題確率）。穴埋め・解説・記述・工程表の各問題に出題確率を表示。解説に「出題確率の高い順」の並べ替えを追加</li>
@@ -577,7 +578,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.8.2</div>
+  <div class="ver" aria-label="バージョン">v1.8.3</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -590,12 +591,12 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.8.2"></script>
-<script src="yosou.js?v=1.8.2"></script>
+<script src="kaisetsu.js?v=1.8.3"></script>
+<script src="yosou.js?v=1.8.3"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.8.2";
+var APP_VER="1.8.3";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -776,7 +777,7 @@ function back(){$("q-play").hidden=true;$("q-result").hidden=true;$("q-setup").h
 $("againBtn").addEventListener("click",back);
 
 /* ---------- 解説 ---------- */
-var kY=load("d2kY","R7"),kQ={},kHideAll=false;
+var kY=load("d2kY","R7"),kQ={},kHideAll=true;
 var KDATA=KAISETSU.concat(YOSOU),kSort=false;
 function setKY(y){$("kPad").style.height="0";kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.y===y)});renderK()}
 ["予想","R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=YN[y];b.dataset.y=y;b.setAttribute("aria-pressed",y===kY);
