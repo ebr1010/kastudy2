@@ -182,6 +182,29 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .arow.ng select{border-color:var(--danger);background:rgba(248,113,113,.12)}
 .arow .mk{grid-column:2;font-size:13px;font-weight:700}.arow .mk:empty{display:none}
 .arow.ok .mk{color:var(--success-hi)}.arow.ng .mk{color:#fecaca}
+.kcard h3{margin:0 0 8px;font-size:16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.kcard .lead{font-size:14px;color:var(--muted);margin:10px 0}
+.kcard ol.ks{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:15px;line-height:1.9}
+.kb{display:inline;cursor:pointer;white-space:nowrap}
+.kb .kl{font-weight:900;color:#fde68a;font-size:12px;margin-right:2px}
+.kb .ka{font-weight:900;color:var(--success-hi);background:rgba(16,185,129,.14);border-bottom:2px solid var(--success);padding:0 4px;border-radius:3px}
+.hid .kb:not(.open) .ka{color:transparent;background:rgba(245,158,11,.12);border-bottom-color:rgba(245,158,11,.6);user-select:none}
+.hid .rv{display:none}
+.kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
+.kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
+.hid .kw span.ok{color:var(--muted);border-color:var(--border);background:none;font-weight:400}
+.kex{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}
+.kex b{color:var(--success-hi)}
+.kex .lb{color:#fde68a;font-weight:900;margin-right:4px}
+.kpt{margin-top:10px;font-size:13px;border-left:3px solid var(--warning);padding:6px 10px;background:rgba(245,158,11,.07);border-radius:0 8px 8px 0}
+.kitems{margin:0 0 8px;padding-left:1.2em;font-size:14px}
+.kans{display:grid;gap:8px;margin-top:8px}
+.kans .g{border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.06);border-radius:10px;padding:8px 12px}
+.kans .g b{display:block;font-size:13px;color:var(--success-hi);margin-bottom:2px}
+.kans ul{margin:0;padding-left:1.2em;font-size:14px;display:grid;gap:3px}
+.khide{display:none;font-size:13px;color:var(--muted);border:1px dashed rgba(245,158,11,.5);border-radius:10px;padding:10px;text-align:center;cursor:pointer}
+.hid .khide{display:block}
 .foot{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 </style>
 </head>
@@ -198,6 +221,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <nav class="tabs" role="tablist" aria-label="メニュー">
     <button role="tab" data-v="home" aria-selected="true">ホーム</button>
     <button role="tab" data-v="quiz" aria-selected="false">穴埋め</button>
+    <button role="tab" data-v="kai" aria-selected="false">解説</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
     <button role="tab" data-v="nums" aria-selected="false">数値</button>
     <button role="tab" data-v="bar" aria-selected="false">工程表</button>
@@ -302,6 +326,20 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
       </section>
       <button class="btn wide" id="againBtn" type="button">設定に戻る</button>
     </div>
+  </div>
+
+  <!-- ===== KAISETSU ===== -->
+  <div class="view" id="v-kai" hidden>
+    <section class="sec">
+      <h2><b>EXPLAIN</b>過去問解説（R1〜R7 問2〜問9）</h2>
+      <div class="chips" id="kYear"></div>
+      <div class="chips" id="kNum" style="margin-top:8px"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn ghost" id="kAll" type="button">すべての答えを隠す</button>
+      </div>
+      <p class="hint" style="margin-top:8px">答えを埋めた状態で表示しています。「答えを隠す」で空欄に戻し、空欄をタップするとその欄だけ答えが出ます。原本はすべて別タブで開きます。</p>
+    </section>
+    <div class="view" id="kList"></div>
   </div>
 
   <!-- ===== WRITE ===== -->
@@ -421,6 +459,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.6.0</b>「解説」タブを追加（R1〜R7の問2〜問9の全56問。穴埋めは答えを埋めた問題文、記述は解答例、工程表は日程。ワンタップで答えの表示・非表示、原本は別タブ）</li>
         <li><b>v1.5.0</b>穴埋めを本番形式に変更（問題用紙の画像を表示し、(イ)〜(ホ)を語群から選ぶ）。年度・問題番号は自分で選ぶ形に、シャッフルは初期オフに。原本はすべて別タブで開くように変更</li>
         <li><b>v1.4.2</b>古い画面が表示され続ける問題を修正（新しい版があれば自動で読み込み直す）</li>
         <li><b>v1.4.1</b>バージョン表示を追加</li>
@@ -445,10 +484,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.5.0</div>
+  <div class="ver" aria-label="バージョン">v1.6.0</div>
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
+<script src="kaisetsu.js?v=1.6.0"></script>
 <script>
 (function(){
 "use strict";
@@ -606,6 +646,48 @@ function finish(){
 function back(){$("q-play").hidden=true;$("q-result").hidden=true;$("q-setup").hidden=false;upd()}
 $("againBtn").addEventListener("click",back);
 
+/* ---------- 解説 ---------- */
+var kY=load("d2kY","R7"),kQ={},kHideAll=false;
+["R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=YN[y];b.dataset.y=y;b.setAttribute("aria-pressed",y===kY);
+  b.addEventListener("click",function(){kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});renderK()});$("kYear").appendChild(b)});
+["2","3","4","5","6","7","8","9"].forEach(function(q){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent="問"+q;b.setAttribute("aria-pressed","false");
+  b.addEventListener("click",function(){kQ[q]=!kQ[q];b.setAttribute("aria-pressed",!!kQ[q]);renderK()});$("kNum").appendChild(b)});
+var TYPEN={fill:"穴埋め",write:"記述",bar:"工程表作成"};
+function kSentence(t){return esc(t).replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){return '<span class="kb" role="button" tabindex="0"><span class="kl">('+l+')</span><span class="ka">'+a+'</span></span>'})}
+function renderK(){
+  var anyQ=Object.keys(kQ).some(function(k){return kQ[k]});
+  var list=KAISETSU.filter(function(k){return k.y===kY&&(!anyQ||kQ[k.q])});
+  $("kList").innerHTML=list.map(function(k,i){
+    var h='<section class="sec kcard'+(kHideAll?' hid':'')+'" id="k'+k.y+'-'+k.q+'"><h3><span class="tag">'+k.y+'</span><span class="tag">問'+k.q+'</span><span class="tag t">'+TYPEN[k.type]+'</span>'+esc(k.t)+'</h3>';
+    h+='<div class="srcrow" style="margin:0"><a class="srcbtn" href="q/'+k.y+'-'+k.q+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">この問題（問題用紙）↗</a>'+(SRC[k.y].q[k.q]||[]).map(function(n,i,arr){return '<a class="srcbtn" href="'+pageUrl(k.y,n)+'" target="_blank" rel="noopener">問題用紙のページ全体'+(arr.length>1?'（'+(i+1)+'/'+arr.length+'）':'')+' ↗</a>'}).join("")+aLink(k.y,k.q)+'</div>';
+    h+='<div class="row" style="margin-top:10px"><button class="btn ghost ktg" type="button">'+(kHideAll?"答えを表示":"答えを隠す")+'</button></div>';
+    h+='<p class="lead">'+esc(k.lead)+'</p>';
+    if(k.type==="fill"){
+      h+='<ol class="ks">'+k.s.map(function(x){return '<li>'+kSentence(x)+'</li>'}).join("")+'</ol>';
+      var ans={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){ans[a]=1});
+      h+='<div class="kw">'+k.w.split(",").map(function(w){return '<span class="'+(ans[w]?"ok":"")+'">'+esc(w)+'</span>'}).join("")+'</div>';
+      var L=["イ","ロ","ハ","ニ","ホ"],m={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){m[l]=a});
+      h+='<div class="khide">解説は答えを表示すると出ます（タップで表示）</div><ul class="kex rv">'+L.map(function(l,j){return '<li><span class="lb">('+l+')</span><b>'+esc(m[l])+'</b>：'+esc(k.ex[j])+'</li>'}).join("")+'</ul>';
+    }else if(k.type==="write"){
+      if(k.items.length)h+='<ul class="kitems">'+k.items.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>';
+      h+='<div class="khide">解答例は隠しています（タップで表示）</div><div class="kans rv">'+k.ans.map(function(g){return '<div class="g"><b>'+esc(g[0])+'</b><ul>'+g[1].map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul></div>'}).join("")+'</div>';
+    }else{
+      h+='<p style="font-size:14px;margin:0 0 8px">'+esc(k.cond)+'</p><div class="khide">工程表と全所要日数は隠しています（タップで表示）</div><div class="rv"><div class="h" style="font-weight:700;color:var(--success-hi);margin-bottom:6px">全所要日数 '+k.total+'日（'+esc(k.calc)+'）</div>'+k.rows.map(function(r){var pad=(r[1]-1)/k.total*100,w=(r[2]-r[1]+1)/k.total*100;return '<div style="display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px;margin-bottom:5px"><span>'+r[0]+'</span><span style="position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px"><span style="position:absolute;left:'+pad+'%;width:'+w+'%;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></span></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")+'</div>';
+    }
+    h+='<div class="kpt">'+esc(k.pt)+'</div></section>';
+    return h;
+  }).join("")||'<section class="sec"><p class="hint">該当する問題がありません。</p></section>';
+}
+$("kList").addEventListener("click",function(e){
+  var c=e.target.closest(".kcard");if(!c)return;
+  if(e.target.closest(".ktg")){var hid=c.classList.toggle("hid");c.querySelectorAll(".kb.open").forEach(function(b){b.classList.remove("open")});e.target.closest(".ktg").textContent=hid?"答えを表示":"答えを隠す";return}
+  var b=e.target.closest(".kb");if(b&&c.classList.contains("hid")){b.classList.toggle("open");return}
+  if(e.target.closest(".khide")){c.classList.remove("hid");c.querySelector(".ktg").textContent="答えを隠す"}
+});
+$("kList").addEventListener("keydown",function(e){var b=e.target.closest(".kb");if(b&&(e.key==="Enter"||e.key===" ")){e.preventDefault();b.click()}});
+$("kAll").addEventListener("click",function(){kHideAll=!kHideAll;$("kAll").textContent=kHideAll?"すべての答えを表示":"すべての答えを隠す";renderK()});
+renderK();
+
 /* ---------- 記述 ---------- */
 var WREF={"移動式クレーン": ["R5-8", "R7-8"], "玉掛け作業": ["R5-8"], "土止め支保工の組立": ["R1-8", "R6-8"], "墜落防止（高さ2m以上）": ["R4-8", "R2-7"], "騒音防止（ブルドーザ・バックホウ）": ["R4-9"], "バーチャート": ["R1-9", "R3-9", "R6-9", "R7-3"], "ガントチャート": ["R1-9", "R3-9", "R6-9"], "ネットワーク式工程表": ["R1-9", "R3-9", "R6-9"], "グラフ式工程表": ["R7-3"], "出来高累計曲線": ["R7-3"], "コールドジョイント": ["R2-5", "R5-5", "R7-5"], "ワーカビリティー": ["R2-5", "R5-5", "R7-5"], "スランプ": ["R5-5"], "ブリーディング": ["R7-5"], "スペーサ": ["R7-5"], "アルカリシリカ反応": ["R5-5"], "移動式クレーン（作業着手前）": ["R3-3"], "架空線の損傷事故防止": ["R3-8"], "打込み時の留意点": ["R3-5"], "締固め時の留意点": ["R3-5"], "暑中・寒中・マスコンクリート": ["R2-8"], "レイタンス・かぶり": ["R2-5"], "誤り訂正（施工）": ["R1-5"], "法面保護工": ["R1-3"], "軟弱地盤対策工法": ["R2-3", "R6-5"], "締固め度の試験": ["R6-3"], "盛土材料の条件": ["R4-5"], "建設リサイクル法": ["R5-3"], "施工計画の事前調査": ["R4-3"]};
 var W=[
@@ -694,7 +776,7 @@ C.forEach(function(x,i){var l=document.createElement("label");l.innerHTML='<inpu
 $("checks").addEventListener("change",function(e){ck[e.target.id.slice(2)]=e.target.checked;save("d2check",ck)});
 
 /* ---------- 新しい版の自動読み込み ---------- */
-var APP_VER="1.5.0";
+var APP_VER="1.6.0";
 try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.json()}).then(function(j){
   if(j&&j.v&&j.v!==APP_VER){var k="d2reload"+j.v;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
     location.replace(location.pathname+"?v="+j.v+location.hash)}
