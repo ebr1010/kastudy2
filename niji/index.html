@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>2級土木 二次検定ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Orbitron:wght@700;900&display=swap">
+<style>
+/* Layout: kastudy2（一次検定クイズ）と同じダーク＋ガラスカード。上にタブ、各タブは1カラムのガラスセクション */
+:root{
+  color-scheme:dark;
+  --bg:#020b17; --text:#e0f2fe; --muted:rgba(224,242,254,.55); --border:rgba(59,130,246,.22); --border-hi:rgba(59,130,246,.45);
+  --primary:#3b82f6; --accent:#06b6d4; --accent-hi:#67e8f9; --success:#10b981; --success-hi:#6ee7b7; --danger:#f87171; --warning:#f59e0b;
+  --glass:rgba(255,255,255,.045); --glass-hi:rgba(255,255,255,.08); --chip:rgba(59,130,246,.07);
+  --f-din:'DIN Alternate','Barlow Condensed','Arial Narrow',sans-serif;
+  --f-orb:'Orbitron','Barlow Condensed',sans-serif;
+  --f-jp:"Hiragino Kaku Gothic ProN","Noto Sans JP","Meiryo",sans-serif;
+  --r:20px; --rs:14px;
+}
+*{box-sizing:border-box}
+body{margin:0}
+html,body{background:var(--bg)}
+body{color:var(--text);font-family:var(--f-jp);font-size:15px;line-height:1.7;min-height:100%}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg .grid{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='90'%3E%3Cpolygon points='26,15 52,30 52,60 26,75 0,60 0,30' fill='none' stroke='rgba(0%2C230%2C160%2C.06)' stroke-width='1'/%3E%3C/svg%3E");background-size:52px 90px}
+.orb{position:absolute;border-radius:50%}
+.o1{width:900px;height:800px;background:radial-gradient(circle at 40% 40%,rgba(59,130,246,.40),transparent 65%);top:-30%;left:-25%;filter:blur(72px);animation:m1 55s ease-in-out infinite alternate}
+.o2{width:700px;height:650px;background:radial-gradient(circle at 60% 60%,rgba(6,182,212,.28),transparent 65%);bottom:-25%;right:-20%;filter:blur(80px);animation:m2 70s ease-in-out infinite alternate}
+.o3{width:420px;height:420px;background:radial-gradient(circle,rgba(16,185,129,.22),transparent 68%);top:55%;left:5%;filter:blur(65px);animation:m1 60s ease-in-out infinite alternate-reverse}
+@keyframes m1{to{transform:translate(70px,60px) scale(1.1)}}
+@keyframes m2{to{transform:translate(-70px,-70px) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}}
+.app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+.head{text-align:center;margin-bottom:18px}
+.eyebrow{font-family:var(--f-din);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(6,182,212,.75)}
+h1{margin:4px 0 0;font-size:clamp(20px,5.4vw,28px);font-weight:900;line-height:1.2;background:linear-gradient(110deg,#bfdbfe,#60a5fa 28%,#22d3ee 56%,#34d399 82%,#a5f3fc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-wrap:balance}
+h1 .sep{color:rgba(6,182,212,.5);-webkit-text-fill-color:rgba(6,182,212,.5);font-weight:300;margin:0 6px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:rgba(8,18,36,.92)}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:6px;margin-bottom:16px;background:rgba(8,18,36,.78);backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);border:1px solid rgba(255,255,255,.10);border-radius:16px;box-shadow:0 6px 28px rgba(0,0,0,.5)}
+.tabs button{flex:1 0 auto;font:700 13px var(--f-jp);color:var(--muted);background:none;border:0;padding:8px 12px;border-radius:11px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(135deg,rgba(59,130,246,.55),rgba(6,182,212,.45));box-shadow:0 0 14px rgba(6,182,212,.35),inset 0 1px 0 rgba(255,255,255,.25)}
+.view{display:grid;gap:14px}
+.view[hidden]{display:none!important}
+.sec{position:relative;overflow:hidden;background:var(--glass);backdrop-filter:blur(48px) saturate(200%);-webkit-backdrop-filter:blur(48px) saturate(200%);border-top:1px solid rgba(255,255,255,.22);border-left:1px solid rgba(255,255,255,.12);border-right:1px solid rgba(0,0,0,.12);border-bottom:1px solid rgba(0,0,0,.2);border-radius:var(--r);padding:18px;box-shadow:0 10px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.18);min-width:0}
+.sec::before{content:"";position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7) 50%,transparent);pointer-events:none}
+.sec h2{margin:0 0 12px;font-size:14px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:8px}
+.sec h2 b{font-family:var(--f-din);font-size:12px;letter-spacing:1.5px;color:var(--accent)}
+.sec h3{margin:16px 0 8px;font-size:15px;color:var(--text)}
+.sec p{margin:0 0 8px}
+.hint{font-size:12px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stat{background:var(--chip);border:1px solid var(--border);border-radius:var(--rs);padding:10px;text-align:center}
+.stat b{display:block;font-family:var(--f-orb);font-size:20px;color:var(--accent-hi);text-shadow:0 0 12px rgba(6,182,212,.5)}
+.stat span{font-size:11px;color:var(--muted)}
+@media (max-width:460px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tbl{overflow-x:auto;border-radius:var(--rs);border:1px solid var(--border)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:12.5px}
+th,td{padding:7px 8px;border-bottom:1px solid rgba(59,130,246,.14);text-align:left;vertical-align:top}
+thead th{font-family:var(--f-din);font-size:14px;letter-spacing:1px;color:var(--accent-hi);background:rgba(6,182,212,.08)}
+tbody th{font-family:var(--f-din);font-size:13px;color:var(--muted);white-space:nowrap}
+tr:last-child>*{border-bottom:0}
+td.hot{background:rgba(6,182,212,.10);color:#cffafe}
+.sf{color:var(--warning);font-weight:700}
+.rank{display:grid;gap:7px}
+.rank .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:13px}
+.rank .r i{font-style:normal;font-family:var(--f-din);font-size:15px;color:var(--accent-hi)}
+.rank .bar{grid-column:1/-1;height:5px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.rank .bar span{display:block;height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4,#10b981);box-shadow:0 0 8px rgba(6,182,212,.5)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:700 13px var(--f-jp);color:var(--text);background:var(--chip);border:1.5px solid var(--border);border-radius:var(--rs);padding:8px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:rgba(6,182,212,.16);color:#cffafe;box-shadow:0 0 12px rgba(6,182,212,.3)}
+.chip .n{font-family:var(--f-din);color:var(--muted);margin-left:6px;font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:700 15px var(--f-jp);color:#fff;border:0;border-radius:var(--rs);padding:12px 26px;cursor:pointer;background:linear-gradient(135deg,#3b82f6,#06b6d4);box-shadow:0 4px 20px rgba(59,130,246,.5),inset 0 1px 0 rgba(255,255,255,.22)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:var(--glass);color:var(--accent-hi);border:1.5px solid rgba(6,182,212,.4);box-shadow:none;padding:10px 18px;font-size:14px}
+.btn.wide{width:100%}
+button:focus-visible,.chip:focus-visible,textarea:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent-hi);outline-offset:2px}
+/* quiz */
+.qhead{display:flex;align-items:center;gap:12px}
+.qhead .prog{flex:1;min-width:0}
+.qhead .prog span{font-family:var(--f-orb);font-size:12px;color:var(--muted)}
+.pbar{height:5px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:4px}
+.pbar div{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4,#10b981);transition:width .3s;box-shadow:0 0 8px rgba(6,182,212,.5)}
+.score{font-family:var(--f-orb);font-weight:700;color:var(--accent-hi);background:rgba(6,182,212,.14);border:1px solid rgba(6,182,212,.4);border-radius:20px;padding:4px 14px;box-shadow:0 0 12px rgba(6,182,212,.35);white-space:nowrap}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tag{font-family:var(--f-din);font-size:13px;letter-spacing:.5px;padding:2px 10px;border-radius:8px;background:rgba(59,130,246,.14);border:1px solid var(--border);color:#bfdbfe}
+.tag.t{font-family:var(--f-jp);font-size:12px}
+.qtext{font-size:16px;line-height:1.9;margin:0 0 14px}
+.qtext .fill{color:var(--accent-hi);border-bottom:1px solid rgba(103,232,249,.5)}
+.qtext .q{display:inline-block;min-width:4.5em;text-align:center;font-weight:900;color:#fde68a;background:rgba(245,158,11,.14);border:1.5px dashed rgba(245,158,11,.6);border-radius:6px;padding:0 8px;margin:0 2px}
+.qtext .q.ok{color:var(--success-hi);border:1.5px solid var(--success);background:rgba(16,185,129,.16)}
+.qtext .q.ng{color:#fecaca;border:1.5px solid var(--danger);background:rgba(248,113,113,.14)}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,128px),1fr));gap:8px}
+.word{font:700 14px var(--f-jp);color:var(--text);background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:12px;padding:11px 8px;cursor:pointer;min-height:48px;transition:transform .12s,border-color .12s}
+.word:hover:not(:disabled){border-color:var(--accent);transform:translateY(-1px)}
+.word:disabled{cursor:default;opacity:.45}
+.word.ok{opacity:1;border-color:var(--success);background:rgba(16,185,129,.2);color:var(--success-hi);box-shadow:0 0 16px rgba(16,185,129,.4)}
+.word.ng{opacity:1;border-color:var(--danger);background:rgba(248,113,113,.16);color:#fecaca}
+.verdict{margin-top:12px;padding:10px 14px;border-radius:12px;font-weight:700}
+.verdict.ok{background:rgba(16,185,129,.14);border:1px solid rgba(16,185,129,.45);color:var(--success-hi)}
+.verdict.ng{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.4);color:#fecaca}
+.verdict small{display:block;font-weight:400;color:var(--muted);margin-top:2px}
+.result{text-align:center}
+.result .big{font-family:var(--f-orb);font-size:44px;font-weight:900;color:var(--accent-hi);text-shadow:0 0 22px rgba(6,182,212,.6)}
+.result .big small{font-size:18px;color:var(--muted)}
+.miss{display:grid;gap:6px;text-align:left;margin-top:12px}
+.miss div{font-size:13px;padding:8px 12px;border-radius:10px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25)}
+.miss b{color:var(--success-hi)}
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:8px}
+.nums div{background:var(--chip);border:1px solid var(--border);border-radius:12px;padding:8px 12px;min-width:0}
+.nums span{display:block;font-size:12px;color:var(--muted)}
+.nums b{font-family:var(--f-din);font-size:18px;letter-spacing:.3px;color:var(--accent-hi)}
+/* write practice */
+.wlist{display:grid;gap:8px}
+details.w{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:var(--rs)}
+details.w>summary{list-style:none;cursor:pointer;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+details.w>summary::-webkit-details-marker{display:none}
+details.w>summary b{font-size:14px}
+details.w>summary small{grid-column:1;font-size:12px;color:var(--muted)}
+details.w>summary .st{grid-row:1/3;grid-column:2;font-family:var(--f-din);font-size:13px;padding:2px 10px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
+details.w>summary .st.done{color:var(--success-hi);border-color:var(--success)}
+details.w .in{padding:0 14px 14px;display:grid;gap:10px}
+textarea{width:100%;min-height:96px;resize:vertical;font:15px/1.7 var(--f-jp);color:var(--text);background:rgba(2,11,23,.6);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.model{display:none;border-left:3px solid var(--success);padding:8px 12px;background:rgba(16,185,129,.07);border-radius:0 10px 10px 0}
+.model.show{display:block}
+.model ul{margin:0;padding-left:1.2em;display:grid;gap:4px;font-size:14px}
+.model .h{font-size:12px;color:var(--success-hi);font-weight:700;margin-bottom:4px}
+/* gantt */
+.gantt{overflow-x:auto}
+.gantt svg{display:block;width:100%;min-width:520px;height:auto}
+ol.steps{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;font-size:14px}
+ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;display:grid;place-items:center;height:28px;border-radius:8px;background:rgba(6,182,212,.16);border:1px solid rgba(6,182,212,.45);color:var(--accent-hi)}
+.note{border-left:3px solid var(--warning);background:rgba(245,158,11,.08);padding:10px 14px;border-radius:0 12px 12px 0;font-size:14px}
+/* experience */
+.exp{display:grid;gap:10px}
+.exp .card{background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px}
+.exp .card h3{margin:0 0 6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.exp .card h3 small{font-weight:400;font-size:12px;color:var(--muted)}
+.exp .card p{font-size:14px;margin:0 0 6px}
+.lab{font-family:var(--f-din);font-size:12px;letter-spacing:1px;color:var(--accent);margin-right:6px}
+.ph{color:#fde68a;background:rgba(245,158,11,.14);border-radius:4px;padding:0 4px;font-weight:700}
+.checks{display:grid;gap:8px}
+.checks label{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:14px}
+.checks input{margin-top:5px;accent-color:var(--success);width:16px;height:16px}
+.checks label:has(input:checked){border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.08)}
+.checks label:has(input:checked) span{color:var(--muted);text-decoration:line-through}
+.checks b{font-family:var(--f-din);color:var(--accent-hi);margin-right:6px;font-size:14px}
+.links{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}
+.links a{color:var(--accent-hi);word-break:break-all}
+.foot{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"><div class="grid"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+
+<div class="app">
+  <div class="head">
+    <div class="eyebrow">Civil Engineering · 2nd Grade · 2nd Exam</div>
+    <h1>土木2級二次検定<span class="sep">|</span>対策ノート</h1>
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="メニュー">
+    <button role="tab" data-v="home" aria-selected="true">ホーム</button>
+    <button role="tab" data-v="quiz" aria-selected="false">穴埋め</button>
+    <button role="tab" data-v="write" aria-selected="false">記述</button>
+    <button role="tab" data-v="nums" aria-selected="false">数値</button>
+    <button role="tab" data-v="bar" aria-selected="false">工程表</button>
+    <button role="tab" data-v="exp" aria-selected="false">経験記述</button>
+    <button role="tab" data-v="plan" aria-selected="false">直前</button>
+  </nav>
+
+  <!-- ===== HOME ===== -->
+  <div class="view" id="v-home">
+    <section class="sec">
+      <h2><b>STATUS</b>学習状況</h2>
+      <div class="stats">
+        <div class="stat"><b id="s-ans">0</b><span>穴埋め 解答数</span></div>
+        <div class="stat"><b id="s-rate">—</b><span>正答率</span></div>
+        <div class="stat"><b id="s-miss">0</b><span>要復習</span></div>
+        <div class="stat"><b id="s-write">0</b><span>記述 書けた</span></div>
+      </div>
+    </section>
+    <section class="sec">
+      <h2><b>FORMAT</b>試験の形式</h2>
+      <p>問1〜5は必須、問6・7から1問、問8・9から1問の計7問。合格は60%以上。<span class="sf">選択問題を2問とも解くと減点</span>。</p>
+    </section>
+    <section class="sec">
+      <h2><b>TREND</b>出題傾向（2級二次・6年分）</h2>
+      <div class="tbl"><table>
+        <thead><tr><th></th><th>R1</th><th>R2</th><th>R3</th><th>R5</th><th>R6</th><th>R7</th></tr></thead>
+        <tbody>
+          <tr><th>問1</th><td>品質/工程</td><td><span class="sf">安全</span>/工程</td><td>品質/工程</td><td><span class="sf">安全</span>/工程</td><td>品質・工程</td><td><span class="sf">安全</span>・工程</td></tr>
+          <tr><th>問2</th><td class="hot">盛土</td><td class="hot">切土法面</td><td class="hot">工程表</td><td>明り掘削</td><td>調達計画</td><td>品質管理</td></tr>
+          <tr><th>問3</th><td class="hot">法面保護工</td><td>軟弱地盤</td><td>事前調査</td><td>リサイクル</td><td class="hot">締固め度試験</td><td class="hot">工程表特徴</td></tr>
+          <tr><th>問4</th><td class="hot">型枠</td><td class="hot">打込み・養生</td><td class="hot">養生</td><td class="hot">切土法面</td><td class="hot">打込み</td><td class="hot">盛土</td></tr>
+          <tr><th>問5</th><td>誤り訂正</td><td class="hot">コンクリ用語</td><td class="hot">盛土材料</td><td class="hot">コンクリ用語</td><td>軟弱地盤</td><td class="hot">コンクリ用語</td></tr>
+          <tr><th>問6</th><td class="hot">締固め管理</td><td class="hot">原位置試験</td><td class="hot">原位置試験</td><td class="hot">締固め管理</td><td class="hot">原位置試験</td><td class="hot">締固め管理</td></tr>
+          <tr><th>問7</th><td class="hot">生コン受入</td><td>高所作業</td><td class="hot">生コン受入</td><td class="hot">鉄筋・型枠</td><td class="hot">鉄筋・型枠</td><td class="hot">生コン受入</td></tr>
+          <tr><th>問8</th><td>土止め</td><td>各種コンクリ</td><td>墜落防止</td><td>クレーン</td><td>土止め</td><td>クレーン</td></tr>
+          <tr><th>問9</th><td class="hot">工程表特徴</td><td class="hot">バーチャート</td><td>騒音対策</td><td class="hot">バーチャート</td><td class="hot">工程表特徴</td><td class="hot">バーチャート</td></tr>
+        </tbody>
+      </table></div>
+      <p class="hint" style="margin-top:8px">R4は2級二次の問題が手元にないため除外。網かけは3回以上出たテーマ。</p>
+    </section>
+    <section class="sec">
+      <h2><b>FREQUENT</b>頻出テーマ</h2>
+      <div class="rank" id="rank"></div>
+    </section>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div class="view" id="v-quiz" hidden>
+    <div id="q-setup" class="view">
+      <section class="sec">
+        <h2><b>YEAR</b>年度の選択</h2>
+        <div class="chips" id="yearChips"></div>
+      </section>
+      <section class="sec">
+        <h2><b>MODE</b>出題設定</h2>
+        <div class="chips">
+          <button class="chip" id="optShuffle" aria-pressed="true">シャッフル</button>
+          <button class="chip" id="optMiss" aria-pressed="false">要復習だけ</button>
+        </div>
+        <p class="hint" style="margin-top:10px">本番と同じく、問題ごとの15語の語群から選びます（PDFで読み取れなかった数字の選択肢は一部省略）。</p>
+      </section>
+      <button class="btn wide" id="startBtn">スタート</button>
+      <button class="btn ghost" id="resetBtn" type="button">記録をリセット</button>
+      <p class="hint" id="resetMsg" hidden></p>
+    </div>
+
+    <div id="q-play" class="view" hidden>
+      <section class="sec">
+        <div class="qhead">
+          <div class="prog"><span id="pText">1 / 1</span><div class="pbar"><div id="pFill" style="width:0"></div></div></div>
+          <div class="score" id="scoreBadge">0</div>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="tags" id="qTags"></div>
+        <p class="qtext" id="qText"></p>
+        <div class="words" id="qWords"></div>
+        <div id="qVerdict"></div>
+      </section>
+      <div class="row">
+        <button class="btn ghost" id="quitBtn" type="button">やめる</button>
+        <button class="btn" id="nextBtn" style="flex:1" disabled>次へ</button>
+      </div>
+    </div>
+
+    <div id="q-result" class="view" hidden>
+      <section class="sec result">
+        <h2 style="justify-content:center"><b>RESULT</b>結果</h2>
+        <div class="big" id="rBig">0<small> / 0</small></div>
+        <p id="rPct" class="hint"></p>
+        <div class="miss" id="rMiss"></div>
+      </section>
+      <button class="btn wide" id="againBtn">設定に戻る</button>
+    </div>
+  </div>
+
+  <!-- ===== WRITE ===== -->
+  <div class="view" id="v-write" hidden>
+    <section class="sec">
+      <h2><b>WRITE</b>記述の練習</h2>
+      <p class="hint">開いて自分で書く → 模範解答で答え合わせ →「書けた」を押す。本番は「2つ書け」が多いので、3つ以上書けるようにしておく。</p>
+      <div class="chips" id="wFilter" style="margin-top:6px"></div>
+    </section>
+    <div class="wlist" id="wList"></div>
+  </div>
+
+  <!-- ===== NUMBERS ===== -->
+  <div class="view" id="v-nums" hidden>
+    <section class="sec"><h2><b>CONCRETE</b>コンクリート</h2><div class="nums" id="n-c"></div></section>
+    <section class="sec"><h2><b>EARTHWORK</b>土工</h2><div class="nums" id="n-e"></div></section>
+    <section class="sec"><h2><b>SAFETY</b>安全</h2><div class="nums" id="n-s"></div></section>
+  </div>
+
+  <!-- ===== BAR CHART ===== -->
+  <div class="view" id="v-bar" hidden>
+    <section class="sec">
+      <h2><b>BAR CHART</b>バーチャートの解き方</h2>
+      <p class="hint">R2・R5・R7で出題。計算すれば必ず答えが出るので、選択(2)で選びやすい。</p>
+      <ol class="steps">
+        <li><span>工種を<b>施工順</b>に並べる。解答用紙に順番が印刷されていればその順。</span></li>
+        <li><span>基本は<b>前の工種が終わった翌日</b>に次を始める。</span></li>
+        <li><span>「基礎工は床掘工と<b>◯日重複</b>」とあれば、床掘工の最後の◯日に重ねて始める。</span></li>
+        <li><span>順番：床掘 → 基礎（砕石） → 型枠組立 → 打込み → 養生 → 型枠取外し → 埋戻し。管渠・カルバートは基礎の後に据付・敷設。</span></li>
+        <li><span>全所要日数 ＝ 最後の工種の終了日。検算は<b>日数の合計 − 重複日数</b>。</span></li>
+      </ol>
+    </section>
+    <section class="sec">
+      <h2><b>EXAMPLE</b>記入例</h2>
+      <div class="gantt">
+        <svg viewBox="0 0 640 214" role="img" aria-labelledby="gt">
+          <title id="gt">床掘3日、基礎2日（床掘と1日重複）、型枠2日、打込み1日、養生3日、取外し1日、埋戻し2日で全13日</title>
+          <g font-size="12" fill="#e0f2fe" font-family="Hiragino Kaku Gothic ProN, Meiryo, sans-serif">
+            <text x="0" y="35">床掘工</text><text x="0" y="57">基礎工</text><text x="0" y="79">型枠組立</text><text x="0" y="101">打込み</text><text x="0" y="123">養生</text><text x="0" y="145">型枠取外し</text><text x="0" y="167">埋戻し</text>
+          </g>
+          <g stroke="rgba(59,130,246,.25)">
+            <line x1="90" y1="18" x2="90" y2="176"/><line x1="130" y1="18" x2="130" y2="176"/><line x1="170" y1="18" x2="170" y2="176"/><line x1="210" y1="18" x2="210" y2="176"/><line x1="250" y1="18" x2="250" y2="176"/><line x1="290" y1="18" x2="290" y2="176"/><line x1="330" y1="18" x2="330" y2="176"/><line x1="370" y1="18" x2="370" y2="176"/><line x1="410" y1="18" x2="410" y2="176"/><line x1="450" y1="18" x2="450" y2="176"/><line x1="490" y1="18" x2="490" y2="176"/><line x1="530" y1="18" x2="530" y2="176"/><line x1="570" y1="18" x2="570" y2="176"/><line x1="610" y1="18" x2="610" y2="176"/>
+          </g>
+          <g font-family="Barlow Condensed, sans-serif" font-size="13" fill="rgba(224,242,254,.6)" text-anchor="middle">
+            <text x="110" y="13">1</text><text x="150" y="13">2</text><text x="190" y="13">3</text><text x="230" y="13">4</text><text x="270" y="13">5</text><text x="310" y="13">6</text><text x="350" y="13">7</text><text x="390" y="13">8</text><text x="430" y="13">9</text><text x="470" y="13">10</text><text x="510" y="13">11</text><text x="550" y="13">12</text><text x="590" y="13">13</text>
+          </g>
+          <g fill="#06b6d4">
+            <rect x="92" y="25" width="116" height="14" rx="3"/>
+            <rect x="172" y="47" width="76" height="14" rx="3" fill="#f59e0b"/>
+            <rect x="252" y="69" width="76" height="14" rx="3"/>
+            <rect x="332" y="91" width="36" height="14" rx="3"/>
+            <rect x="372" y="113" width="116" height="14" rx="3"/>
+            <rect x="492" y="135" width="36" height="14" rx="3"/>
+            <rect x="532" y="157" width="76" height="14" rx="3"/>
+          </g>
+          <text x="90" y="202" font-size="12" fill="rgba(224,242,254,.6)" font-family="Hiragino Kaku Gothic ProN, Meiryo, sans-serif">橙＝重複作業（床掘3日目と基礎1日目が重なる）。合計14日 − 重複1日 ＝ 全13日</text>
+        </svg>
+      </div>
+      <div class="note" style="margin-top:10px">過去問の答え：R5 管渠 <b>28日</b>／R7 重力式擁壁 <b>22日</b>。問題の日数で自分で線を引き、同じ日数になるか確認する。</div>
+    </section>
+  </div>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <div class="view" id="v-exp" hidden>
+    <section class="sec">
+      <h2><b>THEME</b>経験記述（王子SL移設）</h2>
+      <p class="hint">R5〜R7は「安全→品質→安全」で、工程は毎年出ている。R8は品質と工程の可能性が高い。<span class="ph">［◯］</span>は実際の数値を入れる。</p>
+      <div class="exp">
+        <div class="card">
+          <h3>品質管理 <small>課題：道床と軌道材料の品質</small></h3>
+          <p><span class="lab">状況</span>動輪部38tの機関車と車掌車2両が常設される軌道を、公園広場にバラスト道床で新設。再利用するレールとPC枕木に錆・汚れ。</p>
+          <p><span class="lab">対応1</span><span class="ph">［◯］</span>m間隔に測点を設け軌間・水準を実測、許容値外は<span class="ph">［修正方法］</span>で修正し、軌間1,067〜1,072mm・水準±0.5mm以内。</p>
+          <p><span class="lab">対応2</span>規格品バラスト（C4-5）を使用し、まくら木中央部で厚さ130mmを確保。</p>
+          <p><span class="lab">対応3</span>錆の進行を防ぐため、研磨・防錆塗装し、締結状態を全数確認。</p>
+        </div>
+        <div class="card">
+          <h3>工程管理 <small>課題：搬入日9月8日までに軌道敷設</small></h3>
+          <p><span class="lab">状況</span>搬入日は大型クレーンと特殊車両の通行許可で固定。縁石寸法の修正でレールを240mm短くつくり直す必要。作業は平日9〜17時のみ。</p>
+          <p><span class="lab">対応1</span>7月24〜27日に高岡で切断・締結、240mmの再切断と車止め取付けまで行い、軌框を事前製作。</p>
+          <p><span class="lab">対応2</span>9月2〜3日に敷鉄板を先行敷設し、据付当日の待ち時間をなくした。</p>
+          <p><span class="lab">対応3</span>要員計画を作成し、王子動物園側と下中島公園側に各<span class="ph">［◯］</span>名の班で並行作業。→ 工期内に完了。</p>
+        </div>
+        <div class="card">
+          <h3>安全管理 <small>課題：公園利用者の第三者災害防止</small></h3>
+          <p><span class="lab">状況</span>不特定多数が出入りする公園内。吊込み期間中は資材車両の出入りが多く、利用者の動線と交差。</p>
+          <p><span class="lab">対応1</span>バリケード設置計画を作成し、敷鉄板敷設から載線完了まで全期間、作業範囲を区画。</p>
+          <p><span class="lab">対応2</span>車両出入口を1か所に限定して仮設ゲートを設置し、<span class="ph">［出入時以外は閉鎖］</span>。</p>
+          <p><span class="lab">対応3</span>公園出入口に工事看板と注意喚起の掲示を設置。</p>
+        </div>
+      </div>
+    </section>
+    <section class="sec">
+      <h2><b>RULES</b>書き方の決まり</h2>
+      <ol class="steps">
+        <li><span>状況から課題が自然につながるように書く。</span></li>
+        <li><span>「〜する方法を検討した結果、〜した」の形で書く。</span></li>
+        <li><span>数値・人数・期間を入れる。</span></li>
+        <li><span>「区画した」「立入禁止」だけの当たり前の対策は弱い。工夫した点を書く。</span></li>
+        <li><span>最後に「工期内に」「災害なく」など結果を書く。</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <!-- ===== PLAN ===== -->
+  <div class="view" id="v-plan" hidden>
+    <section class="sec">
+      <h2><b>COUNTDOWN</b>直前1週間</h2>
+      <p class="hint">チェックはこのブラウザに保存されます。試験日・会場は受検票で確認。</p>
+      <div class="checks" id="checks"></div>
+    </section>
+    <section class="sec">
+      <h2><b>LINKS</b>資料</h2>
+      <ul class="links">
+        <li><a href="https://www.jctc.jp/mondai/" target="_blank" rel="noopener">全国建設研修センター 試験問題（公式・最新年度のみ）</a></li>
+        <li><a href="https://doboku.l-mate.net/report_answer.php" target="_blank" rel="noopener">九州建設専門学院 解答試案（2級はR元〜R7）</a></li>
+        <li><a href="https://www.cic-ct.co.jp/sohyo/doboku2/" target="_blank" rel="noopener">CIC 2級土木 検定問題と総評</a></li>
+        <li><a href="https://shikaku-taisaku.net/doboku-2-2ji/sessions/2025/" target="_blank" rel="noopener">資格試験対策.net R7 問題ごとの解説</a></li>
+        <li><a href="../">一次検定 過去問クイズ</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+function $(id){return document.getElementById(id)}
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+/* ---------- 穴埋めデータ（R5〜R7 2級二次） ---------- */
+var SETS=[
+ {y:"R7",q:"問2",t:"品質管理（試験と基準）",w:"圧密,圧縮比,コーン指数,地盤反力,塑性指数,たわみ指数,弾性,引張,ポアソン比,曲げ,水セメント比,CBR,15,20,25",s:["トラフィカビリティーは、コーンペネトロメーターで測定した{コーン指数}の値で判断される。","平板載荷試験は、荷重と沈下量との関係から{地盤反力}係数や極限支持力等を調べる試験である。","コンクリートの配合における{水セメント比}は65%以下で、所要の強度等を満足する最小の値とする。","日平均気温が{25}℃を超えると想定される場合は、暑中コンクリートとして施工する。","路床の強さは{CBR}試験によって判定する。"]},
+ {y:"R7",q:"問4",t:"盛土の施工",w:"圧縮性,鉛直,緊張性,掘削力,水平,せん断,地耐力,保水力,流動性,EPS,ICT,UAV,2次元,3次元,4次元",s:["基礎地盤が軟弱で{地耐力}が不足している場合は、置換・表層処理等の工法で基礎地盤を改良する。","盛土に利用する土は、{せん断}強度が大きく{圧縮性}が小さいもので、施工が容易なものを用いる。","電子情報を活用して効率的で高精度な施工を行うことを{ICT}土工という。","現場の地形や仕上り形状を{3次元}データに変換し活用する。"]},
+ {y:"R7",q:"問6",t:"盛土の締固め管理",w:"運転者,回転,攪拌,含水,強度,契約書,収縮,仕様書,施工者,せん断,抵抗,軟弱,発注者,膨張,予算書",s:["締固めを入念に行うのは、土の構造物として必要な{強度}特性が得られるようにするためである。","完成後の盛土に求められる変形{抵抗}及び圧縮抵抗を確保する目的もある。","締固めの効果や特性は、土の種類や{含水}の状態及び施工方法によって大きく変化する。","品質規定方式は、必要な品質を{仕様書}に明示し、締固めの工法は{施工者}に任せる方法である。"]},
+ {y:"R7",q:"問7",t:"生コンの受入れ検査",w:"アルカリ,塩化物,完成,スランプ,製造,沈下量,泥分,荷卸,フロー,2,3,3.5,4.5,5.5",s:["購入者は{荷卸}時に受入れ検査を行う。","{スランプ}の規定値が12cmの場合、許容差は±2.5cmである。","普通コンクリートの空気量の規定値は{4.5}%であり、許容差は±1.5%である。","コンクリート中の{塩化物}含有量は0.3kg/m³以下と規定されている。","圧縮強度1回の試験結果は、{3}本の供試体の圧縮強度の平均値である。"]},
+ {y:"R6",q:"問2",t:"労務・資機材の調達計画",w:"最小限,最大限,主任技術者,種別,職種,振動,精度,整備,騒音,大規模,台数,点検,年齢,比重,保管",s:["労務計画は、{職種}別の必要人数、時期、期間、季節的変動等を検討する。","実働労務者数の変化が{最小限}となるように立案する。","機械計画は、機械の{種別}、大きさ、{台数}、使用期間を決め、機械使用計画表を作成する。","資材計画は、資材の注文、調達、{保管}、使用に関する業務を円滑に行う。"]},
+ {y:"R6",q:"問4",t:"コンクリートの打込み・締固め",w:"凹凸,降下,コールドジョイント,材料分離,充塡,垂直,水平,中性化,斜めに,速く,変形,ゆっくり,10",s:["打上り面が{水平}になるように連続的に打ち込む。","打ち重ねに時間がかかると、上層と下層との間に{コールドジョイント}が発生することがある。","棒状バイブレータは、下層コンクリート中に{10}cm程度挿入する。","棒状バイブレータは、コンクリートに穴を残さないように{ゆっくり}引き抜く。","{材料分離}の原因となるため、棒状バイブレータはコンクリートを横移動させる目的で用いない。"]},
+ {y:"R6",q:"問6",t:"土の原位置試験",w:"強度,極限,洪積層,最大乾燥密度,試験図,支持層,垂直,水平,静的貫入抵抗,弾性,断面図,柱状図,直接,動的,膨張性",s:["標準貫入試験のN値から、土質{柱状図}や地質断面図を作成する。","構造物の{支持層}の分布状況や各地層の連続性等を総合的に判断できる。","平板載荷試験は、原地盤に剛な載荷板を設置して{垂直}荷重を与える試験である。","地盤反力係数や{極限}支持力等を調べる。","スクリューウエイト貫入試験は、土の{静的貫入抵抗}を求め、土の硬軟や締まり具合を判定する。"]},
+ {y:"R6",q:"問7",t:"鉄筋・型枠・型枠支保工",w:"圧縮力,遠心力,コンパネ,剛性,柔軟性,靭性,スペーサ,セパレータ,側面,妻面,底面,引張力,フープ,フック,ラップ",s:["鉄筋は、{引張力}に弱いコンクリートの補強材として主要なものである。","鉄筋の端部を曲げてコンクリートとの定着を向上させる加工を{フック}という。","型枠は、外力やコンクリートの側圧に対し、十分な強度と{剛性}をもつ。","型枠相互の間隔を保つために、{セパレータ}やフォームタイを用いる。","型枠の取外しは、梁部では{底面}が最後となる。"]},
+ {y:"R5",q:"問2",t:"明り掘削の安全管理",w:"土止め支保工,遮水シート,休憩,飛散,作業員,型枠支保工,順序,開始,防護網,段差,吊り足場,合図,損壊,終了,養生シート",s:["調査結果に適応する掘削の時期及び{順序}を定めて作業を行う。","地山の崩壊等のおそれがあるときは、あらかじめ{土止め支保工}を設け、{防護網}を張る。","機械の使用によるガス導管等の{損壊}で危険を及ぼすおそれがあるときは、これらの機械を使用しない。","その日の作業を{開始}する前、大雨の後及び中震以上の地震の後に点検させる。"]},
+ {y:"R5",q:"問4",t:"切土法面の施工",w:"土地利用,看板,平坦部,地質,柵,監視,転倒,法肩,客土,N値,モルタル吹付,尾根,飛散,管,崩壊",s:["切土の施工では{地質}の変化に注意し、予想外のものが現れたら施工を中止する。","雨水等による法面浸食や{崩壊}・落石等が発生しないように、排水・法面保護・落石防止を行う。","仮排水路を{法肩}の上や小段に設ける。","法面全体をビニールシートで被覆したり、{モルタル吹付}により法面を保護することもある。","仮設の落石防護網や落石防護{柵}を施すこともある。"]},
+ {y:"R5",q:"問6",t:"盛土の締固め管理",w:"施工,80,協議書,90,乾燥密度,安全,品質,収縮密度,工程,指示書,膨張率,70,工法,現場,仕様書",s:["盛土の締固め管理方法には、{品質}規定方式と{工法}規定方式がある。","締固め度の規定値は、室内試験から得られる土の最大{乾燥密度}の{90}%以上とする。","工法規定方式は、機種・締固め回数・敷均し厚さ等を{仕様書}に規定する方法である。"]},
+ {y:"R5",q:"問7",t:"鉄筋の組立・型枠",w:"結束バンド,スペーサ,千鳥,剥離剤,交互,潤滑油,混和剤,クランプ,焼なまし鉄線,パイプ,セパレータ,平板,供試体,電線,同一",s:["鉄筋どうしの交点の要所は、直径0.8mm以上の{焼なまし鉄線}等で緊結する。","鉄筋のかぶりを正しく保つために、モルタルあるいはコンクリート製の{スペーサ}を用いる。","鉄筋の継手は、{同一}の断面に集めないようにする。","型枠相互の間隔を正しく保つために、{セパレータ}やフォームタイを用いる。","型枠内面には{剥離剤}を塗っておく。"]}
+];
+var ITEMS=[];
+SETS.forEach(function(st){
+  st.s.forEach(function(sent,si){
+    var ans=[];sent.replace(/\{([^}]+)\}/g,function(_,a){ans.push(a)});
+    ans.forEach(function(a,k){ITEMS.push({id:st.y+st.q+"-"+si+"-"+k,set:st,sent:sent,k:k,ans:a})});
+  });
+});
+
+/* ---------- 頻出ランク ---------- */
+[["工程表（特徴・穴埋め・バーチャート）",6],["盛土の締固め管理・締固め度試験",4],["コンクリートの打込み・締固め・養生",4],["土の原位置試験",3],["生コンの受入れ検査",3],["鉄筋・型枠",3],["コンクリート用語",3],["法面（切土・保護工）",3],["盛土（施工・材料）",3],["移動式クレーン・玉掛け",2],["土止め支保工",2],["墜落防止・高所作業",2],["軟弱地盤対策",2]].forEach(function(x){
+  var d=document.createElement("div");d.className="r";
+  d.innerHTML='<span>'+x[0]+'</span><i>'+x[1]+' / 6</i><div class="bar"><span style="width:'+(x[1]/6*100)+'%"></span></div>';
+  $("rank").appendChild(d);
+});
+
+/* ---------- タブ ---------- */
+var tabs=document.querySelectorAll(".tabs button");
+function show(v){
+  tabs.forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===v)});
+  document.querySelectorAll(".app>.view").forEach(function(el){el.hidden=el.id!=="v-"+v});
+  if(v==="home")stats();
+  save("d2tab",v);
+}
+tabs.forEach(function(b){b.addEventListener("click",function(){show(b.dataset.v);window.scrollTo(0,0)})});
+
+/* ---------- 記録 ---------- */
+var hist=load("d2hist",{}); // id -> {n,ok,last}
+var wdone=load("d2write",{});
+function stats(){
+  var n=0,ok=0,miss=0;Object.keys(hist).forEach(function(k){n+=hist[k].n;ok+=hist[k].ok;if(hist[k].last===0)miss++});
+  $("s-ans").textContent=n;$("s-rate").textContent=n?Math.round(ok/n*100)+"%":"—";$("s-miss").textContent=miss;
+  $("s-write").textContent=Object.keys(wdone).filter(function(k){return wdone[k]}).length;
+}
+
+/* ---------- クイズ設定 ---------- */
+var years={R7:true,R6:true,R5:true};
+["R7","R6","R5"].forEach(function(y){
+  var c=ITEMS.filter(function(i){return i.set.y===y}).length;
+  var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","true");
+  b.innerHTML=(y==="R7"?"令和7年度":y==="R6"?"令和6年度":"令和5年度")+'<span class="n">'+c+'問</span>';
+  b.addEventListener("click",function(){years[y]=!years[y];b.setAttribute("aria-pressed",years[y]);upd()});
+  $("yearChips").appendChild(b);
+});
+function tog(id){var b=$(id);b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");upd()})}
+tog("optShuffle");tog("optMiss");
+function pool(){
+  var missOnly=$("optMiss").getAttribute("aria-pressed")==="true";
+  return ITEMS.filter(function(i){return years[i.set.y]&&(!missOnly||(hist[i.id]&&hist[i.id].last===0))});
+}
+function upd(){var n=pool().length;$("startBtn").textContent=n?"スタート（"+n+"問）":"該当する問題がありません";$("startBtn").disabled=!n}
+upd();
+$("resetBtn").addEventListener("click",function(){
+  var m=$("resetMsg");
+  if(m.dataset.arm!=="1"){m.hidden=false;m.textContent="もう一度押すと、穴埋めと記述の記録をすべて消します。";m.dataset.arm="1";return}
+  hist={};wdone={};save("d2hist",hist);save("d2write",wdone);m.textContent="記録を消しました。";m.dataset.arm="";renderWrite();upd();
+});
+
+/* ---------- クイズ本体 ---------- */
+var Q=[],qi=0,score=0,answered=false,missed=[];
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+$("startBtn").addEventListener("click",function(){
+  Q=pool().slice();if($("optShuffle").getAttribute("aria-pressed")==="true")shuffle(Q);
+  qi=0;score=0;missed=[];$("q-setup").hidden=true;$("q-result").hidden=true;$("q-play").hidden=false;render();
+});
+function sentenceHTML(it,state){
+  var k=-1;
+  return esc(it.sent).replace(/\{([^}]+)\}/g,function(_,a){
+    k++;if(k===it.k){
+      if(!state)return '<span class="q">？</span>';
+      return '<span class="q '+state+'">'+a+'</span>';
+    }
+    return '<span class="fill">'+a+'</span>';
+  });
+}
+function render(){
+  var it=Q[qi];answered=false;
+  $("pText").textContent=(qi+1)+" / "+Q.length;$("pFill").style.width=(qi/Q.length*100)+"%";
+  $("scoreBadge").textContent=score;
+  $("qTags").innerHTML='<span class="tag">'+it.set.y+'</span><span class="tag">'+it.set.q+'</span><span class="tag t">'+esc(it.set.t)+'</span>';
+  $("qText").innerHTML=sentenceHTML(it,null);
+  var w=$("qWords");w.innerHTML="";
+  it.set.w.split(",").forEach(function(x){
+    var b=document.createElement("button");b.className="word";b.type="button";b.textContent=x;
+    b.addEventListener("click",function(){pick(b,x)});w.appendChild(b);
+  });
+  $("qVerdict").innerHTML="";$("nextBtn").disabled=true;$("nextBtn").textContent=qi===Q.length-1?"結果を見る":"次へ";
+}
+function pick(btn,x){
+  if(answered)return;answered=true;
+  var it=Q[qi],ok=x===it.ans;
+  var h=hist[it.id]||{n:0,ok:0,last:0};h.n++;if(ok)h.ok++;h.last=ok?1:0;hist[it.id]=h;save("d2hist",hist);
+  if(ok)score++;else missed.push(it);
+  document.querySelectorAll("#qWords .word").forEach(function(b){b.disabled=true;if(b.textContent===it.ans)b.classList.add("ok")});
+  if(!ok)btn.classList.add("ng");
+  $("qText").innerHTML=sentenceHTML(it,ok?"ok":"ng");
+  $("scoreBadge").textContent=score;
+  $("qVerdict").innerHTML='<div class="verdict '+(ok?"ok":"ng")+'">'+(ok?"正解":"不正解　正解は「"+esc(it.ans)+"」")+'<small>'+it.set.y+" "+it.set.q+"（2級二次）"+'</small></div>';
+  $("nextBtn").disabled=false;$("nextBtn").focus();
+}
+$("nextBtn").addEventListener("click",function(){if(qi<Q.length-1){qi++;render()}else finish()});
+$("quitBtn").addEventListener("click",function(){Q=Q.slice(0,qi+(answered?1:0));if(Q.length)finish();else back()});
+function finish(){
+  $("q-play").hidden=true;$("q-result").hidden=false;
+  $("rBig").innerHTML=score+'<small> / '+Q.length+'</small>';
+  $("rPct").textContent="正答率 "+Math.round(score/Q.length*100)+"%"+(score/Q.length>=.6?"（合格ライン60%以上）":"（合格ライン60%に届かず）");
+  $("rMiss").innerHTML=missed.length?missed.map(function(it){return '<div>'+sentenceHTML(it,null).replace('<span class="q">？</span>','<b>'+esc(it.ans)+'</b>')+'</div>'}).join(""):'<p class="hint" style="text-align:center">全問正解です。</p>';
+  upd();
+}
+function back(){$("q-play").hidden=true;$("q-result").hidden=true;$("q-setup").hidden=false;upd()}
+$("againBtn").addEventListener("click",back);
+
+/* ---------- 記述 ---------- */
+var W=[
+ ["安全","移動式クレーン","事業者が実施すべき留意点を2つ（玉掛けは除く）","R5・R7",["定格荷重を超える荷重をかけて使用しない。","アウトリガーは最大限に張り出す。","設置地盤が軟弱な場合は、敷鉄板等で支持力を確保する。","一定の合図を定め、合図を行う者を指名して合図させる。","上部旋回体と接触するおそれのある箇所への立入りを禁止する。","強風で危険が予想されるときは作業を中止する。"]],
+ ["安全","玉掛け作業","事業者が実施すべき安全対策を2つ","R5",["ワイヤロープの安全係数は6以上とする。","その日の作業開始前に、ワイヤロープ等の異常の有無を点検する。","つり荷の下に労働者を立ち入らせない。","玉掛け技能講習の修了者に作業を行わせる。"]],
+ ["安全","土止め支保工の組立","労働災害防止対策を2つ","R1・R6",["あらかじめ組立図を作成し、その組立図により組み立てる。","著しい損傷・変形・腐食のある材料を使用しない。","切りばり及び腹おこしは、脱落を防止するため確実に取り付ける。","圧縮材（火打ちを除く）の継手は突合せ継手とする。","切りばり等の取付け・取外し箇所には、関係者以外の立入りを禁止する。","材料・工具の上げ下ろしには、つり綱・つり袋等を使用させる。"]],
+ ["安全","墜落防止（高さ2m以上）","事業者が実施すべき対策を2つ","R2・R3",["墜落の危険があるときは作業床を設ける。","作業床の端部・開口部には囲い・手すり・覆いを設ける。","墜落制止用器具を取り付ける設備を設け、使用させる。","強風・大雨・大雪等の悪天候で危険が予想されるときは作業を中止する。","作業に必要な照度を保持する。","高さ1.5mを超える箇所には昇降設備を設ける。"]],
+ ["安全","騒音防止（ブルドーザ・バックホウ）","具体的な対策を2つ","R3",["低騒音型の建設機械を使用する。","不必要な空ぶかしや高い負荷での運転を避ける。","作業時間帯に配慮し、早朝・夜間の作業を避ける。","機械の点検・整備を十分に行う。"]],
+ ["工程","バーチャート","特徴を1つ","R6・R7",["縦軸に工種、横軸に日数をとり棒線で表す。作成・修正が容易で、各工種の工期がわかりやすい。","作業間の関連や、工期に影響する作業がわかりにくい。"]],
+ ["工程","ガントチャート","特徴を1つ","R6",["各作業の現時点での進捗度合がよくわかる。","作業に必要な日数や、工期に影響する作業がわからない。"]],
+ ["工程","ネットワーク式工程表","特徴を1つ","R6",["作業の順序関係が明確で、工期に影響する作業（クリティカルパス）がわかり、重点管理ができる。","作成に多くの手間・データが必要。"]],
+ ["工程","グラフ式工程表","特徴を1つ","R7",["縦軸に出来高、横軸に工期をとり、工種ごとの進捗を斜線で表す。各作業の進捗がわかる。","作業同士の関連や重要な作業がわからない。"]],
+ ["工程","出来高累計曲線","特徴を1つ","R7",["工事全体の出来高の累計を曲線で表し、一般にS字形になる。進み具合がわかる。","作業手順や工期に影響する作業はわからない。"]],
+ ["コンクリート","コールドジョイント","用語の説明","R5・R7",["先に打ち込んだコンクリートと後から打ち込んだコンクリートが、完全に一体化していない不連続な面。"]],
+ ["コンクリート","ワーカビリティー","用語の説明","R5・R7",["材料分離を生じることなく、運搬・打込み・締固め・仕上げ等の作業が容易にできる程度を表す、フレッシュコンクリートの性質。"]],
+ ["コンクリート","スランプ","用語の説明","R5",["フレッシュコンクリートの軟らかさを表す指標。スランプコーンを引き上げた直後の、頂部からの下がりで表す。"]],
+ ["コンクリート","ブリーディング","用語の説明","R7",["固体材料の沈降により、練混ぜ水の一部が分離して上昇する現象。"]],
+ ["コンクリート","スペーサ","用語の説明","R7",["鉄筋を所定の位置に固定し、かぶりを確保するために用いるもの。"]],
+ ["コンクリート","アルカリシリカ反応","用語の説明","R5",["骨材がセメント等のアルカリと長期にわたって反応して膨張し、ひび割れ等を生じさせる現象。"]],
+ ["土工","軟弱地盤対策工法","工法の特徴を2つ","R2・R6",["サンドマット工法：透水性のよい砂を0.5〜1.2mの厚さに敷き均し、上部の排水層とする。","プレローディング工法：事前に荷重を載せて圧密沈下を促進し、残留沈下を減らし強度を増加させる。","ディープウェル工法：地下水位を下げて有効応力を増やし、圧密沈下を促進して強度を増加させる。","サンドコンパクションパイル工法：振動で締め固めた砂杭を地中につくり、支持力を増加させる。","置換工法：軟弱土を掘削して良質土に置き換える。"]],
+ ["土工","締固め度の試験","砂置換法・RI法の方法又は特徴","R6",["砂置換法：掘った試験孔に砂を入れ、その質量から体積を求めて原位置の土の密度を測る。含水比は別に測る。","RI法：放射線を利用して土の密度と含水比を測る。その場で結果が得られ、砂置換法より短時間。"]],
+ ["土工","盛土材料の条件","望ましい条件を2つ","R3",["せん断強度が大きく、圧縮性が小さいこと。","敷均し・締固めが容易であること。","吸水による膨潤性が低いこと。","草木の根などの有機物を含まないこと。"]],
+ ["計画","建設リサイクル法","特定建設資材の再資源化後の用途","R5",["コンクリート：再生クラッシャーラン、再生粒度調整砕石（路盤材・埋戻し材）","コンクリート及び鉄：再生クラッシャーラン、路盤材","木材：木質ボード、燃料用チップ、木質マルチング材","アスファルト・コンクリート：再生加熱アスファルト混合物、路盤材"]],
+ ["計画","施工計画の事前調査","実施内容","R3",["契約書類：工事中止や不可抗力による損害の取扱い、支払条件を確認する。","自然条件：地形・地質・地下水、降雨量・気温などを調べる。","近隣環境：地下埋設物・架空線、周辺道路の交通量、騒音振動の規制を調べる。","資機材：資材の調達先・単価・運搬距離、機械の台数と能力を調べる。"]]
+];
+var wcat="すべて";
+["すべて","安全","工程","コンクリート","土工","計画"].forEach(function(c){
+  var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c;b.setAttribute("aria-pressed",c===wcat);
+  b.addEventListener("click",function(){wcat=c;document.querySelectorAll("#wFilter .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});renderWrite()});
+  $("wFilter").appendChild(b);
+});
+var drafts=load("d2draft",{});
+function renderWrite(){
+  var L=$("wList");L.innerHTML="";
+  W.forEach(function(w,i){
+    if(wcat!=="すべて"&&w[0]!==wcat)return;
+    var d=document.createElement("details");d.className="w";
+    var done=!!wdone[i];
+    d.innerHTML='<summary><b>'+esc(w[1])+'</b><small>'+esc(w[2])+'　｜　'+w[3]+'</small><span class="st'+(done?' done':'')+'">'+(done?'DONE':w[0])+'</span></summary>'+
+      '<div class="in"><label class="hint" for="ta'+i+'">自分の答え</label><textarea id="ta'+i+'" placeholder="ここに書く"></textarea>'+
+      '<div class="row"><button class="btn ghost" type="button" data-a="show">模範解答を見る</button><button class="btn ghost" type="button" data-a="done">'+(done?'書けた を取消':'書けた')+'</button></div>'+
+      '<div class="model"><div class="h">模範解答（この中から書ければ正解）</div><ul>'+w[4].map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul></div></div>';
+    var ta=d.querySelector("textarea");ta.value=drafts[i]||"";
+    ta.addEventListener("input",function(){drafts[i]=ta.value;save("d2draft",drafts)});
+    d.querySelector('[data-a="show"]').addEventListener("click",function(e){var m=d.querySelector(".model");m.classList.toggle("show");e.target.textContent=m.classList.contains("show")?"模範解答を隠す":"模範解答を見る"});
+    d.querySelector('[data-a="done"]').addEventListener("click",function(){wdone[i]=!wdone[i];save("d2write",wdone);renderWrite();stats()});
+    L.appendChild(d);
+  });
+}
+renderWrite();
+
+/* ---------- 数値 ---------- */
+function nums(id,arr){arr.forEach(function(x){var d=document.createElement("div");d.innerHTML='<span>'+x[0]+'</span><b>'+x[1]+'</b>';$(id).appendChild(d)})}
+nums("n-c",[["練混ぜ〜打込み終了","25℃超 1.5h ／ 以下 2h"],["打重ねの許容時間","25℃超 2h ／ 以下 2.5h"],["1層の打込み高さ","40〜50cm"],["吐出口〜打込み面","1.5m以下"],["バイブレータ 下層へ","10cm程度"],["バイブレータ 間隔／時間","50cm以下 ／ 5〜15秒"],["湿潤養生（日平均15℃以上）","早強3・普通5・混合B種7日"],["スランプ許容差（8〜18cm）","±2.5cm"],["空気量（普通）","4.5% ±1.5%"],["塩化物含有量","0.30kg/m³以下"],["圧縮強度 1回の試験","供試体3本の平均"],["水セメント比","65%以下"],["暑中コンクリート","日平均25℃超"],["寒中コンクリート","日平均4℃以下"],["アルカリ総量","3.0kg/m³以下"],["鉄筋の結束線","焼なまし鉄線0.8mm以上"]]);
+nums("n-e",[["締固め度（品質規定）","最大乾燥密度の90%以上"],["敷均し厚さ","路体30cm・路床20cm以下"],["サンドマットの厚さ","0.5〜1.2m"]]);
+nums("n-s",[["作業床・手すりが必要","高さ2m以上"],["作業床の幅","40cm以上"],["手すりの高さ","85cm以上"],["昇降設備が必要","1.5m超"],["地山の掘削作業主任者","掘削面2m以上"],["点検が必要な地震","中震（震度4）以上"],["玉掛けワイヤロープ安全係数","6以上"]]);
+
+/* ---------- 直前 ---------- */
+var C=[["1日目","穴埋めを全問1周。間違えた問題は「要復習だけ」でもう1周"],["2日目","数値タブを声に出して確認。コンクリートの時間・養生日数・受入れ検査"],["3日目","記述：クレーン・土止め・墜落防止を各3つ書く"],["4日目","記述：工程表5種類とコンクリート用語6つを書く"],["5日目","バーチャート：R5（28日）とR7（22日）を自力で解く"],["6日目","経験記述3テーマを時間を計って書く（各40分以内）。［◯］を埋める"],["前日","要復習の穴埋めと数値だけ見直す。受検票・会場・持ち物を確認"],["当日","選択問題は1問だけ解く（2問解くと減点）。選択欄に○を忘れない"]];
+var ck=load("d2check",{});
+C.forEach(function(x,i){var l=document.createElement("label");l.innerHTML='<input type="checkbox" id="ck'+i+'"'+(ck[i]?" checked":"")+'><span><b>'+x[0]+'</b>'+x[1]+'</span>';$("checks").appendChild(l)});
+$("checks").addEventListener("change",function(e){ck[e.target.id.slice(2)]=e.target.checked;save("d2check",ck)});
+
+stats();
+var t0=load("d2tab","home");if(document.querySelector('.tabs button[data-v="'+t0+'"]'))show(t0);
+})();
+</script>
+</body>
+</html>
