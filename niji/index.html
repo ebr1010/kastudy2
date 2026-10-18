@@ -206,7 +206,10 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
 .kans ul{margin:0;padding-left:1.2em;font-size:14px;display:grid;gap:3px}
 .khide{display:none;font-size:13px;color:var(--muted);border:1px dashed rgba(245,158,11,.5);border-radius:10px;padding:10px;text-align:center;cursor:pointer}
 .hid .khide{display:block}
-.kcard:not(.hid) .kb .ka,.kb.open .ka,.kcard:not(.hid) .kex b.sw,.kcard:not(.hid) .kw span.ok{cursor:pointer;text-decoration:underline dotted rgba(110,231,183,.6);text-underline-offset:3px}
+.kcard [data-w]:not(.kb),.kcard:not(.hid) .kb .ka,.kb.open .ka{cursor:pointer;text-decoration:underline dotted rgba(110,231,183,.6);text-underline-offset:3px}
+.kcard h3 .tt[data-w]{text-decoration-color:rgba(103,232,249,.5)}
+#selS{position:fixed;left:50%;transform:translateX(-50%);top:max(10px,env(safe-area-inset-top,0px));z-index:55;font:700 14px var(--f-jp);color:#fff;background:linear-gradient(135deg,#3b82f6,#06b6d4);border:0;border-radius:999px;padding:10px 16px;box-shadow:0 6px 20px rgba(0,0,0,.5);max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#selS[hidden]{display:none}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(8,18,36,.98);border-top:1px solid rgba(6,182,212,.45);box-shadow:0 -10px 40px rgba(0,0,0,.6);padding:14px max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:grid;gap:8px}
 .sheet[hidden]{display:none!important}
 .sheet .w{font-weight:900;font-size:18px;color:var(--success-hi)}
@@ -353,7 +356,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
       <div class="row" style="margin-top:12px">
         <button class="btn ghost" id="kAll" type="button">すべての答えを隠す</button>
       </div>
-      <p class="hint" style="margin-top:8px">答えを埋めた状態で表示しています。答えの語句（点線の下線）をタップすると、その語句をGoogleで調べられます。「答えを隠す」で空欄に戻し、空欄をタップするとその欄だけ答えが出ます。原本はすべて別タブで開きます。</p>
+      <p class="hint" style="margin-top:8px">答えを埋めた状態で表示しています。点線の下線が付いた語句（題名・選択肢・解答例・工程名など）はタップでGoogle検索できます。それ以外の文字も、長押しで選択すると上に出る「選択した語句を検索」で調べられます。「答えを隠す」で空欄に戻し、空欄をタップするとその欄だけ答えが出ます。原本はすべて別タブで開きます。</p>
     </section>
     <div class="view" id="kList"></div>
   </div>
@@ -484,6 +487,7 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.7.3</b>解説の検索を全語句に拡大（題名・誤りの選択肢・記述の解答例・工程名もタップで検索、その他の文字は長押し選択→「選択した語句を検索」）</li>
         <li><b>v1.7.2</b>「PDF」タブを追加（R1〜R7の問題用紙PDF・解答PDFを一覧から開ける）</li>
         <li><b>v1.7.1</b>検索メニューに「土木2級 試験 想定問題」を追加</li>
         <li><b>v1.7.0</b>解説の答えの語句をタップするとGoogle検索できるように。問題用紙PDFをアプリ内に置き、ページ指定で開けるビューアを追加。解答の原本リンクにページ番号を表示</li>
@@ -513,7 +517,8 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.7.2</div>
+  <div class="ver" aria-label="バージョン">v1.7.3</div>
+  <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
     <a id="shA" href="#" target="_blank" rel="noopener">「」をGoogleで検索</a>
@@ -525,11 +530,11 @@ ol.steps li::before{content:counter(s);font-family:var(--f-orb);font-size:13px;d
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.7.2"></script>
+<script src="kaisetsu.js?v=1.7.3"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.7.2";
+var APP_VER="1.7.3";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -696,21 +701,21 @@ function renderK(){
   var anyQ=Object.keys(kQ).some(function(k){return kQ[k]});
   var list=KAISETSU.filter(function(k){return k.y===kY&&(!anyQ||kQ[k.q])});
   $("kList").innerHTML=list.map(function(k,i){
-    var h='<section class="sec kcard'+(kHideAll?' hid':'')+'" id="k'+k.y+'-'+k.q+'" data-t="'+esc(k.t)+'"><h3><span class="tag">'+k.y+'</span><span class="tag">問'+k.q+'</span><span class="tag t">'+TYPEN[k.type]+'</span>'+esc(k.t)+'</h3>';
+    var h='<section class="sec kcard'+(kHideAll?' hid':'')+'" id="k'+k.y+'-'+k.q+'" data-t="'+esc(k.t)+'"><h3><span class="tag">'+k.y+'</span><span class="tag">問'+k.q+'</span><span class="tag t">'+TYPEN[k.type]+'</span><span class="tt" data-w="'+esc(k.t)+'">'+esc(k.t)+'</span></h3>';
     h+='<div class="srcrow" style="margin:0"><a class="srcbtn" href="q/'+k.y+'-'+k.q+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">この問題（問題用紙）↗</a>'+qLinks(k.y,k.q)+aLink(k.y,k.q)+'</div>';
     h+='<div class="row" style="margin-top:10px"><button class="btn ghost ktg" type="button">'+(kHideAll?"答えを表示":"答えを隠す")+'</button></div>';
     h+='<p class="lead">'+esc(k.lead)+'</p>';
     if(k.type==="fill"){
       h+='<ol class="ks">'+k.s.map(function(x){return '<li>'+kSentence(x)+'</li>'}).join("")+'</ol>';
       var ans={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){ans[a]=1});
-      h+='<div class="kw">'+k.w.split(",").map(function(w){return '<span class="'+(ans[w]?"ok":"")+'"'+(ans[w]?' data-w="'+esc(w)+'"':'')+'>'+esc(w)+'</span>'}).join("")+'</div>';
+      h+='<div class="kw">'+k.w.split(",").map(function(w){return '<span class="'+(ans[w]?"ok":"")+'" data-w="'+esc(w)+'">'+esc(w)+'</span>'}).join("")+'</div>';
       var L=["イ","ロ","ハ","ニ","ホ"],m={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){m[l]=a});
       h+='<div class="khide">解説は答えを表示すると出ます（タップで表示）</div><ul class="kex rv">'+L.map(function(l,j){return '<li><span class="lb">('+l+')</span><b class="sw" data-w="'+esc(m[l])+'">'+esc(m[l])+'</b>：'+esc(k.ex[j])+'</li>'}).join("")+'</ul>';
     }else if(k.type==="write"){
-      if(k.items.length)h+='<ul class="kitems">'+k.items.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>';
-      h+='<div class="khide">解答例は隠しています（タップで表示）</div><div class="kans rv">'+k.ans.map(function(g){return '<div class="g"><b>'+esc(g[0])+'</b><ul>'+g[1].map(function(x){return /^【補足】/.test(x)?'<li class="sup">'+esc(x.replace("【補足】",""))+' <em>補足</em></li>':'<li>'+esc(x)+'</li>'}).join("")+'</ul></div>'}).join("")+'</div><p class="hint rv" style="margin:6px 0 0">「補足」が付いていない解答例は、資格学校の解答試案に載っている内容です。</p>';
+      if(k.items.length)h+='<ul class="kitems">'+k.items.map(function(x){return '<li data-w="'+esc(x)+'">'+esc(x)+'</li>'}).join("")+'</ul>';
+      h+='<div class="khide">解答例は隠しています（タップで表示）</div><div class="kans rv">'+k.ans.map(function(g){return '<div class="g"><b data-w="'+esc(g[0])+'">'+esc(g[0])+'</b><ul>'+g[1].map(function(x){var y=x.replace("【補足】","");return /^【補足】/.test(x)?'<li class="sup"><span data-w="'+esc(y)+'">'+esc(y)+'</span> <em>補足</em></li>':'<li data-w="'+esc(x)+'">'+esc(x)+'</li>'}).join("")+'</ul></div>'}).join("")+'</div><p class="hint rv" style="margin:6px 0 0">「補足」が付いていない解答例は、資格学校の解答試案に載っている内容です。</p>';
     }else{
-      h+='<p style="font-size:14px;margin:0 0 8px">'+esc(k.cond)+'</p><div class="khide">工程表と全所要日数は隠しています（タップで表示）</div><div class="rv"><div class="h" style="font-weight:700;color:var(--success-hi);margin-bottom:6px">全所要日数 '+k.total+'日（'+esc(k.calc)+'）</div>'+k.rows.map(function(r){var pad=(r[1]-1)/k.total*100,w=(r[2]-r[1]+1)/k.total*100;return '<div style="display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px;margin-bottom:5px"><span>'+r[0]+'</span><span style="position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px"><span style="position:absolute;left:'+pad+'%;width:'+w+'%;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></span></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")+'</div>';
+      h+='<p style="font-size:14px;margin:0 0 8px">'+esc(k.cond)+'</p><div class="khide">工程表と全所要日数は隠しています（タップで表示）</div><div class="rv"><div class="h" style="font-weight:700;color:var(--success-hi);margin-bottom:6px">全所要日数 '+k.total+'日（'+esc(k.calc)+'）</div>'+k.rows.map(function(r){var pad=(r[1]-1)/k.total*100,w=(r[2]-r[1]+1)/k.total*100;return '<div style="display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px;margin-bottom:5px"><span data-w="'+esc(r[0])+'">'+r[0]+'</span><span style="position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px"><span style="position:absolute;left:'+pad+'%;width:'+w+'%;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></span></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")+'</div>';
     }
     h+='<div class="kpt">'+esc(k.pt)+'</div></section>';
     return h;
@@ -722,11 +727,13 @@ $("kList").addEventListener("click",function(e){
   var b=e.target.closest(".kb");
   if(b&&c.classList.contains("hid")&&!b.classList.contains("open")){b.classList.add("open");return}
   var sw=e.target.closest("[data-w]");
-  if(sw&&!(c.classList.contains("hid")&&!sw.closest(".kb"))){openSheet(sw.dataset.w,c.dataset.t);return}
+  if(sw&&!(c.classList.contains("hid")&&sw.closest(".rv"))){if(String(getSelection()).trim())return;openSheet(sw.dataset.w,c.dataset.t);return}
   if(e.target.closest(".khide")){c.classList.remove("hid");c.querySelector(".ktg").textContent="答えを隠す"}
 });
 $("kList").addEventListener("keydown",function(e){var b=e.target.closest(".kb");if(b&&(e.key==="Enter"||e.key===" ")){e.preventDefault();b.click()}});
+function cleanW(w){return String(w).replace(/^[\s①-⑳・\-–—]+|^[（(]\s*[0-9０-９一二三四五六七八九十]+\s*[)）]\s*|^[0-9０-９]+[.．、)]\s*/,"").replace(/[\s。、．，,]+$/,"").replace(/\s+/g," ").trim()}
 function openSheet(w,t){
+  w=cleanW(w);if(!w)return;$("selS").hidden=true;
   var q1=w+" 土木2級 試験 解説",q2=w;
   $("shW").textContent=w;
   $("shA").href="https://www.google.com/search?q="+encodeURIComponent(q1);$("shA").textContent="「"+q1+"」で検索";
@@ -739,6 +746,10 @@ $("shA").addEventListener("click",function(){$("sheet").hidden=true});
 $("shB").addEventListener("click",function(){$("sheet").hidden=true});
 $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
+var selT="";
+document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&$("kList").contains(s.anchorNode));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
+$("selS").addEventListener("mousedown",function(e){e.preventDefault()});
+$("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
 $("kAll").addEventListener("click",function(){kHideAll=!kHideAll;$("kAll").textContent=kHideAll?"すべての答えを表示":"すべての答えを隠す";renderK()});
 renderK();
 
