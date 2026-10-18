@@ -215,6 +215,10 @@ button,.chip,.srcbtn,.kb,.khide,summary{touch-action:manipulation;-webkit-tap-hi
 html{overflow-anchor:none}
 #kPad{height:0}
 a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:2px 1px;touch-action:manipulation}
+.rep{display:block;margin-top:3px;font-size:12px;color:#fde68a}.rep a.ylink{font-size:12px;color:#fde68a}
+.repbox{margin-top:10px;padding:10px 12px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.06);border-radius:12px;font-size:13px}
+.repbox>b{display:block;color:#fde68a;margin-bottom:6px;font-size:14px}.repbox .it{padding:6px 0;border-top:1px dashed rgba(255,255,255,.12)}.repbox .it:first-of-type{border-top:0}
+.repbox .it .srcbtn{margin:6px 6px 0 0}
 .kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
 .kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
@@ -543,6 +547,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.8.4</b>穴埋めで「ほぼ同じ文章が出た過去問」を表示（解説の各文と問題ごと、穴埋めの採点後）。年度・問題番号は問題用紙へのリンク、「解説へ」で移動</li>
         <li><b>v1.8.3</b>解説ページを最初から「答えを隠す」状態で表示するように</li>
         <li><b>v1.8.2</b>出題確率の「過去7年で◯回（R7…）」の年度・問題番号をリンクに。押すとその問題の問題用紙が別タブで開く</li>
         <li><b>v1.8.1</b>解説の「答えを表示／隠す」を連打すると画面がずれる不具合を修正（押したボタンの位置を固定、ダブルタップ拡大と文字選択を無効化）</li>
@@ -578,7 +583,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.8.3</div>
+  <div class="ver" aria-label="バージョン">v1.8.4</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -591,12 +596,12 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.8.3"></script>
-<script src="yosou.js?v=1.8.3"></script>
+<script src="kaisetsu.js?v=1.8.4"></script>
+<script src="yosou.js?v=1.8.4"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.8.3";
+var APP_VER="1.8.4";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -665,6 +670,30 @@ function qTh(y,q){return y==="予想"?(YM[q]||{}).th:(QTHEME[y+"-"+q]||[])[0]}
 function probHTML(th){if(!th||!THEMES[th])return "";var p=thProb(th),ys=thYears(th);
   return '<div class="prob '+lv(p)+'"><div class="pt"><b>今年の出題確率 '+p+'%</b><span>（同じテーマが出る確率の目安）</span></div><div class="pb"><i style="width:'+p+'%"></i></div><small>テーマ「'+esc(THEMES[th].n)+'」：過去7年で'+ys.length+'回'+(ys.length?'（'+yLinks(thIds(th))+'）':'（未出題）')+'</small></div>'}
 function simBtns(k){return '<div class="basis"><b>根拠：</b>'+esc(k.basis||"")+'</div>'+(k.sim&&k.sim.length?k.sim.map(function(id){var a=id.split("-");return '<button class="srcbtn jump" type="button" data-j="'+id+'">似ている過去問 '+a[0]+' 問'+a[1]+'</button>'}).join(""):'<div class="basis">似ている過去問：なし（7年間未出題のテーマ）</div>')}
+
+/* ---------- 同じ文章の過去問（穴埋め） ---------- */
+var SIMS=(function(){
+  var F=KAISETSU.concat(YOSOU).filter(function(k){return k.type==="fill"});
+  function pl(x){return x.replace(/\{[イロハニホ]:([^}]+)\}/g,"$1").replace(/^\(\d\)\s*/,"")}
+  function g3(x){var o={},n=0;for(var i=0;i<x.length-2;i++){var t=x.substr(i,3);if(!o[t]){o[t]=1;n++}}return {o:o,n:n}}
+  var G=F.map(function(k){return k.s.map(function(x){return g3(pl(x))})}),R={};
+  F.forEach(function(k){R[k.y+"-"+k.q]=k.s.map(function(){return []})});
+  for(var i=0;i<F.length;i++)for(var j=i+1;j<F.length;j++){
+    var a=F[i],b=F[j],ay=a.y==="予想",by=b.y==="予想";if(ay&&by)continue;
+    for(var x=0;x<a.s.length;x++)for(var y=0;y<b.s.length;y++){
+      var A=G[i][x],B=G[j][y],c=0;for(var t in A.o)if(B.o[t])c++;
+      if(c/Math.min(A.n,B.n)>0.6){var ia=a.y+"-"+a.q,ib=b.y+"-"+b.q;
+        if(!by)R[ia][x].push({id:ib,j:y});if(!ay)R[ib][y].push({id:ia,j:x})}}}
+  return R})();
+function imgA(id,label){var a=id.split("-");return '<a class="ylink" href="q/'+id+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">'+(label||a[0]+' 問'+a[1])+'</a>'}
+function repBadge(id,i){var L=(SIMS[id]||[])[i];if(!L||!L.length)return "";
+  return '<span class="rep">同じ文が出た過去問：'+L.map(function(m){var a=m.id.split("-");return imgA(m.id,a[0]+' 問'+a[1]+'('+(m.j+1)+')')}).join("・")+'</span>'}
+function repBox(id){var S=SIMS[id];if(!S)return "";var by={},ord=[];
+  S.forEach(function(L,i){L.forEach(function(m){if(!by[m.id]){by[m.id]=[];ord.push(m.id)}by[m.id].push([i,m.j])})});
+  if(!ord.length)return "";
+  ord.sort(function(a,b){return by[b].length-by[a].length||(a<b?1:-1)});
+  return '<div class="repbox"><b>ほぼ同じ文章が出た過去問（'+ord.length+'問）</b>'+ord.map(function(o){var a=o.split("-"),n=by[o].length;
+    return '<div class="it">'+imgA(o)+'：'+n+'文がほぼ同じ（'+by[o].map(function(pq){return '('+(pq[0]+1)+')↔('+(pq[1]+1)+')'}).join("・")+'）<br><button class="srcbtn jump" type="button" data-j="'+o+'">'+a[0]+' 問'+a[1]+'の解説へ</button><a class="srcbtn" href="q/'+o+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">問題用紙 ↗</a></div>'}).join("")+'<p class="hint" style="margin:6px 0 0">文章が同じでも、空欄の位置は年によって違います。空欄以外の語句も覚えておくと得点しやすくなります。</p></div>'}
 
 /* ---------- 頻出ランク ---------- */
 [["工程表（特徴・穴埋め・バーチャート）",7],["盛土の締固め（管理・試験・施工）",5],["コンクリートの打込み・締固め・養生",4],["鉄筋・型枠",4],["生コンの受入れ検査",3],["土の原位置試験",3],["コンクリート用語",3],["法面（切土・保護工）",3],["盛土（施工・材料）",3],["移動式クレーン",3],["土止め支保工",2],["墜落防止・高所作業",2],["軟弱地盤対策",2]].forEach(function(x){
@@ -761,7 +790,7 @@ $("gradeBtn").addEventListener("click",function(){
   save("d2hist",hist);score+=ok;total+=p.ans.length;
   if(wrong.length)missed.push({p:p,w:wrong});
   $("scoreBadge").textContent=score+" / "+total;
-  $("qVerdict").innerHTML=p.y==="予想"?'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>本アプリの予想問題（根拠：'+esc(p.k.basis)+'）</small></div><ul class="kex" style="font-size:13px">'+p.k.ex.map(function(x,j){return '<li><span class="lb">('+LBL[j]+')</span>'+esc(x)+'</li>'}).join("")+'</ul>':'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div><div class="srcrow">'+aLink(p.y,p.q)+'</div>';
+  $("qVerdict").innerHTML=p.y==="予想"?'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>本アプリの予想問題（根拠：'+esc(p.k.basis)+'）</small></div><ul class="kex" style="font-size:13px">'+p.k.ex.map(function(x,j){return '<li><span class="lb">('+LBL[j]+')</span>'+esc(x)+'</li>'}).join("")+'</ul>'+repBox("予想-"+p.q):'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div><div class="srcrow">'+aLink(p.y,p.q)+'</div>'+repBox(p.y+"-"+p.q);
   $("gradeBtn").hidden=true;$("nextBtn").hidden=false;$("nextBtn").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";$("nextBtn").focus();
 });
 $("nextBtn").addEventListener("click",function(){if(qi<Q.length-1){qi++;render();window.scrollTo(0,0)}else finish()});
@@ -798,7 +827,8 @@ function renderK(){
     h+='<div style="margin-top:10px"><button class="btn ghost ktg" type="button">'+(kHideAll?"答えを表示":"答えを隠す")+'</button></div>';
     h+='<p class="lead">'+esc(k.lead)+'</p>';
     if(k.type==="fill"){
-      h+='<ol class="ks">'+k.s.map(function(x){return '<li>'+kSentence(x)+'</li>'}).join("")+'</ol>';
+      var kid=k.y+"-"+k.q;
+      h+='<ol class="ks">'+k.s.map(function(x,ii){return '<li>'+kSentence(x)+repBadge(kid,ii)+'</li>'}).join("")+'</ol>'+repBox(kid);
       var ans={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){ans[a]=1});
       h+='<div class="kw">'+k.w.split(",").map(function(w){return '<span class="'+(ans[w]?"ok":"")+'" data-w="'+esc(w)+'">'+esc(w)+'</span>'}).join("")+'</div>';
       var L=["イ","ロ","ハ","ニ","ホ"],m={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){m[l]=a});
