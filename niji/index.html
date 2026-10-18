@@ -553,6 +553,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.8.6</b>問題文中の「同じ文が出た過去問」表示を削除（問題の下の「ほぼ同じ文章が出た過去問」欄は残す）</li>
         <li><b>v1.8.5</b>解説の黄色い欄を拡充（覚えておくこと・そのまま書ける短い答え・合格へのアドバイス）。穴埋めは問題文と語群を1つの枠にまとめ、「ほぼ同じ文章の過去問」は解説の下へ移動</li>
         <li><b>v1.8.4</b>穴埋めで「ほぼ同じ文章が出た過去問」を表示（解説の各文と問題ごと、穴埋めの採点後）。年度・問題番号は問題用紙へのリンク、「解説へ」で移動</li>
         <li><b>v1.8.3</b>解説ページを最初から「答えを隠す」状態で表示するように</li>
@@ -590,7 +591,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.8.5</div>
+  <div class="ver" aria-label="バージョン">v1.8.6</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -603,13 +604,13 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.8.5"></script>
-<script src="yosou.js?v=1.8.5"></script>
-<script src="advice.js?v=1.8.5"></script>
+<script src="kaisetsu.js?v=1.8.6"></script>
+<script src="yosou.js?v=1.8.6"></script>
+<script src="advice.js?v=1.8.6"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.8.5";
+var APP_VER="1.8.6";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -836,7 +837,7 @@ function renderK(){
     h+='<p class="lead">'+esc(k.lead)+'</p>';
     if(k.type==="fill"){
       var kid=k.y+"-"+k.q;
-      h+='<div class="qblock"><ol class="ks">'+k.s.map(function(x,ii){return '<li>'+kSentence(x)+repBadge(kid,ii)+'</li>'}).join("")+'</ol>';
+      h+='<div class="qblock"><ol class="ks">'+k.s.map(function(x,ii){return '<li>'+kSentence(x)+'</li>'}).join("")+'</ol>';
       var ans={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){ans[a]=1});
       h+='<div class="kw"><span class="kwl">［語句又は数値］から選ぶ</span>'+k.w.split(",").map(function(w){return '<span class="'+(ans[w]?"ok":"")+'" data-w="'+esc(w)+'">'+esc(w)+'</span>'}).join("")+'</div></div>';
       var L=["イ","ロ","ハ","ニ","ホ"],m={};k.s.join("").replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){m[l]=a});
