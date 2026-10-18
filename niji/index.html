@@ -228,6 +228,10 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ak .it.done .q{text-decoration:line-through;text-decoration-color:rgba(16,185,129,.7)}.ak.hidedone .it.done{display:none}
 #akCount{font-family:var(--f-din);font-size:20px;color:var(--success-hi)}
 @media print{.tabs,.ver,#akTools,.foot{display:none!important}body{background:#fff!important;color:#000!important}.ak .it .a{color:#000!important;background:none!important}.ak .it .q{color:#333!important}.ak .g{border-color:#999;break-inside:avoid}}
+.ak .g .ask{font-size:13px;color:#fde68a;margin:2px 0 6px}
+.ak.kj .it .q{font-weight:700;color:var(--accent-hi);font-size:14px}.ak.kj .it .a{font-size:16px;font-weight:600}
+.rules{margin:0;padding-left:1.2em;font-size:14px;display:grid;gap:4px}
+@media print{#kjTools{display:none!important}}
 .kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
 .kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
@@ -286,6 +290,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="kai" aria-selected="false">解説</button>
     <button role="tab" data-v="yosou" aria-selected="false">予想</button>
     <button role="tab" data-v="anki" aria-selected="false">暗記</button>
+    <button role="tab" data-v="kij" aria-selected="false">記述暗記</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
     <button role="tab" data-v="nums" aria-selected="false">数値</button>
@@ -453,6 +458,33 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <div class="ak" id="akList"></div>
   </div>
 
+  <!-- ===== 記述暗記 ===== -->
+  <div class="view" id="v-kij" hidden>
+    <section class="sec" id="kjTools">
+      <h2><b>WRITING</b>記述暗記（本番でそのまま書く文）</h2>
+      <p style="margin:0 0 10px;font-size:14px">記述問題で出たテーマごとに、解答欄にそのまま書ける文をまとめました。左の青い語句がキーワードです。「文を隠す」にするとキーワードだけが残るので、それを見て紙に1文を書き、タップして答え合わせしてください。</p>
+      <div class="chips" id="kjFilter"></div>
+      <div class="chips" style="margin-top:8px">
+        <button class="chip" id="kjTest" type="button" aria-pressed="false">文を隠す（キーワードだけ）</button>
+        <button class="chip" id="kjHide" type="button" aria-pressed="false">書けた文を隠す</button>
+        <button class="chip" id="kjPrint" type="button" aria-pressed="false">印刷する</button>
+      </div>
+      <p style="margin:10px 0 0;font-size:14px">書けた <span id="kjCount" style="font-family:var(--f-din);font-size:20px;color:var(--success-hi)">0</span> 文</p>
+    </section>
+    <section class="sec">
+      <h2><b>RULES</b>記述で点を取る書き方</h2>
+      <ul class="rules">
+        <li>「2つ書け」なら、違う観点から2つ書く（例：クレーンなら「荷重」と「合図」）。同じ内容の言い換えは1つ分にしかならない。</li>
+        <li>1つの解答欄に1つの対策だけ。文末は「〜する。」「〜しない。」と言い切る。</li>
+        <li>数値を入れると具体的になる（1.5m以下、10cm、高さ2m以上など）。</li>
+        <li>「〜に注意する」「安全に作業する」のような抽象的な文は点にならない。</li>
+        <li>問題文の条件（「玉掛けは除く」「（例）と同一内容は不可」）を必ず読む。</li>
+        <li>用語の説明は1文でよい。「何の現象・性質か」＋「何が起こるか」。</li>
+      </ul>
+    </section>
+    <div class="ak kj" id="kjList"></div>
+  </div>
+
   <!-- ===== PDF ===== -->
   <div class="view" id="v-pdf" hidden>
     <section class="sec">
@@ -579,6 +611,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.9.1</b>「記述暗記」タブを追加（記述テーマごとに本番でそのまま書ける文、キーワードだけ表示のテスト、書けたチェック、書き方のルール）</li>
         <li><b>v1.9.0</b>「暗記」タブを追加（覚えるところだけを項目→答えで一覧。答えを隠すテスト、覚えたチェック、印刷）</li>
         <li><b>v1.8.6</b>問題文中の「同じ文が出た過去問」表示を削除（問題の下の「ほぼ同じ文章が出た過去問」欄は残す）</li>
         <li><b>v1.8.5</b>解説の黄色い欄を拡充（覚えておくこと・そのまま書ける短い答え・合格へのアドバイス）。穴埋めは問題文と語群を1つの枠にまとめ、「ほぼ同じ文章の過去問」は解説の下へ移動</li>
@@ -618,7 +651,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.9.0</div>
+  <div class="ver" aria-label="バージョン">v1.9.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -631,14 +664,15 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.9.0"></script>
-<script src="yosou.js?v=1.9.0"></script>
-<script src="advice.js?v=1.9.0"></script>
-<script src="anki.js?v=1.9.0"></script>
+<script src="kaisetsu.js?v=1.9.1"></script>
+<script src="yosou.js?v=1.9.1"></script>
+<script src="advice.js?v=1.9.1"></script>
+<script src="anki.js?v=1.9.1"></script>
+<script src="kijutsu.js?v=1.9.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.9.0";
+var APP_VER="1.9.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1046,6 +1080,25 @@ BAR.forEach(function(b){
   $("akTest").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("akList").classList.toggle("test",on);$("akList").querySelectorAll(".it.open").forEach(function(r){r.classList.remove("open")})});
   $("akHide").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("akList").classList.toggle("hidedone",on)});
   $("akPrint").addEventListener("click",function(){window.print()});
+  draw();
+})();
+
+/* ---------- 記述暗記 ---------- */
+(function(){
+  var done=load("d2kij",{}),cat="すべて",total=0;KIJ.forEach(function(g){total+=g[4].length});
+  ["すべて","安全","工程","コンクリート","土工","環境","計画"].forEach(function(c){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c;b.setAttribute("aria-pressed",c===cat);
+    b.addEventListener("click",function(){cat=c;document.querySelectorAll("#kjFilter .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});draw()});$("kjFilter").appendChild(b)});
+  function cnt(){var n=0;Object.keys(done).forEach(function(k){if(done[k])n++});$("kjCount").textContent=n+" / "+total}
+  function draw(){
+    $("kjList").innerHTML=KIJ.map(function(g,gi){if(cat!=="すべて"&&g[0]!==cat)return "";
+      return '<section class="g"><h3>'+esc(g[1])+'</h3><div class="ask">問われ方：'+esc(g[2])+'</div><div class="yy">'+esc(g[0])+'　｜　出題：'+esc(g[3])+'</div>'+g[4].map(function(it,ii){var id=gi+"-"+ii,d=!!done[id];
+        return '<div class="it'+(d?' done':'')+'" data-id="'+id+'"><input type="checkbox" aria-label="書けた"'+(d?' checked':'')+'><span class="q">'+esc(it[0])+'</span><span class="a">'+esc(it[1])+'</span></div>'}).join("")+'</section>'}).join("");
+    cnt()}
+  $("kjList").addEventListener("change",function(e){var r=e.target.closest(".it");if(!r)return;done[r.dataset.id]=e.target.checked;save("d2kij",done);r.classList.toggle("done",e.target.checked);cnt()});
+  $("kjList").addEventListener("click",function(e){if(e.target.tagName==="INPUT")return;var r=e.target.closest(".it");if(r&&$("kjList").classList.contains("test"))r.classList.toggle("open")});
+  $("kjTest").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("test",on);$("kjList").querySelectorAll(".it.open").forEach(function(r){r.classList.remove("open")})});
+  $("kjHide").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("hidedone",on)});
+  $("kjPrint").addEventListener("click",function(){window.print()});
   draw();
 })();
 
