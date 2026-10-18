@@ -210,6 +210,10 @@ button.srcbtn{font-family:inherit;cursor:pointer}
 .ythm .r .pb{grid-column:1/-1;height:7px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}.ythm .r .pb span{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#3b82f6,#06b6d4)}
 .ythm .r.hi .pb span{background:linear-gradient(90deg,#f59e0b,#f87171)}.ythm .r.md .pb span{background:linear-gradient(90deg,#06b6d4,#f59e0b)}
 .ythm .r small{grid-column:1/-1;color:var(--muted);font-size:12px}.ythm .r .go{grid-column:1/-1;justify-self:start;margin-top:4px}
+button,.chip,.srcbtn,.kb,.khide,summary{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#kAll,.ktg,.khide{-webkit-user-select:none;user-select:none}
+html{overflow-anchor:none}
+#kPad{height:0}
 .kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
 .kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
@@ -383,6 +387,7 @@ button.srcbtn{font-family:inherit;cursor:pointer}
       <p class="hint" style="margin-top:8px">答えを埋めた状態で表示しています。点線の下線が付いた語句（題名・選択肢・解答例・工程名など）はタップでGoogle検索できます。それ以外の文字も、長押しで選択すると上に出る「選択した語句を検索」で調べられます。「答えを隠す」で空欄に戻し、空欄をタップするとその欄だけ答えが出ます。原本はすべて別タブで開きます。</p>
     </section>
     <div class="view" id="kList"></div>
+    <div id="kPad"></div>
   </div>
 
   <!-- ===== 予想 ===== -->
@@ -537,6 +542,7 @@ button.srcbtn{font-family:inherit;cursor:pointer}
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.8.1</b>解説の「答えを表示／隠す」を連打すると画面がずれる不具合を修正（押したボタンの位置を固定、ダブルタップ拡大と文字選択を無効化）</li>
         <li><b>v1.8.0</b>「予想」タブを追加（予想問題：穴埋め30・記述12・工程表1、テーマ・分野ごとの今年の出題確率）。穴埋め・解説・記述・工程表の各問題に出題確率を表示。解説に「出題確率の高い順」の並べ替えを追加</li>
         <li><b>v1.7.4</b>解説の「答えを表示／隠す」ボタンを横幅いっぱいの大きいボタンに</li>
         <li><b>v1.7.3</b>解説の検索を全語句に拡大（題名・誤りの選択肢・記述の解答例・工程名もタップで検索、その他の文字は長押し選択→「選択した語句を検索」）</li>
@@ -569,7 +575,7 @@ button.srcbtn{font-family:inherit;cursor:pointer}
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.8.0</div>
+  <div class="ver" aria-label="バージョン">v1.8.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -582,12 +588,12 @@ button.srcbtn{font-family:inherit;cursor:pointer}
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.8.0"></script>
-<script src="yosou.js?v=1.8.0"></script>
+<script src="kaisetsu.js?v=1.8.1"></script>
+<script src="yosou.js?v=1.8.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.8.0";
+var APP_VER="1.8.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -767,9 +773,9 @@ $("againBtn").addEventListener("click",back);
 /* ---------- 解説 ---------- */
 var kY=load("d2kY","R7"),kQ={},kHideAll=false;
 var KDATA=KAISETSU.concat(YOSOU),kSort=false;
-function setKY(y){kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.y===y)});renderK()}
+function setKY(y){$("kPad").style.height="0";kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.y===y)});renderK()}
 ["予想","R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=YN[y];b.dataset.y=y;b.setAttribute("aria-pressed",y===kY);
-  b.addEventListener("click",function(){kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});renderK()});$("kYear").appendChild(b)});
+  b.addEventListener("click",function(){$("kPad").style.height="0";kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});renderK()});$("kYear").appendChild(b)});
 ["2","3","4","5","6","7","8","9"].forEach(function(q){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent="問"+q;b.setAttribute("aria-pressed","false");
   b.addEventListener("click",function(){kQ[q]=!kQ[q];b.setAttribute("aria-pressed",!!kQ[q]);renderK()});$("kNum").appendChild(b)});
 var TYPEN={fill:"穴埋め",write:"記述",bar:"工程表作成"};
@@ -807,12 +813,12 @@ $("kSort").addEventListener("click",function(){kSort=!kSort;this.setAttribute("a
 $("kList").addEventListener("click",function(e){
   if(e.target.closest(".jump"))return;
   var c=e.target.closest(".kcard");if(!c)return;
-  if(e.target.closest(".ktg")){var hid=c.classList.toggle("hid");c.querySelectorAll(".kb.open").forEach(function(b){b.classList.remove("open")});e.target.closest(".ktg").textContent=hid?"答えを表示":"答えを隠す";return}
+  if(e.target.closest(".ktg")){var tb=e.target.closest(".ktg");keepPos(tb,function(){var hid=c.classList.toggle("hid");c.querySelectorAll(".kb.open").forEach(function(b){b.classList.remove("open")});tb.textContent=hid?"答えを表示":"答えを隠す"});return}
   var b=e.target.closest(".kb");
   if(b&&c.classList.contains("hid")&&!b.classList.contains("open")){b.classList.add("open");return}
   var sw=e.target.closest("[data-w]");
   if(sw&&!(c.classList.contains("hid")&&sw.closest(".rv"))){if(String(getSelection()).trim())return;openSheet(sw.dataset.w,c.dataset.t);return}
-  if(e.target.closest(".khide")){c.classList.remove("hid");c.querySelector(".ktg").textContent="答えを隠す"}
+  if(e.target.closest(".khide")){var t=c.querySelector(".ktg");keepPos(t,function(){c.classList.remove("hid");t.textContent="答えを隠す"})}
 });
 $("kList").addEventListener("keydown",function(e){var b=e.target.closest(".kb");if(b&&(e.key==="Enter"||e.key===" ")){e.preventDefault();b.click()}});
 function cleanW(w){return String(w).replace(/^[\s①-⑳・\-–—]+|^[（(]\s*[0-9０-９一二三四五六七八九十]+\s*[)）]\s*|^[0-9０-９]+[.．、)]\s*/,"").replace(/[\s。、．，,]+$/,"").replace(/\s+/g," ").trim()}
@@ -834,7 +840,15 @@ var selT="";
 document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&$("kList").contains(s.anchorNode));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
 $("selS").addEventListener("mousedown",function(e){e.preventDefault()});
 $("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
-$("kAll").addEventListener("click",function(){kHideAll=!kHideAll;$("kAll").textContent=kHideAll?"すべての答えを表示":"すべての答えを隠す";renderK()});
+/* 答えの表示/隠すで画面がずれないよう、押したボタンの画面上の位置を保つ */
+function keepPos(el,fn){
+  var pad=$("kPad"),y0=el.getBoundingClientRect().top;fn();
+  var d=el.getBoundingClientRect().top-y0;if(Math.abs(d)<1)return;
+  var target=window.scrollY+d,max=document.documentElement.scrollHeight-window.innerHeight;
+  if(target>max)pad.style.height=(pad.offsetHeight+target-max)+"px";
+  window.scrollTo(0,Math.max(0,target));
+}
+$("kAll").addEventListener("click",function(){var b=$("kAll");keepPos(b,function(){kHideAll=!kHideAll;b.textContent=kHideAll?"すべての答えを表示":"すべての答えを隠す";renderK()})});
 renderK();
 
 /* ---------- PDF一覧 ---------- */
