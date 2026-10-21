@@ -232,6 +232,9 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ak.kj .it .q{font-weight:700;color:var(--accent-hi);font-size:14px}.ak.kj .it .a{font-size:16px;font-weight:600}
 .rules{margin:0;padding-left:1.2em;font-size:14px;display:grid;gap:4px}
 @media print{#kjTools{display:none!important}}
+.mqmore{margin-top:14px}.mqmore h4{margin:14px 0 6px;font-size:14px;color:#fde68a}.mqmore h4:first-of-type{margin-top:4px}.mqmore p{margin:0;font-size:15px;line-height:1.8}
+#mqPlay,#mqSetup,#mqResult{min-width:0}.mqmore{min-width:0;overflow-wrap:anywhere}.mqmore table{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;font-size:14px}.mqmore td{border-top:1px solid rgba(255,255,255,.1);padding:7px 6px;vertical-align:top;line-height:1.6}.mqmore td:first-child{color:var(--muted);width:42%}
+.mqmore tr.hit td{background:rgba(16,185,129,.16);color:var(--success-hi);font-weight:700}.mqmore ul{margin:0;padding-left:1.2em;display:grid;gap:4px;font-size:14px;line-height:1.7}.mqmore ul.ng li{color:#fecaca}
 .mqsets{display:grid;gap:8px}.mqsets h3{margin:10px 0 0;font-size:16px;color:var(--accent-hi)}.mqsets h3:first-child{margin-top:0}.mqsets .last{display:block;font-size:12px;margin-top:4px;color:#fde68a}.mqsets button{text-align:left;padding:14px 16px}.mqsets button small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}
 .mqopts{display:grid;gap:8px}.mqopts button{width:100%;text-align:left;font:700 16px var(--f-jp);color:var(--text);background:rgba(255,255,255,.04);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;cursor:pointer;touch-action:manipulation}
 .mqopts button.ok{border-color:var(--success);background:rgba(16,185,129,.18);color:var(--success-hi)}.mqopts button.ng{border-color:var(--danger);background:rgba(248,113,113,.14);color:#fecaca}
@@ -521,6 +524,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
         <button class="btn ghost" id="mqQuit" type="button">やめる</button>
         <button class="btn" id="mqNext" type="button" style="flex:1" hidden>次へ</button>
       </div>
+      <section class="sec mqmore" id="mqMore" hidden></section>
     </div>
     <div id="mqResult" hidden>
       <section class="sec result" style="text-align:center"><div class="big" id="mqBig"></div><p id="mqPct" style="margin:6px 0 0"></p></section>
@@ -655,6 +659,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.11.1</b>問題集の「次の問題へ」の下に、くわしい解説を追加（なぜそうなるか・まとめ表・覚え方・本番での出方、記述は書ける文と減点例）</li>
         <li><b>v1.11.0</b>問題集を大幅に追加（数値104問・工程46問・記述148問）。内容ごとに10問以内で分割、選択肢の順番を毎回入れ替え。土止め支保工の点検時期の誤りを修正（7日をこえない期間ごと）</li>
         <li><b>v1.10.1</b>問題集を10問前後に小分け（数値5回・記述3回・工程3回）。各回に前回の成績を表示</li>
         <li><b>v1.10.0</b>「問題集」タブを追加（数値44問の4択、記述25テーマの自己採点、工程の4択15問＋バーチャート日数計算8問。シャッフル・まちがえた問題だけ）</li>
@@ -698,7 +703,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.11.0</div>
+  <div class="ver" aria-label="バージョン">v1.11.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -711,16 +716,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.11.0"></script>
-<script src="yosou.js?v=1.11.0"></script>
-<script src="advice.js?v=1.11.0"></script>
-<script src="anki.js?v=1.11.0"></script>
-<script src="kijutsu.js?v=1.11.0"></script>
-<script src="mondai.js?v=1.11.0"></script>
+<script src="kaisetsu.js?v=1.11.1"></script>
+<script src="yosou.js?v=1.11.1"></script>
+<script src="advice.js?v=1.11.1"></script>
+<script src="anki.js?v=1.11.1"></script>
+<script src="kijutsu.js?v=1.11.1"></script>
+<script src="mondai.js?v=1.11.1"></script>
+<script src="mqinfo.js?v=1.11.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.11.0";
+var APP_VER="1.11.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1160,12 +1166,13 @@ BAR.forEach(function(b){
   /* 記述：テーマ問題は分野ごと、キーワード問題はテーマの切れ目で10問以内にまとめる */
   function kijSecs(){var out=[];
     [["安全","環境"],["工程","コンクリート"],["土工","計画"]].forEach(function(fs){out.push(["2つ書く："+fs.join("・"),KIJ.filter(function(g){return fs.indexOf(g[0])>=0}).map(function(g){return {id:"kij:"+g[1],k:"kij",q:g}})])});
-    var cur=null;KIJ.forEach(function(g){var L=g[4].map(function(it){return {id:"kij1:"+it[1],k:"kij1",q:{th:g[1],ask:g[2],kw:it[0],ans:it[1]}}});
+    var cur=null;KIJ.forEach(function(g){var L=g[4].map(function(it){return {id:"kij1:"+it[1],k:"kij1",q:{th:g[1],ask:g[2],kw:it[0],ans:it[1],f:g[0],g:g}}});
       var nm=g[1].replace(/（予想）/,"");
       if(cur&&cur.f===g[0]&&cur.L.length+L.length<=10){cur.L=cur.L.concat(L);cur.n.push(nm)}else{cur={f:g[0],L:L,n:[nm]};out.push(cur)}});
     return out.map(function(x){return Array.isArray(x)?x:["1文で書く："+x.n.join("・"),x.L]})}
   var PL=[];
   SETS.forEach(function(st){var no=0;st[2].forEach(function(sec){var L=sec[1],n=Math.ceil(L.length/10),sz=Math.ceil(L.length/n);
+    L.forEach(function(x){x.sec=sec[0]});
     for(var i=0;i<n;i++){no++;PL.push({set:st[0],name:st[1],no:no,sec:sec[0]+(n>1?"（"+(i+1)+"/"+n+"）":""),key:st[0]+":"+sec[0]+":"+i,items:L.slice(i*sz,(i+1)*sz)})}})});
   function tog(id){var b=$(id);b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true")})}
   tog("mqShuffle");tog("mqMiss");
@@ -1178,11 +1185,30 @@ BAR.forEach(function(b){
     if($("mqMiss").getAttribute("aria-pressed")==="true"){Q=Q.filter(function(x){return rec[x.id]===0});if(!Q.length){$("mqMsg").textContent="前回まちがえた問題はありません。";return}}
     if($("mqShuffle").getAttribute("aria-pressed")==="true")for(var i=Q.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=Q[i];Q[i]=Q[j];Q[j]=t}
     qi=0;ok=0;miss=[];$("mqMsg").textContent="";$("mqSetup").hidden=true;$("mqResult").hidden=true;$("mqPlay").hidden=false;draw();window.scrollTo(0,0)});
-  function mark(x,good){rec[x.id]=good?1:0;save("d2mq",rec);if(good)ok++;else miss.push(x);$("mqScore").textContent=ok+" / "+(qi+1);answered=true;$("mqNext").hidden=false;$("mqNext").textContent=qi===Q.length-1?"結果を見る":"次の問題へ"}
+  function mark(x,good){rec[x.id]=good?1:0;save("d2mq",rec);if(good)ok++;else miss.push(x);$("mqScore").textContent=ok+" / "+(qi+1);answered=true;$("mqNext").hidden=false;$("mqNext").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";more(x)}
+  function hasK(v,k){var i=v.indexOf(k);while(i>=0){if(i===0||!/[0-9.]/.test(v.charAt(i-1)))return true;i=v.indexOf(k,i+1)}return false}
+  /* 次へボタンの下の「くわしい解説」 */
+  function more(x){var q=x.q,h='<h2><b>DETAIL</b>くわしい解説</h2>';
+    if(x.k==="mc"||x.k==="calc"){var I=MQINFO[x.sec.replace(/（\d+\/\d+）$/,"")]||{},ans=x.k==="mc"?q[1][q[2]]:"";
+      h+='<h4>この問題のポイント</h4><p>'+esc(x.k==="mc"?q[3]:q.calc)+'</p>';
+      var src=x.k==="mc"?q[4]:q.src;if(src&&src!=="—")h+='<p class="hint" style="margin-top:4px">関連する出題：'+esc(src)+'</p>';
+      if(I.why)h+='<h4>なぜそうなるのか</h4><p>'+esc(I.why)+'</p>';
+      if(I.tbl){var key=(ans||"").replace(/以上|以下|未満|程度|以内|を超える/g,"").replace(/\s/g,"");
+        var qt=(x.k==="mc"?q[0]:"").replace(/\s/g,""),cand=I.tbl.map(function(r){var v=r[1].replace(/\s/g,""),l=r[0].replace(/[（）\s]/g,"");if(!key||!hasK(v,key))return -1;var sc=0;for(var i=0;i<l.length-1;i++)if(qt.indexOf(l.substr(i,2))>=0)sc++;return sc}),best=-1,bi=-1;cand.forEach(function(c,i){if(c>best){best=c;bi=i}});
+        h+='<h4>まとめて覚える（'+esc(x.sec.replace(/（\d+\/\d+）$/,""))+'）</h4><table>'+I.tbl.map(function(r,ri){var hit=ri===bi&&best>=0;return '<tr'+(hit?' class="hit"':'')+'><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td></tr>'}).join("")+'</table>'}
+      if(I.tip)h+='<h4>覚え方</h4><p>'+esc(I.tip)+'</p>';
+      if(I.trend)h+='<h4>本番での出方</h4><p>'+esc(I.trend)+'</p>';
+    }else{var g=x.k==="kij"?q:q.g,f=g[0],K=KIJINFO[f]||{};
+      h+='<h4>'+esc(g[1])+'：書ける文（'+g[4].length+'つ）</h4><ul>'+g[4].map(function(it){return '<li'+(x.k==="kij1"&&it[1]===q.ans?' style="color:var(--success-hi);font-weight:700"':'')+'><b style="color:var(--accent-hi)">'+esc(it[0])+'</b>：'+esc(it[1])+'</li>'}).join("")+'</ul>';
+      h+='<p class="hint" style="margin-top:6px">問われ方：'+esc(g[2])+'　｜　出題：'+esc(g[3])+'</p>';
+      if(K.pts)h+='<h4>点を取る書き方（'+esc(f)+'）</h4><ul>'+K.pts.map(function(t){return '<li>'+esc(t)+'</li>'}).join("")+'</ul>';
+      if(K.ng)h+='<h4>減点・0点になりやすい書き方</h4><ul class="ng">'+K.ng.map(function(t){return '<li>'+esc(t)+'</li>'}).join("")+'</ul>';
+    }
+    $("mqMore").innerHTML=h;$("mqMore").hidden=false}
   function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
   function barHTML(b){return b.rows.map(function(r){var pad=(r[1]-1)/b.total*100,w=(r[2]-r[1]+1)/b.total*100;return '<div class="mqbar"><span>'+esc(r[0])+'</span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")}
   function draw(){
-    var x=Q[qi],q=x.q,h="";answered=false;$("mqNext").hidden=true;
+    var x=Q[qi],q=x.q,h="";answered=false;$("mqNext").hidden=true;$("mqMore").hidden=true;
     $("mqProg").textContent=(qi+1)+" / "+Q.length;$("mqFill").style.width=(qi/Q.length*100)+"%";$("mqScore").textContent=ok+" / "+qi;
     if(x.k==="mc"){h='<p class="mqq">'+esc(q[0])+'</p><div class="mqopts">'+shuf([0,1,2,3]).map(function(i){return '<button type="button" data-i="'+i+'">'+esc(q[1][i])+'</button>'}).join("")+'</div><div id="mqExp"></div>'}
     else if(x.k==="calc"){h='<p class="mqq">'+esc(q.t)+'：'+(q.rows?'工程表（バーチャート）を作成した場合の全所要日数は？':/？$/.test(q.cond)?'答えの日数は？':'全所要日数は？')+'</p><p style="font-size:15px;line-height:1.8;margin:0 0 12px">'+esc(q.cond)+'</p><div class="mqin"><input id="mqNum" type="number" inputmode="numeric" placeholder="日数"><span>日</span><button class="btn" id="mqChk" type="button">答え合わせ</button></div><div id="mqExp"></div>'}
