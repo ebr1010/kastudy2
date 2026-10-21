@@ -313,9 +313,9 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="home" aria-selected="true">ホーム</button>
     <button role="tab" data-v="quiz" aria-selected="false">穴埋め</button>
     <button role="tab" data-v="kai" aria-selected="false">解説</button>
-    <button role="tab" data-v="yosou" aria-selected="false">予想</button>
     <button role="tab" data-v="yq" aria-selected="false">予想穴埋め</button>
     <button role="tab" data-v="yk" aria-selected="false">予想解説</button>
+    <button role="tab" data-v="yosou" aria-selected="false">予想</button>
     <button role="tab" data-v="anki" aria-selected="false">暗記</button>
     <button role="tab" data-v="kij" aria-selected="false">記述暗記</button>
     <button role="tab" data-v="mq" aria-selected="false">問題集</button>
@@ -431,7 +431,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <!-- ===== KAISETSU ===== -->
   <div class="view" id="v-kai" hidden>
     <section class="sec">
-      <h2><b>EXPLAIN</b>過去問・予想問題の解説</h2>
+      <h2><b>EXPLAIN</b>過去問の解説（R1〜R7）</h2>
       <div class="chips" id="kYear"></div>
       <div class="chips" id="kNum" style="margin-top:8px"></div>
       <div class="chips" style="margin-top:8px"><button class="chip" id="kSort" type="button" aria-pressed="false">出題確率の高い順に並べる</button></div>
@@ -474,26 +474,33 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <div class="view" id="v-yq" hidden>
     <div id="yq-setup" class="view">
       <section class="sec">
-        <h2><b>FORECAST DRILL</b>予想問題（穴埋め）</h2>
-        <p style="margin:0 0 10px;font-size:14px">過去問とは別に作った予想問題です。7つのカテゴリーに10問ずつ（全70問）。カテゴリーは複数選べます。</p>
-        <div class="chips" style="margin-bottom:10px">
-          <button class="chip" id="yqAll" type="button" aria-pressed="false">すべて選ぶ</button>
+        <h2><b>SET</b>セットを選ぶ</h2>
+        <div class="chips" id="yqCats"></div>
+        <div id="yqInfo" style="margin-top:10px;font-size:13px;color:var(--muted);line-height:1.8"></div>
+      </section>
+      <section class="sec">
+        <h2><b>MODE</b>出題設定</h2>
+        <div class="chips">
+          <button class="chip" id="yqAll" type="button" aria-pressed="false">すべてのセット</button>
           <button class="chip" id="yqShuffle" type="button" aria-pressed="false">シャッフル</button>
           <button class="chip" id="yqMiss" type="button" aria-pressed="false">要復習だけ</button>
         </div>
-        <div class="ycat" id="yqCats"></div>
+        <p class="hint" style="margin-top:10px">過去問とは別に作った予想問題です。カテゴリーごとに10問ずつのセットになっています（複数選べます）。(イ)〜(ホ)の答えを語群から選んで「採点」。1画面＝1問です。</p>
       </section>
-      <button class="btn wide" id="yqStart" type="button" disabled>カテゴリーを選んでください</button>
+      <button class="btn wide" id="yqStart" type="button" disabled>セットを選んでください</button>
     </div>
   </div>
 
   <!-- ===== 予想解説 ===== -->
   <div class="view" id="v-yk" hidden>
     <section class="sec">
-      <h2><b>FORECAST EXPLAIN</b>予想問題の解説</h2>
+      <h2><b>EXPLAIN</b>予想問題の解説</h2>
       <div class="chips" id="ykCats"></div>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="ykAll" type="button">すべての答えを表示</button></div>
-      <p class="hint" style="margin-top:8px">最初は答えを隠しています。空欄をタップするとその欄だけ答えが出ます。点線の語句はタップでGoogle検索、他の文字は長押し選択で検索できます。</p>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="ykSort" type="button" aria-pressed="false">出題確率の高い順に並べる</button></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn ghost" id="ykAll" type="button">すべての答えを表示</button>
+      </div>
+      <p class="hint" style="margin-top:8px">最初は答えを隠した状態で表示します。「答えを表示」で答えが出ます。空欄をタップするとその欄だけ答えが出ます。点線の下線が付いた語句はタップでGoogle検索、それ以外の文字も長押しで選択すると検索できます。各問題の下に「くわしい解説」があります。</p>
     </section>
     <div class="view" id="ykList"></div>
     <div class="kpad"></div>
@@ -710,6 +717,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.13.1</b>タブを「穴埋め・解説・予想穴埋め・予想解説」の順に。予想穴埋め・予想解説を穴埋め・解説と同じ画面構成にし、カテゴリー別10問のセット（土工・コンクリート①②・安全管理①②・工程・品質管理・施工計画・環境）で選べるように</li>
         <li><b>v1.13.0</b>予想問題（穴埋め）を70問に増やし、「予想穴埋め」タブに独立（7カテゴリー×10問、複数選択・シャッフル・要復習だけ）。全問にくわしい解説を追加。「予想解説」タブを新設</li>
         <li><b>v1.12.3</b>記述の「2つ書く」組み立てで、テーマの正しい文のパーツをすべて並べ、好きな2文を選べるように。まちがいパーツも増量</li>
         <li><b>v1.12.2</b>記述の組み立てパーツの区切り方を修正（「により」「ではなく」「となる」などを途中で切らない）</li>
@@ -765,7 +773,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.13.0</div>
+  <div class="ver" aria-label="バージョン">v1.13.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -778,18 +786,18 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.13.0"></script>
-<script src="yosou.js?v=1.13.0"></script>
-<script src="yosou2.js?v=1.13.0"></script>
-<script src="advice.js?v=1.13.0"></script>
-<script src="anki.js?v=1.13.0"></script>
-<script src="kijutsu.js?v=1.13.0"></script>
-<script src="mondai.js?v=1.13.0"></script>
-<script src="mqinfo.js?v=1.13.0"></script>
+<script src="kaisetsu.js?v=1.13.1"></script>
+<script src="yosou.js?v=1.13.1"></script>
+<script src="yosou2.js?v=1.13.1"></script>
+<script src="advice.js?v=1.13.1"></script>
+<script src="anki.js?v=1.13.1"></script>
+<script src="kijutsu.js?v=1.13.1"></script>
+<script src="mondai.js?v=1.13.1"></script>
+<script src="mqinfo.js?v=1.13.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.13.0";
+var APP_VER="1.13.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1384,21 +1392,26 @@ BAR.forEach(function(b){
 /* ---------- 予想穴埋め・予想解説 ---------- */
 var YP={};PROBS.forEach(function(p){if(p.y==="予想")YP[p.q]=p});
 var yqSel={};
-YCAT.forEach(function(c,i){var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");
-  b.innerHTML=esc(c[0])+'（'+c[2].length+'問）<small>'+esc(c[1])+'</small>';
+/* カテゴリーごとに10問単位のセットに分ける（10問を超えるカテゴリーはセットを増やす） */
+var YGRP=[["土工",[0]],["コンクリート",[1,2]],["安全管理",[3,4]],["工程・品質管理",[5]],["施工計画・環境",[6]]],YSET=[];
+YGRP.forEach(function(g){var ids=[],sub=[];g[1].forEach(function(ci){ids=ids.concat(YCAT[ci][2]);sub.push(YCAT[ci][1])});var n=Math.ceil(ids.length/10);
+  for(var i=0;i<n;i++){var part=ids.slice(i*10,(i+1)*10);YSET.push([g[0]+(n>1?"①②③④⑤".charAt(i):""),part,n>1?g[1].map(function(ci){return YCAT[ci][1]})[i]||sub.join("・"):sub.join("・")])}});
+YSET.forEach(function(c,i){var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");b.textContent=c[0]+"（"+c[1].length+"問）";
   b.addEventListener("click",function(){yqSel[i]=!yqSel[i];b.setAttribute("aria-pressed",!!yqSel[i]);yqUpd()});$("yqCats").appendChild(b)});
+$("yqInfo").innerHTML=YSET.map(function(c){return '<div><b style="color:var(--text)">'+esc(c[0])+'</b>：'+esc(c[2])+'</div>'}).join("");
 function yqTog(id){var b=$(id);b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");yqUpd()})}
 yqTog("yqShuffle");yqTog("yqMiss");
-$("yqAll").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);YCAT.forEach(function(_,i){yqSel[i]=on});document.querySelectorAll("#yqCats .chip").forEach(function(b){b.setAttribute("aria-pressed",on)});yqUpd()});
+$("yqAll").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);YSET.forEach(function(_,i){yqSel[i]=on});document.querySelectorAll("#yqCats .chip").forEach(function(b){b.setAttribute("aria-pressed",on)});yqUpd()});
 function yqPool(){var mo=$("yqMiss").getAttribute("aria-pressed")==="true",L=[];
-  YCAT.forEach(function(c,i){if(yqSel[i])c[2].forEach(function(q){var p=YP[q];if(p&&(!mo||pMiss(p)))L.push(p)})});return L}
-function yqUpd(){var n=yqPool().length,any=YCAT.some(function(_,i){return yqSel[i]});$("yqStart").disabled=!n;$("yqStart").textContent=!any?"カテゴリーを選んでください":n?"スタート（"+n+"問）":"該当する問題がありません"}
+  YSET.forEach(function(c,i){if(yqSel[i])c[1].forEach(function(q){var p=YP[q];if(p&&(!mo||pMiss(p)))L.push(p)})});return L}
+function yqUpd(){var n=yqPool().length,any=YSET.some(function(_,i){return yqSel[i]});$("yqStart").disabled=!n;$("yqStart").textContent=!any?"セットを選んでください":n?"スタート（"+n+"問）":"該当する問題がありません"}
 yqUpd();
 $("yqStart").addEventListener("click",function(){var L=yqPool();if($("yqShuffle").getAttribute("aria-pressed")==="true")shuffle(L);startQ(L,"yq")});
-var ykCat=0,ykHide=true,YW=YOSOU.filter(function(k){return k.type!=="fill"}),YKC=YCAT.map(function(c){return [c[0],c[2].map(function(q){return YM[q]})]}).concat([["記述・工程表",YW]]);
-YKC.forEach(function(c,i){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c[0]+"（"+c[1].length+"）";b.setAttribute("aria-pressed",i===ykCat);
+var ykCat=0,ykHide=true,ykSort=false,YW=YOSOU.filter(function(k){return k.type!=="fill"}),YKC=YSET.map(function(c){return [c[0],c[1].map(function(q){return YM[q]})]}).concat([["記述・工程表",YW]]);
+YKC.forEach(function(c,i){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c[0];b.setAttribute("aria-pressed",i===ykCat);
   b.addEventListener("click",function(){ykCat=i;document.querySelectorAll("#ykCats .chip").forEach(function(x,j){x.setAttribute("aria-pressed",j===i)});ykRender()});$("ykCats").appendChild(b)});
-function ykRender(){$("ykList").innerHTML=YKC[ykCat][1].map(function(k){return kCard(k,ykHide)}).join("")}
+function ykRender(){var L=YKC[ykCat][1].slice();if(ykSort)L.sort(function(a,b){return thProb(b.th)-thProb(a.th)});$("ykList").innerHTML=L.map(function(k){return kCard(k,ykHide)}).join("")}
+$("ykSort").addEventListener("click",function(){ykSort=!ykSort;this.setAttribute("aria-pressed",ykSort);ykRender()});
 $("ykAll").addEventListener("click",function(){var b=this;keepPos(b,function(){ykHide=!ykHide;b.textContent=ykHide?"すべての答えを表示":"すべての答えを隠す";ykRender()})});
 ykRender();
 function ykGo(q){var i=YKC.findIndex(function(c){return c[1].some(function(k){return k.q===q})});if(i<0)return;show("yk");ykCat=i;document.querySelectorAll("#ykCats .chip").forEach(function(x,j){x.setAttribute("aria-pressed",j===i)});ykRender();
