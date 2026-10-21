@@ -240,7 +240,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .asm .slot.on{border-color:#fde68a;background:rgba(245,158,11,.06)}.asm .slot .no{font-weight:900;color:#fde68a;margin-right:2px}.asm .slot .ph{color:var(--muted);font-size:13px}
 .asm .slot.ok{border-style:solid;border-color:var(--success);background:rgba(16,185,129,.12)}.asm .slot.ng{border-style:solid;border-color:var(--danger);background:rgba(248,113,113,.10)}
 .asm .pool{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.asm .pc{font:700 15px var(--f-jp);color:var(--text);background:rgba(59,130,246,.16);border:1.5px solid rgba(96,165,250,.5);border-radius:10px;padding:8px 10px;cursor:pointer;touch-action:manipulation}
+.asm .pc{font:700 14px var(--f-jp);color:var(--text);background:rgba(59,130,246,.16);border:1.5px solid rgba(96,165,250,.5);border-radius:9px;padding:6px 9px;cursor:pointer;touch-action:manipulation}
 .asm .pc[disabled]{opacity:.25;cursor:default}.asm .slot .pc{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.5)}
 .asm .ctl{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}.asm .ctl .btn{padding:12px 6px;font-size:14px;white-space:nowrap}
 .mqsets{display:grid;gap:8px}.mqsets h3{margin:10px 0 0;font-size:16px;color:var(--accent-hi)}.mqsets h3:first-child{margin-top:0}.mqsets .last{display:block;font-size:12px;margin-top:4px;color:#fde68a}.mqsets button{text-align:left;padding:14px 16px}.mqsets button small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}
@@ -677,6 +677,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.12.3</b>記述の「2つ書く」組み立てで、テーマの正しい文のパーツをすべて並べ、好きな2文を選べるように。まちがいパーツも増量</li>
         <li><b>v1.12.2</b>記述の組み立てパーツの区切り方を修正（「により」「ではなく」「となる」などを途中で切らない）</li>
         <li><b>v1.12.1</b>記述の組み立て問題に「まちがいパーツ」を追加（数値・以上/以下・する/しない・取り違えやすい語句を変えたダミー）</li>
         <li><b>v1.12.0</b>記述の問題集を「文のパーツをつなげて完成させる」形式に変更（1文問題は関係ないパーツ入り、2つ書く問題は①②の2文を組み立て）</li>
@@ -730,7 +731,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.12.2</div>
+  <div class="ver" aria-label="バージョン">v1.12.3</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -743,17 +744,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.12.2"></script>
-<script src="yosou.js?v=1.12.2"></script>
-<script src="advice.js?v=1.12.2"></script>
-<script src="anki.js?v=1.12.2"></script>
-<script src="kijutsu.js?v=1.12.2"></script>
-<script src="mondai.js?v=1.12.2"></script>
-<script src="mqinfo.js?v=1.12.2"></script>
+<script src="kaisetsu.js?v=1.12.3"></script>
+<script src="yosou.js?v=1.12.3"></script>
+<script src="advice.js?v=1.12.3"></script>
+<script src="anki.js?v=1.12.3"></script>
+<script src="kijutsu.js?v=1.12.3"></script>
+<script src="mondai.js?v=1.12.3"></script>
+<script src="mqinfo.js?v=1.12.3"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.12.2";
+var APP_VER="1.12.3";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1263,7 +1264,7 @@ BAR.forEach(function(b){
     return out}
   var ASM=null;
   function asmHTML(){var A=ASM;
-    return '<div class="asm">'+A.t.map(function(_,si){return '<div class="slot'+(si===A.cur&&A.t.length>1?' on':'')+'" data-slot="'+si+'">'+(A.t.length>1?'<span class="no">'+(si?'②':'①')+'</span>':'')+(A.s[si].length?A.s[si].map(function(pi){return '<button class="pc" type="button" data-rm="'+pi+'">'+esc(A.p[pi])+'</button>'}).join(""):'<span class="ph">下のパーツをタップして文をつくる</span>')+'</div>'}).join("")+
+    return '<div class="asm">'+A.s.map(function(_,si){return '<div class="slot'+(si===A.cur&&A.s.length>1?' on':'')+'" data-slot="'+si+'">'+(A.s.length>1?'<span class="no">'+(si?'②':'①')+'</span>':'')+(A.s[si].length?A.s[si].map(function(pi){return '<button class="pc" type="button" data-rm="'+pi+'">'+esc(A.p[pi])+'</button>'}).join(""):'<span class="ph">下のパーツをタップして文をつくる</span>')+'</div>'}).join("")+
       '<div class="pool">'+A.ord.map(function(pi){var used=A.s.some(function(L){return L.indexOf(pi)>=0});return '<button class="pc" type="button" data-add="'+pi+'"'+(used?' disabled':'')+'>'+esc(A.p[pi])+'</button>'}).join("")+'</div>'+
       '<div class="ctl"><button class="btn ghost" type="button" data-a="back">1つ戻す</button><button class="btn ghost" type="button" data-a="reset">やり直す</button><button class="btn" type="button" data-a="check">答え合わせ</button></div></div>'}
   /* ダミー：正しいパーツの数値・語句・肯定否定を入れ替えた「まちがいパーツ」 */
@@ -1277,10 +1278,10 @@ BAR.forEach(function(b){
     if(m){out.push(c.replace(m[0],NUMALT[m[0]]||String(+m[0]*2)))}
     SWAP.forEach(function(sw){if(c.indexOf(sw[0])>=0)out.push(c.replace(sw[0],sw[1]))});
     return out.filter(function(x){return x!==c})}
-  function asmInit(targets,extra){var p=[],ex=[];targets.forEach(function(t){chunks(t).forEach(function(c){p.push(c)})});
+  function asmInit(targets,extra,nSlot){var p=[],ex=[];targets.forEach(function(t){chunks(t).forEach(function(c){p.push(c)})});
     var mut=[];p.forEach(function(c){mutate(c).forEach(function(d){if(p.indexOf(d)<0&&mut.indexOf(d)<0)mut.push(d)})});
-    var nMut=Math.min(mut.length,targets.length>1?4:3);ex=shuf(mut).slice(0,nMut);
-    var nAll=targets.length>1?5:4;(extra||[]).forEach(function(c){if(p.indexOf(c)<0&&ex.indexOf(c)<0&&ex.length<nAll)ex.push(c)});
+    var nMut=Math.min(mut.length,targets.length>1?6:4);ex=shuf(mut).slice(0,nMut);
+    var nAll=targets.length>1?7:5;(extra||[]).forEach(function(c){if(p.indexOf(c)<0&&ex.indexOf(c)<0&&ex.length<nAll)ex.push(c)});
     /* まちがいパーツが少ないときは、助詞を入れ替えたパーツで補う */
     if(ex.length<3){var PS={"を":"に","に":"を","は":"が","が":"は","で":"に"};shuf(p.slice()).forEach(function(c){if(ex.length>=3)return;var m2=c.match(/(を|に|は|が|で)(、?)$/);if(!m2)return;var d=c.slice(0,m2.index)+PS[m2[1]]+m2[2];if(p.indexOf(d)<0&&ex.indexOf(d)<0)ex.push(d)})}
     /* ダミーを混ぜた結果、別の正しい文が組み立てられてしまう場合はそのダミーを外す */
@@ -1288,7 +1289,8 @@ BAR.forEach(function(b){
     function can(pool,t){var rest=t,used=[],g=0;while(rest&&g++<30){var best=-1;pool.forEach(function(c,i){if(used.indexOf(i)<0&&rest.indexOf(c)===0&&(best<0||c.length>pool[best].length))best=i});if(best<0)return false;used.push(best);rest=rest.slice(pool[best].length)}return !rest}
     ex=ex.filter(function(d,i){var pool=p.concat(ex.slice(0,i+1));return !ALL.some(function(t){return can(pool,t)&&!can(p,t)})});
     p=p.concat(ex);
-    ASM={t:targets,p:p,ord:shuf(p.map(function(_,i){return i})),s:targets.map(function(){return []}),cur:0}}
+    var n=nSlot||targets.length,S=[];for(var k=0;k<n;k++)S.push([]);
+    ASM={t:targets,p:p,ord:shuf(p.map(function(_,i){return i})),s:S,cur:0}}
   function barHTML(b){return b.rows.map(function(r){var pad=(r[1]-1)/b.total*100,w=(r[2]-r[1]+1)/b.total*100;return '<div class="mqbar"><span>'+esc(r[0])+'</span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")}
   function draw(){
     var x=Q[qi],q=x.q,h="";answered=false;$("mqNext").hidden=true;$("mqMore").hidden=true;
@@ -1297,8 +1299,8 @@ BAR.forEach(function(b){
     else if(x.k==="calc"){h='<p class="mqq">'+esc(q.t)+'：'+(q.rows?'工程表（バーチャート）を作成した場合の全所要日数は？':/？$/.test(q.cond)?'答えの日数は？':'全所要日数は？')+'</p><p style="font-size:15px;line-height:1.8;margin:0 0 12px">'+esc(q.cond)+'</p><div class="mqin"><input id="mqNum" type="number" inputmode="numeric" placeholder="日数"><span>日</span><button class="btn" id="mqChk" type="button">答え合わせ</button></div><div id="mqExp"></div>'}
     else if(x.k==="kij1"){var oth=[];q.g[4].forEach(function(it){if(it[1]!==q.ans){var cs=chunks(it[1]);if(cs.length>1)oth.push(shuf(cs)[0])}});asmInit([q.ans],shuf(oth));
       h='<p class="mqsub" style="margin:0 0 6px">テーマ：'+esc(q.th)+'（問われ方：'+esc(q.ask)+'）</p><p class="mqq">キーワード「'+esc(q.kw)+'」の文を、パーツをつなげて完成させなさい。</p><p class="hint" style="margin:-6px 0 10px">数値や語句をわざと変えた「まちがいパーツ」や、別の文のパーツが混ざっています。つなげたパーツはタップで外せます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
-    else{var pick=shuf(q[4].slice()),two=pick.slice(0,2).map(function(it){return it[1]}),oth2=[];pick.slice(2).forEach(function(it){var cs=chunks(it[1]);if(cs.length>1)oth2.push(shuf(cs)[0])});asmInit(two,shuf(oth2));
-      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">パーツをつなげて①②の2つの文を完成させなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①②の枠をタップすると入れる先を切り替えられます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
+    else{asmInit(q[4].map(function(it){return it[1]}),[],2);
+      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">このテーマで書ける文のパーツがすべて並んでいます。好きな文を2つ選んで①②に組み立てなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①が「。」で終わると②に移ります（枠をタップしても切り替えられます）。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
     $("mqCard").innerHTML=h;
   }
   $("mqCard").addEventListener("click",function(e){
@@ -1313,12 +1315,12 @@ BAR.forEach(function(b){
       else if(rm){var pi=+rm.dataset.rm;A.s.forEach(function(L){var k=L.indexOf(pi);if(k>=0)L.splice(k,1)})}
       else if(sl){A.cur=+sl.dataset.slot}
       else if(ac&&ac.dataset.a==="back"){if(A.s[A.cur].length)A.s[A.cur].pop()}
-      else if(ac&&ac.dataset.a==="reset"){A.s=A.t.map(function(){return []});A.cur=0}
+      else if(ac&&ac.dataset.a==="reset"){A.s=A.s.map(function(){return []});A.cur=0}
       else if(ac&&ac.dataset.a==="check"){var got=A.s.map(function(L){return L.map(function(i){return A.p[i]}).join("")}),rest=x.k==="kij"?q[4].map(function(it){return it[1]}):A.t.slice(),res=got.map(function(g){var k=rest.indexOf(g);if(k>=0){rest.splice(k,1);return true}return false}),good=res.every(Boolean);
         $("mqAsm").innerHTML=asmHTML();$("mqAsm").querySelectorAll(".slot").forEach(function(el,i){el.classList.add(res[i]?"ok":"ng")});$("mqAsm").querySelectorAll("button").forEach(function(b){b.disabled=true});
-        $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解")+'</div><div class="mqans">'+(x.k==="kij1"?'<div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div>':q[4].filter(function(it){return A.t.indexOf(it[1])>=0}).map(function(it,i){return '<div><b>'+(i?'②':'①')+' '+W(it[0])+'</b>'+esc(it[1])+'</div>'}).join(""))+'</div>'+(x.k==="kij"?'<p class="hint" style="margin:8px 0 0">①②は順番が逆でも正解です。上の2文以外でも、このテーマの正しい文が組み立てられていれば正解にしています。ほかに書ける文は下の「くわしい解説」にあります。</p>':'');
+        $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解")+'</div><div class="mqans">'+(x.k==="kij1"?'<div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div>':got.map(function(g,i){var it=q[4].filter(function(z){return z[1]===g})[0];return '<div><b>'+(i?'②':'①')+' '+(res[i]?'正しい文：'+W(it[0]):'まちがい')+'</b>'+esc(g||'（未入力）')+'</div>'}).join(""))+'</div>'+(x.k==="kij"?'<p class="hint" style="margin:8px 0 0">このテーマの正しい文を、違う2つで組み立てられていれば正解です。正しい文の一覧は下の「くわしい解説」にあります。</p>':'');
         mark(x,good);return}
-      if(A.cur>=A.t.length)A.cur=0;if(ad&&A.t.length>1&&A.s[A.cur].length>=chunks(A.t[A.cur]).length&&A.cur<A.t.length-1)A.cur++;
+      if(A.cur>=A.s.length)A.cur=0;var cs=A.s[A.cur];if(ad&&A.s.length>1&&cs.length&&/。$/.test(A.p[cs[cs.length-1]])&&A.cur<A.s.length-1)A.cur++;
       $("mqAsm").innerHTML=asmHTML();return}
     if(e.target.id==="mqShow"&&x.k==="kij1"){e.target.hidden=true;
       $("mqExp").innerHTML='<div class="mqans"><div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div></div><p class="hint" style="margin:10px 0 0">要点（キーワードと数値）が入っていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
