@@ -232,6 +232,18 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ak.kj .it .q{font-weight:700;color:var(--accent-hi);font-size:14px}.ak.kj .it .a{font-size:16px;font-weight:600}
 .rules{margin:0;padding-left:1.2em;font-size:14px;display:grid;gap:4px}
 @media print{#kjTools{display:none!important}}
+.mqsets{display:grid;gap:10px}.mqsets button{text-align:left;padding:14px 16px}.mqsets button small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}
+.mqopts{display:grid;gap:8px}.mqopts button{width:100%;text-align:left;font:700 16px var(--f-jp);color:var(--text);background:rgba(255,255,255,.04);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;cursor:pointer;touch-action:manipulation}
+.mqopts button.ok{border-color:var(--success);background:rgba(16,185,129,.18);color:var(--success-hi)}.mqopts button.ng{border-color:var(--danger);background:rgba(248,113,113,.14);color:#fecaca}
+.mqopts button:disabled{cursor:default}
+.mqq{font-size:18px;font-weight:700;line-height:1.6;margin:0 0 12px}.mqsub{font-size:13px;color:#fde68a;margin:-6px 0 10px}
+.mqexp{margin-top:12px;font-size:14px;padding:10px 12px;border-left:3px solid var(--warning);background:rgba(245,158,11,.07);border-radius:0 10px 10px 0;line-height:1.7}
+.mqin{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.mqin .btn{padding:12px 16px}.mqin input{flex:1 1 5em;width:0;min-width:0;font:700 20px var(--f-jp);color:var(--text);background:rgba(2,11,23,.7);border:1.5px solid var(--border);border-radius:10px;padding:10px}
+.mqta{width:100%;min-height:120px;font:15px var(--f-jp);color:var(--text);background:rgba(2,11,23,.7);border:1.5px solid var(--border);border-radius:10px;padding:10px;box-sizing:border-box}
+.mqans{margin-top:10px;display:grid;gap:6px}.mqans div{font-size:15px;line-height:1.6}.mqans b{color:var(--accent-hi);font-size:13px;display:block}
+.mqself{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.mqbar{display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:13px;margin-bottom:5px}
+.mqbar>span:nth-child(2){position:relative;height:12px;background:rgba(255,255,255,.06);border-radius:3px}.mqbar i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4)}
 .kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .kw span{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
 .kw span.ok{color:var(--success-hi);border-color:var(--success);background:rgba(16,185,129,.12);font-weight:700}
@@ -291,6 +303,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="yosou" aria-selected="false">予想</button>
     <button role="tab" data-v="anki" aria-selected="false">暗記</button>
     <button role="tab" data-v="kij" aria-selected="false">記述暗記</button>
+    <button role="tab" data-v="mq" aria-selected="false">問題集</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
     <button role="tab" data-v="nums" aria-selected="false">数値</button>
@@ -485,6 +498,40 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <div class="ak kj" id="kjList"></div>
   </div>
 
+  <!-- ===== 問題集 ===== -->
+  <div class="view" id="v-mq" hidden>
+    <div id="mqSetup">
+      <section class="sec">
+        <h2><b>DRILL</b>問題集（数値・記述・工程）</h2>
+        <div class="mqsets">
+          <button class="btn" type="button" data-set="num">数値の問題集<small>コンクリート・土工・安全の数値を4択で（44問）</small></button>
+          <button class="btn" type="button" data-set="kij">記述の問題集<small>出題テーマごとに書いて、解答例で自己採点（25問）</small></button>
+          <button class="btn" type="button" data-set="kou">工程の問題集<small>工程表の4択15問＋バーチャートの日数計算8問</small></button>
+        </div>
+        <div class="chips" style="margin-top:12px">
+          <button class="chip" id="mqShuffle" type="button" aria-pressed="false">シャッフル</button>
+          <button class="chip" id="mqMiss" type="button" aria-pressed="false">前回まちがえた問題だけ</button>
+        </div>
+        <p class="hint" id="mqMsg" style="margin:8px 0 0"></p>
+      </section>
+    </div>
+    <div id="mqPlay" hidden>
+      <section class="sec">
+        <div class="qhead"><div class="prog"><span id="mqProg">1 / 1</span><div class="pbar"><div id="mqFill" style="width:0"></div></div></div><div class="score" id="mqScore">0</div></div>
+      </section>
+      <section class="sec" id="mqCard"></section>
+      <div class="row">
+        <button class="btn ghost" id="mqQuit" type="button">やめる</button>
+        <button class="btn" id="mqNext" type="button" style="flex:1" hidden>次へ</button>
+      </div>
+    </div>
+    <div id="mqResult" hidden>
+      <section class="sec result" style="text-align:center"><div class="big" id="mqBig"></div><p id="mqPct" style="margin:6px 0 0"></p></section>
+      <section class="sec"><h2><b>REVIEW</b>まちがえた問題</h2><div id="mqMissList"></div></section>
+      <button class="btn wide" id="mqAgain" type="button">問題集の選択に戻る</button>
+    </div>
+  </div>
+
   <!-- ===== PDF ===== -->
   <div class="view" id="v-pdf" hidden>
     <section class="sec">
@@ -611,6 +658,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.10.0</b>「問題集」タブを追加（数値44問の4択、記述25テーマの自己採点、工程の4択15問＋バーチャート日数計算8問。シャッフル・まちがえた問題だけ）</li>
         <li><b>v1.9.1</b>「記述暗記」タブを追加（記述テーマごとに本番でそのまま書ける文、キーワードだけ表示のテスト、書けたチェック、書き方のルール）</li>
         <li><b>v1.9.0</b>「暗記」タブを追加（覚えるところだけを項目→答えで一覧。答えを隠すテスト、覚えたチェック、印刷）</li>
         <li><b>v1.8.6</b>問題文中の「同じ文が出た過去問」表示を削除（問題の下の「ほぼ同じ文章が出た過去問」欄は残す）</li>
@@ -651,7 +699,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.9.1</div>
+  <div class="ver" aria-label="バージョン">v1.10.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -664,15 +712,16 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.9.1"></script>
-<script src="yosou.js?v=1.9.1"></script>
-<script src="advice.js?v=1.9.1"></script>
-<script src="anki.js?v=1.9.1"></script>
-<script src="kijutsu.js?v=1.9.1"></script>
+<script src="kaisetsu.js?v=1.10.0"></script>
+<script src="yosou.js?v=1.10.0"></script>
+<script src="advice.js?v=1.10.0"></script>
+<script src="anki.js?v=1.10.0"></script>
+<script src="kijutsu.js?v=1.10.0"></script>
+<script src="mondai.js?v=1.10.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.9.1";
+var APP_VER="1.10.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1100,6 +1149,50 @@ BAR.forEach(function(b){
   $("kjHide").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("hidedone",on)});
   $("kjPrint").addEventListener("click",function(){window.print()});
   draw();
+})();
+
+/* ---------- 問題集 ---------- */
+(function(){
+  var rec=load("d2mq",{}),set="",Q=[],qi=0,ok=0,miss=[],answered=false;
+  function items(st){
+    if(st==="num")return NUMQ.map(function(q,i){return {id:"num-"+i,k:"mc",q:q}});
+    if(st==="kou")return KOUQ.map(function(q,i){return {id:"kou-"+i,k:q.calc?"calc":"mc",q:q}});
+    return KIJ.map(function(g,i){return {id:"kij-"+i,k:"kij",q:g}});
+  }
+  function tog(id){var b=$(id);b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true")})}
+  tog("mqShuffle");tog("mqMiss");
+  document.querySelectorAll("#mqSetup [data-set]").forEach(function(b){b.addEventListener("click",function(){
+    set=b.dataset.set;Q=items(set);
+    if($("mqMiss").getAttribute("aria-pressed")==="true"){Q=Q.filter(function(x){return rec[x.id]===0});if(!Q.length){$("mqMsg").textContent="前回まちがえた問題はありません。";return}}
+    if($("mqShuffle").getAttribute("aria-pressed")==="true")for(var i=Q.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=Q[i];Q[i]=Q[j];Q[j]=t}
+    qi=0;ok=0;miss=[];$("mqMsg").textContent="";$("mqSetup").hidden=true;$("mqResult").hidden=true;$("mqPlay").hidden=false;draw();window.scrollTo(0,0)})});
+  function mark(x,good){rec[x.id]=good?1:0;save("d2mq",rec);if(good)ok++;else miss.push(x);$("mqScore").textContent=ok+" / "+(qi+1);answered=true;$("mqNext").hidden=false;$("mqNext").textContent=qi===Q.length-1?"結果を見る":"次の問題へ"}
+  function barHTML(b){return b.rows.map(function(r){var pad=(r[1]-1)/b.total*100,w=(r[2]-r[1]+1)/b.total*100;return '<div class="mqbar"><span>'+esc(r[0])+'</span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")}
+  function draw(){
+    var x=Q[qi],q=x.q,h="";answered=false;$("mqNext").hidden=true;
+    $("mqProg").textContent=(qi+1)+" / "+Q.length;$("mqFill").style.width=(qi/Q.length*100)+"%";$("mqScore").textContent=ok+" / "+qi;
+    if(x.k==="mc"){h='<p class="mqq">'+esc(q[0])+'</p><div class="mqopts">'+q[1].map(function(o,i){return '<button type="button" data-i="'+i+'">'+esc(o)+'</button>'}).join("")+'</div><div id="mqExp"></div>'}
+    else if(x.k==="calc"){h='<p class="mqq">'+esc(q.t)+'：工程表（バーチャート）を作成した場合の全所要日数は？</p><p style="font-size:15px;line-height:1.8;margin:0 0 12px">'+esc(q.cond)+'</p><div class="mqin"><input id="mqNum" type="number" inputmode="numeric" placeholder="日数"><span>日</span><button class="btn" id="mqChk" type="button">答え合わせ</button></div><div id="mqExp"></div>'}
+    else{h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><textarea class="mqta" id="mqTa" placeholder="ここに書く（紙に書いてもOK）"></textarea><button class="btn wide" id="mqShow" type="button" style="margin-top:10px">解答例を見る</button><div id="mqExp"></div>'}
+    $("mqCard").innerHTML=h;
+  }
+  $("mqCard").addEventListener("click",function(e){
+    if(answered)return;var x=Q[qi],q=x.q;
+    var o=e.target.closest(".mqopts button");
+    if(o&&x.k==="mc"){var i=+o.dataset.i,good=i===q[2];document.querySelectorAll("#mqCard .mqopts button").forEach(function(b,j){b.disabled=true;if(j===q[2])b.classList.add("ok");else if(j===i)b.classList.add("ng")});
+      $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解：正解は「"+esc(q[1][q[2]])+"」")+'</div><div class="mqexp">'+esc(q[3])+(q[4]&&q[4]!=="—"?'<br><span class="hint">出題：'+esc(q[4])+'</span>':'')+'</div>';mark(x,good);return}
+    if(e.target.id==="mqChk"){var v=parseInt($("mqNum").value,10);if(isNaN(v))return;var g=v===q.total;$("mqNum").disabled=true;
+      $("mqExp").innerHTML='<div class="verdict '+(g?"ok":"ng")+'">'+(g?"正解":"不正解：正解は "+q.total+"日")+'</div><div class="mqexp"><b>'+esc(q.calc)+'</b><div style="margin-top:8px">'+barHTML(q)+'</div><span class="hint">出題：'+esc(q.src)+'</span></div>';mark(x,g);return}
+    if(e.target.id==="mqShow"){e.target.hidden=true;
+      $("mqExp").innerHTML='<div class="mqans">'+q[4].map(function(it){return '<div><b>'+esc(it[0])+'</b>'+esc(it[1])+'</div>'}).join("")+'</div><p class="hint" style="margin:10px 0 0">違う観点から2つ書けていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
+    var sb=e.target.closest(".mqself button");if(sb){document.querySelectorAll("#mqCard .mqself button").forEach(function(b){b.disabled=true});sb.style.outline="2px solid #fde68a";mark(x,sb.dataset.s==="1")}
+  });
+  $("mqNext").addEventListener("click",function(){if(qi<Q.length-1){qi++;draw();window.scrollTo(0,0)}else fin()});
+  $("mqQuit").addEventListener("click",function(){if(qi>0||answered)fin();else{$("mqPlay").hidden=true;$("mqSetup").hidden=false}});
+  function fin(){var n=qi+(answered?1:0);$("mqPlay").hidden=true;$("mqResult").hidden=false;window.scrollTo(0,0);
+    $("mqBig").innerHTML=ok+'<small> / '+n+'</small>';$("mqPct").textContent=n?"正答率 "+Math.round(ok/n*100)+"%":"";
+    $("mqMissList").innerHTML=miss.length?miss.map(function(x){var q=x.q;return '<div style="padding:8px 0;border-top:1px dashed rgba(255,255,255,.12);font-size:14px">'+(x.k==="mc"?esc(q[0])+'<br><b style="color:var(--success-hi)">→ '+esc(q[1][q[2]])+'</b>':x.k==="calc"?esc(q.t)+'<br><b style="color:var(--success-hi)">→ '+q.total+'日</b>':esc(q[1])+'<br><b style="color:var(--success-hi)">→ '+esc(q[4][0][1])+'</b>')+'</div>'}).join(""):'<p class="hint" style="text-align:center">まちがえた問題はありません。</p>'}
+  $("mqAgain").addEventListener("click",function(){$("mqResult").hidden=true;$("mqSetup").hidden=false});
 })();
 
 /* ---------- 直前 ---------- */
