@@ -503,7 +503,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <div id="mqSetup">
       <section class="sec">
         <h2><b>DRILL</b>問題集（数値・記述・工程）</h2>
-        <p style="margin:0 0 10px;font-size:14px">1回10問前後の小分けです。好きなものから選んでください。</p>
+        <p style="margin:0 0 10px;font-size:14px">内容ごとに1回10問以内に分けています。好きな回から選んでください。選択肢の並びは毎回入れ替わります。</p>
         <div class="mqsets" id="mqParts"></div>
         <div class="chips" style="margin-top:12px">
           <button class="chip" id="mqShuffle" type="button" aria-pressed="false">シャッフル</button>
@@ -655,6 +655,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.11.0</b>問題集を大幅に追加（数値104問・工程46問・記述148問）。内容ごとに10問以内で分割、選択肢の順番を毎回入れ替え。土止め支保工の点検時期の誤りを修正（7日をこえない期間ごと）</li>
         <li><b>v1.10.1</b>問題集を10問前後に小分け（数値5回・記述3回・工程3回）。各回に前回の成績を表示</li>
         <li><b>v1.10.0</b>「問題集」タブを追加（数値44問の4択、記述25テーマの自己採点、工程の4択15問＋バーチャート日数計算8問。シャッフル・まちがえた問題だけ）</li>
         <li><b>v1.9.1</b>「記述暗記」タブを追加（記述テーマごとに本番でそのまま書ける文、キーワードだけ表示のテスト、書けたチェック、書き方のルール）</li>
@@ -697,7 +698,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.10.1</div>
+  <div class="ver" aria-label="バージョン">v1.11.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -710,16 +711,16 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.10.1"></script>
-<script src="yosou.js?v=1.10.1"></script>
-<script src="advice.js?v=1.10.1"></script>
-<script src="anki.js?v=1.10.1"></script>
-<script src="kijutsu.js?v=1.10.1"></script>
-<script src="mondai.js?v=1.10.1"></script>
+<script src="kaisetsu.js?v=1.11.0"></script>
+<script src="yosou.js?v=1.11.0"></script>
+<script src="advice.js?v=1.11.0"></script>
+<script src="anki.js?v=1.11.0"></script>
+<script src="kijutsu.js?v=1.11.0"></script>
+<script src="mondai.js?v=1.11.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.10.1";
+var APP_VER="1.11.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1152,42 +1153,52 @@ BAR.forEach(function(b){
 /* ---------- 問題集 ---------- */
 (function(){
   var rec=load("d2mq",{}),set="",Q=[],qi=0,ok=0,miss=[],answered=false;
-  function items(st){
-    if(st==="num")return NUMQ.map(function(q,i){return {id:"num-"+i,k:"mc",q:q}});
-    if(st==="kou")return KOUQ.map(function(q,i){return {id:"kou-"+i,k:q.calc?"calc":"mc",q:q}});
-    return KIJ.map(function(g,i){return {id:"kij-"+i,k:"kij",q:g}});
-  }
+  /* 分野ごとの問題を10問以内に均等に分ける */
+  var SETS=[["num","数値",MQNUM.map(function(s){return [s[0],s[1].map(function(q){return {id:"num:"+q[0],k:"mc",q:q}})]})],
+    ["kou","工程",MQKOU.map(function(s){return [s[0],s[1].map(function(q){return q.calc?{id:"kou:"+q.t+q.cond,k:"calc",q:q}:{id:"kou:"+q[0],k:"mc",q:q}})]})],
+    ["kij","記述",kijSecs()]];
+  /* 記述：テーマ問題は分野ごと、キーワード問題はテーマの切れ目で10問以内にまとめる */
+  function kijSecs(){var out=[];
+    [["安全","環境"],["工程","コンクリート"],["土工","計画"]].forEach(function(fs){out.push(["2つ書く："+fs.join("・"),KIJ.filter(function(g){return fs.indexOf(g[0])>=0}).map(function(g){return {id:"kij:"+g[1],k:"kij",q:g}})])});
+    var cur=null;KIJ.forEach(function(g){var L=g[4].map(function(it){return {id:"kij1:"+it[1],k:"kij1",q:{th:g[1],ask:g[2],kw:it[0],ans:it[1]}}});
+      var nm=g[1].replace(/（予想）/,"");
+      if(cur&&cur.f===g[0]&&cur.L.length+L.length<=10){cur.L=cur.L.concat(L);cur.n.push(nm)}else{cur={f:g[0],L:L,n:[nm]};out.push(cur)}});
+    return out.map(function(x){return Array.isArray(x)?x:["1文で書く："+x.n.join("・"),x.L]})}
+  var PL=[];
+  SETS.forEach(function(st){var no=0;st[2].forEach(function(sec){var L=sec[1],n=Math.ceil(L.length/10),sz=Math.ceil(L.length/n);
+    for(var i=0;i<n;i++){no++;PL.push({set:st[0],name:st[1],no:no,sec:sec[0]+(n>1?"（"+(i+1)+"/"+n+"）":""),key:st[0]+":"+sec[0]+":"+i,items:L.slice(i*sz,(i+1)*sz)})}})});
   function tog(id){var b=$(id);b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true")})}
   tog("mqShuffle");tog("mqMiss");
-  var PARTS=[["num","数値",[[0,9,"打込み・締固めの数値、養生"],[9,18,"養生、生コンの受入れ検査"],[18,27,"配合・寒中暑中・鉄筋・盛土"],[27,36,"盛土・軟弱地盤、墜落防止・足場"],[36,44,"掘削・クレーン・騒音・リサイクル"]]],
-    ["kij","記述",[[0,9,"安全（クレーン・玉掛け・土止め・墜落・架空線など）、騒音・振動"],[9,18,"工程表・工程用語、コンクリート（用語・打込み・締固めなど）"],[18,25,"土工（盛土・軟弱地盤・法面・試験）、施工計画・リサイクル"]]],
-    ["kou","工程",[[0,8,"工程表の種類と特徴（4択）"],[8,15,"工程管理・原価・バーチャートの考え方（4択）"],[15,23,"バーチャートの全所要日数の計算"]]]];
   var best=load("d2mqp",{}),part="";
-  function parts(){$("mqParts").innerHTML=PARTS.map(function(g){return '<h3>'+g[1]+'の問題集</h3>'+g[2].map(function(r,i){var k=g[0]+"-"+r[0],b=best[k];
-    return '<button class="btn ghost" type="button" data-set="'+g[0]+'" data-a="'+r[0]+'" data-b="'+r[1]+'">'+g[1]+' '+(i+1)+'（'+(r[1]-r[0])+'問）<small>'+r[2]+'</small>'+(b?'<span class="last">前回 '+b+'</span>':'')+'</button>'}).join("")}).join("")}
+  function parts(){var h="",cur="";PL.forEach(function(pt,i){if(pt.set!==cur){cur=pt.set;var tot=0;PL.forEach(function(x){if(x.set===cur)tot+=x.items.length});h+='<h3>'+pt.name+'の問題集（全'+tot+'問）</h3>'}
+    var b=best[pt.key];h+='<button class="btn ghost" type="button" data-p="'+i+'">'+pt.name+' '+pt.no+'（'+pt.items.length+'問）<small>'+esc(pt.sec)+'</small>'+(b?'<span class="last">前回 '+b+'</span>':'')+'</button>'});$("mqParts").innerHTML=h}
   parts();
-  $("mqParts").addEventListener("click",function(e){var b=e.target.closest("[data-set]");if(!b)return;
-    set=b.dataset.set;part=set+"-"+b.dataset.a;Q=items(set).slice(+b.dataset.a,+b.dataset.b);
+  $("mqParts").addEventListener("click",function(e){var b=e.target.closest("[data-p]");if(!b)return;
+    var pt=PL[+b.dataset.p];set=pt.set;part=pt.key;Q=pt.items.slice();
     if($("mqMiss").getAttribute("aria-pressed")==="true"){Q=Q.filter(function(x){return rec[x.id]===0});if(!Q.length){$("mqMsg").textContent="前回まちがえた問題はありません。";return}}
     if($("mqShuffle").getAttribute("aria-pressed")==="true")for(var i=Q.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=Q[i];Q[i]=Q[j];Q[j]=t}
     qi=0;ok=0;miss=[];$("mqMsg").textContent="";$("mqSetup").hidden=true;$("mqResult").hidden=true;$("mqPlay").hidden=false;draw();window.scrollTo(0,0)});
   function mark(x,good){rec[x.id]=good?1:0;save("d2mq",rec);if(good)ok++;else miss.push(x);$("mqScore").textContent=ok+" / "+(qi+1);answered=true;$("mqNext").hidden=false;$("mqNext").textContent=qi===Q.length-1?"結果を見る":"次の問題へ"}
+  function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
   function barHTML(b){return b.rows.map(function(r){var pad=(r[1]-1)/b.total*100,w=(r[2]-r[1]+1)/b.total*100;return '<div class="mqbar"><span>'+esc(r[0])+'</span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")}
   function draw(){
     var x=Q[qi],q=x.q,h="";answered=false;$("mqNext").hidden=true;
     $("mqProg").textContent=(qi+1)+" / "+Q.length;$("mqFill").style.width=(qi/Q.length*100)+"%";$("mqScore").textContent=ok+" / "+qi;
-    if(x.k==="mc"){h='<p class="mqq">'+esc(q[0])+'</p><div class="mqopts">'+q[1].map(function(o,i){return '<button type="button" data-i="'+i+'">'+esc(o)+'</button>'}).join("")+'</div><div id="mqExp"></div>'}
-    else if(x.k==="calc"){h='<p class="mqq">'+esc(q.t)+'：工程表（バーチャート）を作成した場合の全所要日数は？</p><p style="font-size:15px;line-height:1.8;margin:0 0 12px">'+esc(q.cond)+'</p><div class="mqin"><input id="mqNum" type="number" inputmode="numeric" placeholder="日数"><span>日</span><button class="btn" id="mqChk" type="button">答え合わせ</button></div><div id="mqExp"></div>'}
+    if(x.k==="mc"){h='<p class="mqq">'+esc(q[0])+'</p><div class="mqopts">'+shuf([0,1,2,3]).map(function(i){return '<button type="button" data-i="'+i+'">'+esc(q[1][i])+'</button>'}).join("")+'</div><div id="mqExp"></div>'}
+    else if(x.k==="calc"){h='<p class="mqq">'+esc(q.t)+'：'+(q.rows?'工程表（バーチャート）を作成した場合の全所要日数は？':/？$/.test(q.cond)?'答えの日数は？':'全所要日数は？')+'</p><p style="font-size:15px;line-height:1.8;margin:0 0 12px">'+esc(q.cond)+'</p><div class="mqin"><input id="mqNum" type="number" inputmode="numeric" placeholder="日数"><span>日</span><button class="btn" id="mqChk" type="button">答え合わせ</button></div><div id="mqExp"></div>'}
+    else if(x.k==="kij1"){h='<p class="mqsub" style="margin:0 0 6px">テーマ：'+esc(q.th)+'</p><p class="mqq">キーワード「'+esc(q.kw)+'」を使って、解答欄に書く1文を書きなさい。</p><p class="hint" style="margin:-6px 0 10px">問われ方：'+esc(q.ask)+'</p><textarea class="mqta" id="mqTa" style="min-height:80px" placeholder="ここに書く（紙に書いてもOK）"></textarea><button class="btn wide" id="mqShow" type="button" style="margin-top:10px">解答例を見る</button><div id="mqExp"></div>'}
     else{h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><textarea class="mqta" id="mqTa" placeholder="ここに書く（紙に書いてもOK）"></textarea><button class="btn wide" id="mqShow" type="button" style="margin-top:10px">解答例を見る</button><div id="mqExp"></div>'}
     $("mqCard").innerHTML=h;
   }
   $("mqCard").addEventListener("click",function(e){
     if(answered)return;var x=Q[qi],q=x.q;
     var o=e.target.closest(".mqopts button");
-    if(o&&x.k==="mc"){var i=+o.dataset.i,good=i===q[2];document.querySelectorAll("#mqCard .mqopts button").forEach(function(b,j){b.disabled=true;if(j===q[2])b.classList.add("ok");else if(j===i)b.classList.add("ng")});
+    if(o&&x.k==="mc"){var i=+o.dataset.i,good=i===q[2];document.querySelectorAll("#mqCard .mqopts button").forEach(function(b){var j=+b.dataset.i;b.disabled=true;if(j===q[2])b.classList.add("ok");else if(j===i)b.classList.add("ng")});
       $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解：正解は「"+esc(q[1][q[2]])+"」")+'</div><div class="mqexp">'+esc(q[3])+(q[4]&&q[4]!=="—"?'<br><span class="hint">出題：'+esc(q[4])+'</span>':'')+'</div>';mark(x,good);return}
     if(e.target.id==="mqChk"){var v=parseInt($("mqNum").value,10);if(isNaN(v))return;var g=v===q.total;$("mqNum").disabled=true;
-      $("mqExp").innerHTML='<div class="verdict '+(g?"ok":"ng")+'">'+(g?"正解":"不正解：正解は "+q.total+"日")+'</div><div class="mqexp"><b>'+esc(q.calc)+'</b><div style="margin-top:8px">'+barHTML(q)+'</div><span class="hint">出題：'+esc(q.src)+'</span></div>';mark(x,g);return}
+      $("mqExp").innerHTML='<div class="verdict '+(g?"ok":"ng")+'">'+(g?"正解":"不正解：正解は "+q.total+"日")+'</div><div class="mqexp"><b>'+esc(q.calc)+'</b>'+(q.rows?'<div style="margin-top:8px">'+barHTML(q)+'</div>':'')+'<span class="hint">出題：'+esc(q.src)+'</span></div>';mark(x,g);return}
+    if(e.target.id==="mqShow"&&x.k==="kij1"){e.target.hidden=true;
+      $("mqExp").innerHTML='<div class="mqans"><div><b>'+esc(q.kw)+'</b>'+esc(q.ans)+'</div></div><p class="hint" style="margin:10px 0 0">要点（キーワードと数値）が入っていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
     if(e.target.id==="mqShow"){e.target.hidden=true;
       $("mqExp").innerHTML='<div class="mqans">'+q[4].map(function(it){return '<div><b>'+esc(it[0])+'</b>'+esc(it[1])+'</div>'}).join("")+'</div><p class="hint" style="margin:10px 0 0">違う観点から2つ書けていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
     var sb=e.target.closest(".mqself button");if(sb){document.querySelectorAll("#mqCard .mqself button").forEach(function(b){b.disabled=true});sb.style.outline="2px solid #fde68a";mark(x,sb.dataset.s==="1")}
@@ -1196,7 +1207,7 @@ BAR.forEach(function(b){
   $("mqQuit").addEventListener("click",function(){if(qi>0||answered)fin();else{$("mqPlay").hidden=true;$("mqSetup").hidden=false}});
   function fin(){var n=qi+(answered?1:0);if(n){best[part]=ok+" / "+n+"（"+Math.round(ok/n*100)+"%）";save("d2mqp",best);parts()}$("mqPlay").hidden=true;$("mqResult").hidden=false;window.scrollTo(0,0);
     $("mqBig").innerHTML=ok+'<small> / '+n+'</small>';$("mqPct").textContent=n?"正答率 "+Math.round(ok/n*100)+"%":"";
-    $("mqMissList").innerHTML=miss.length?miss.map(function(x){var q=x.q;return '<div style="padding:8px 0;border-top:1px dashed rgba(255,255,255,.12);font-size:14px">'+(x.k==="mc"?esc(q[0])+'<br><b style="color:var(--success-hi)">→ '+esc(q[1][q[2]])+'</b>':x.k==="calc"?esc(q.t)+'<br><b style="color:var(--success-hi)">→ '+q.total+'日</b>':esc(q[1])+'<br><b style="color:var(--success-hi)">→ '+esc(q[4][0][1])+'</b>')+'</div>'}).join(""):'<p class="hint" style="text-align:center">まちがえた問題はありません。</p>'}
+    $("mqMissList").innerHTML=miss.length?miss.map(function(x){var q=x.q;return '<div style="padding:8px 0;border-top:1px dashed rgba(255,255,255,.12);font-size:14px">'+(x.k==="mc"?esc(q[0])+'<br><b style="color:var(--success-hi)">→ '+esc(q[1][q[2]])+'</b>':x.k==="calc"?esc(q.t)+'<br><b style="color:var(--success-hi)">→ '+q.total+'日</b>':x.k==="kij1"?'「'+esc(q.kw)+'」（'+esc(q.th)+'）<br><b style="color:var(--success-hi)">→ '+esc(q.ans)+'</b>':esc(q[1])+'<br><b style="color:var(--success-hi)">→ '+esc(q[4][0][1])+'</b>')+'</div>'}).join(""):'<p class="hint" style="text-align:center">まちがえた問題はありません。</p>'}
   $("mqAgain").addEventListener("click",function(){$("mqResult").hidden=true;$("mqSetup").hidden=false});
 })();
 
