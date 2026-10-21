@@ -235,6 +235,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .mqmore{margin-top:14px}.mqmore h4{margin:14px 0 6px;font-size:14px;color:#fde68a}.mqmore h4:first-of-type{margin-top:4px}.mqmore p{margin:0;font-size:15px;line-height:1.8}
 #mqPlay,#mqSetup,#mqResult{min-width:0}.mqmore{min-width:0;overflow-wrap:anywhere}.mqmore table{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;font-size:14px}.mqmore td{border-top:1px solid rgba(255,255,255,.1);padding:7px 6px;vertical-align:top;line-height:1.6}.mqmore td:first-child{color:var(--muted);width:42%}
 .mqmore tr.hit td{background:rgba(16,185,129,.16);color:var(--success-hi);font-weight:700}.mqmore ul{margin:0;padding-left:1.2em;display:grid;gap:4px;font-size:14px;line-height:1.7}.mqmore ul.ng li{color:#fecaca}
+.mqw[data-w]{cursor:pointer;text-decoration:underline dotted rgba(110,231,183,.6);text-underline-offset:3px}
 .mqsets{display:grid;gap:8px}.mqsets h3{margin:10px 0 0;font-size:16px;color:var(--accent-hi)}.mqsets h3:first-child{margin-top:0}.mqsets .last{display:block;font-size:12px;margin-top:4px;color:#fde68a}.mqsets button{text-align:left;padding:14px 16px}.mqsets button small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}
 .mqopts{display:grid;gap:8px}.mqopts button{width:100%;text-align:left;font:700 16px var(--f-jp);color:var(--text);background:rgba(255,255,255,.04);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;cursor:pointer;touch-action:manipulation}
 .mqopts button.ok{border-color:var(--success);background:rgba(16,185,129,.18);color:var(--success-hi)}.mqopts button.ng{border-color:var(--danger);background:rgba(248,113,113,.14);color:#fecaca}
@@ -669,6 +670,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.11.5</b>問題集の解説にも検索を追加（正解・まとめ表の項目・キーワードをタップ、他の文字は長押し選択で検索）。暗記・記述暗記でも長押し選択で検索可能に</li>
         <li><b>v1.11.4</b>問題集の結果画面に「次の回へ」ボタンを追加</li>
         <li><b>v1.11.3</b>問題集の結果画面に「もう一回解く」「まちがえた問題だけ解き直す」とシャッフルの切り替えを追加</li>
         <li><b>v1.11.2</b>問題集の「シャッフル」「前回まちがえた問題だけ」を一覧の上に移動</li>
@@ -716,7 +718,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.11.4</div>
+  <div class="ver" aria-label="バージョン">v1.11.5</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -729,17 +731,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.11.4"></script>
-<script src="yosou.js?v=1.11.4"></script>
-<script src="advice.js?v=1.11.4"></script>
-<script src="anki.js?v=1.11.4"></script>
-<script src="kijutsu.js?v=1.11.4"></script>
-<script src="mondai.js?v=1.11.4"></script>
-<script src="mqinfo.js?v=1.11.4"></script>
+<script src="kaisetsu.js?v=1.11.5"></script>
+<script src="yosou.js?v=1.11.5"></script>
+<script src="advice.js?v=1.11.5"></script>
+<script src="anki.js?v=1.11.5"></script>
+<script src="kijutsu.js?v=1.11.5"></script>
+<script src="mondai.js?v=1.11.5"></script>
+<script src="mqinfo.js?v=1.11.5"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.11.4";
+var APP_VER="1.11.5";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1015,7 +1017,7 @@ $("shB").addEventListener("click",function(){$("sheet").hidden=true});
 $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 var selT="";
-document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&$("kList").contains(s.anchorNode));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
+document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","v-mq","akList","kjList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
 $("selS").addEventListener("mousedown",function(e){e.preventDefault()});
 $("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
 /* 答えの表示/隠すで画面がずれないよう、押したボタンの画面上の位置を保つ */
@@ -1210,6 +1212,8 @@ BAR.forEach(function(b){
   $("mqRetryMiss").addEventListener("click",function(){if(lastMiss.length)start(lastMiss)});
   function mark(x,good){rec[x.id]=good?1:0;save("d2mq",rec);if(good)ok++;else miss.push(x);$("mqScore").textContent=ok+" / "+(qi+1);answered=true;$("mqNext").hidden=false;$("mqNext").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";more(x)}
   function hasK(v,k){var i=v.indexOf(k);while(i>=0){if(i===0||!/[0-9.]/.test(v.charAt(i-1)))return true;i=v.indexOf(k,i+1)}return false}
+  function W(t,qw){return '<span class="mqw" data-w="'+esc(qw||t)+'">'+esc(t)+'</span>'}
+  function subj(t){return t.replace(/[はを]？$|？$/,"").replace(/（[^）]*）$/,"").replace(/、何.*$/,"")}
   /* 次へボタンの下の「くわしい解説」 */
   function more(x){var q=x.q,h='<h2><b>DETAIL</b>くわしい解説</h2>';
     if(x.k==="mc"||x.k==="calc"){var I=MQINFO[x.sec.replace(/（\d+\/\d+）$/,"")]||{},ans=x.k==="mc"?q[1][q[2]]:"";
@@ -1218,16 +1222,18 @@ BAR.forEach(function(b){
       if(I.why)h+='<h4>なぜそうなるのか</h4><p>'+esc(I.why)+'</p>';
       if(I.tbl){var key=(ans||"").replace(/以上|以下|未満|程度|以内|を超える/g,"").replace(/\s/g,"");
         var qt=(x.k==="mc"?q[0]:"").replace(/\s/g,""),cand=I.tbl.map(function(r){var v=r[1].replace(/\s/g,""),l=r[0].replace(/[（）\s]/g,"");if(!key||!hasK(v,key))return -1;var sc=0;for(var i=0;i<l.length-1;i++)if(qt.indexOf(l.substr(i,2))>=0)sc++;return sc}),best=-1,bi=-1;cand.forEach(function(c,i){if(c>best){best=c;bi=i}});
-        h+='<h4>まとめて覚える（'+esc(x.sec.replace(/（\d+\/\d+）$/,""))+'）</h4><table>'+I.tbl.map(function(r,ri){var hit=ri===bi&&best>=0;return '<tr'+(hit?' class="hit"':'')+'><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td></tr>'}).join("")+'</table>'}
+        h+='<h4>まとめて覚える（'+esc(x.sec.replace(/（\d+\/\d+）$/,""))+'）</h4><table>'+I.tbl.map(function(r,ri){var hit=ri===bi&&best>=0;return '<tr'+(hit?' class="hit"':'')+'><td>'+W(r[0],x.sec.replace(/（\d+\/\d+）$/,"").replace(/（[^）]*）/,"")+" "+r[0])+'</td><td>'+esc(r[1])+'</td></tr>'}).join("")+'</table>'}
       if(I.tip)h+='<h4>覚え方</h4><p>'+esc(I.tip)+'</p>';
       if(I.trend)h+='<h4>本番での出方</h4><p>'+esc(I.trend)+'</p>';
     }else{var g=x.k==="kij"?q:q.g,f=g[0],K=KIJINFO[f]||{};
-      h+='<h4>'+esc(g[1])+'：書ける文（'+g[4].length+'つ）</h4><ul>'+g[4].map(function(it){return '<li'+(x.k==="kij1"&&it[1]===q.ans?' style="color:var(--success-hi);font-weight:700"':'')+'><b style="color:var(--accent-hi)">'+esc(it[0])+'</b>：'+esc(it[1])+'</li>'}).join("")+'</ul>';
+      h+='<h4>'+esc(g[1])+'：書ける文（'+g[4].length+'つ）</h4><ul>'+g[4].map(function(it){return '<li'+(x.k==="kij1"&&it[1]===q.ans?' style="color:var(--success-hi);font-weight:700"':'')+'><b style="color:var(--accent-hi)">'+W(it[0])+'</b>：'+esc(it[1])+'</li>'}).join("")+'</ul>';
       h+='<p class="hint" style="margin-top:6px">問われ方：'+esc(g[2])+'　｜　出題：'+esc(g[3])+'</p>';
       if(K.pts)h+='<h4>点を取る書き方（'+esc(f)+'）</h4><ul>'+K.pts.map(function(t){return '<li>'+esc(t)+'</li>'}).join("")+'</ul>';
       if(K.ng)h+='<h4>減点・0点になりやすい書き方</h4><ul class="ng">'+K.ng.map(function(t){return '<li>'+esc(t)+'</li>'}).join("")+'</ul>';
     }
+    h+='<p class="hint" style="margin-top:12px">点線の語句はタップでGoogle検索できます。それ以外の文字も、長押しで選択すると上に出る「選択した語句を検索」で調べられます。</p>';
     $("mqMore").innerHTML=h;$("mqMore").hidden=false}
+  $("v-mq").addEventListener("click",function(e){var w=e.target.closest(".mqw[data-w]");if(!w)return;if(String(getSelection()).trim())return;openSheet(w.dataset.w,"")});
   function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
   function barHTML(b){return b.rows.map(function(r){var pad=(r[1]-1)/b.total*100,w=(r[2]-r[1]+1)/b.total*100;return '<div class="mqbar"><span>'+esc(r[0])+'</span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")}
   function draw(){
@@ -1243,13 +1249,13 @@ BAR.forEach(function(b){
     if(answered)return;var x=Q[qi],q=x.q;
     var o=e.target.closest(".mqopts button");
     if(o&&x.k==="mc"){var i=+o.dataset.i,good=i===q[2];document.querySelectorAll("#mqCard .mqopts button").forEach(function(b){var j=+b.dataset.i;b.disabled=true;if(j===q[2])b.classList.add("ok");else if(j===i)b.classList.add("ng")});
-      $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解：正解は「"+esc(q[1][q[2]])+"」")+'</div><div class="mqexp">'+esc(q[3])+(q[4]&&q[4]!=="—"?'<br><span class="hint">出題：'+esc(q[4])+'</span>':'')+'</div>';mark(x,good);return}
+      $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解：":"不正解：正解は ")+W(q[1][q[2]],subj(q[0]))+'</div><div class="mqexp">'+esc(q[3])+(q[4]&&q[4]!=="—"?'<br><span class="hint">出題：'+esc(q[4])+'</span>':'')+'</div>';mark(x,good);return}
     if(e.target.id==="mqChk"){var v=parseInt($("mqNum").value,10);if(isNaN(v))return;var g=v===q.total;$("mqNum").disabled=true;
       $("mqExp").innerHTML='<div class="verdict '+(g?"ok":"ng")+'">'+(g?"正解":"不正解：正解は "+q.total+"日")+'</div><div class="mqexp"><b>'+esc(q.calc)+'</b>'+(q.rows?'<div style="margin-top:8px">'+barHTML(q)+'</div>':'')+'<span class="hint">出題：'+esc(q.src)+'</span></div>';mark(x,g);return}
     if(e.target.id==="mqShow"&&x.k==="kij1"){e.target.hidden=true;
-      $("mqExp").innerHTML='<div class="mqans"><div><b>'+esc(q.kw)+'</b>'+esc(q.ans)+'</div></div><p class="hint" style="margin:10px 0 0">要点（キーワードと数値）が入っていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
+      $("mqExp").innerHTML='<div class="mqans"><div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div></div><p class="hint" style="margin:10px 0 0">要点（キーワードと数値）が入っていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
     if(e.target.id==="mqShow"){e.target.hidden=true;
-      $("mqExp").innerHTML='<div class="mqans">'+q[4].map(function(it){return '<div><b>'+esc(it[0])+'</b>'+esc(it[1])+'</div>'}).join("")+'</div><p class="hint" style="margin:10px 0 0">違う観点から2つ書けていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
+      $("mqExp").innerHTML='<div class="mqans">'+q[4].map(function(it){return '<div><b>'+W(it[0])+'</b>'+esc(it[1])+'</div>'}).join("")+'</div><p class="hint" style="margin:10px 0 0">違う観点から2つ書けていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
     var sb=e.target.closest(".mqself button");if(sb){document.querySelectorAll("#mqCard .mqself button").forEach(function(b){b.disabled=true});sb.style.outline="2px solid #fde68a";mark(x,sb.dataset.s==="1")}
   });
   $("mqNext").addEventListener("click",function(){if(qi<Q.length-1){qi++;draw();window.scrollTo(0,0)}else fin()});
