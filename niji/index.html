@@ -677,6 +677,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.12.1</b>記述の組み立て問題に「まちがいパーツ」を追加（数値・以上/以下・する/しない・取り違えやすい語句を変えたダミー）</li>
         <li><b>v1.12.0</b>記述の問題集を「文のパーツをつなげて完成させる」形式に変更（1文問題は関係ないパーツ入り、2つ書く問題は①②の2文を組み立て）</li>
         <li><b>v1.11.7</b>問題集の検索で、押した語句に余計な語を付けないように修正</li>
         <li><b>v1.11.6</b>結果画面のボタン順を変更（「もう一回解く」を目立つ色に、「次の回へ」は一番下）</li>
@@ -728,7 +729,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.12.0</div>
+  <div class="ver" aria-label="バージョン">v1.12.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -741,17 +742,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.12.0"></script>
-<script src="yosou.js?v=1.12.0"></script>
-<script src="advice.js?v=1.12.0"></script>
-<script src="anki.js?v=1.12.0"></script>
-<script src="kijutsu.js?v=1.12.0"></script>
-<script src="mondai.js?v=1.12.0"></script>
-<script src="mqinfo.js?v=1.12.0"></script>
+<script src="kaisetsu.js?v=1.12.1"></script>
+<script src="yosou.js?v=1.12.1"></script>
+<script src="advice.js?v=1.12.1"></script>
+<script src="anki.js?v=1.12.1"></script>
+<script src="kijutsu.js?v=1.12.1"></script>
+<script src="mondai.js?v=1.12.1"></script>
+<script src="mqinfo.js?v=1.12.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.12.0";
+var APP_VER="1.12.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1259,8 +1260,22 @@ BAR.forEach(function(b){
     return '<div class="asm">'+A.t.map(function(_,si){return '<div class="slot'+(si===A.cur&&A.t.length>1?' on':'')+'" data-slot="'+si+'">'+(A.t.length>1?'<span class="no">'+(si?'②':'①')+'</span>':'')+(A.s[si].length?A.s[si].map(function(pi){return '<button class="pc" type="button" data-rm="'+pi+'">'+esc(A.p[pi])+'</button>'}).join(""):'<span class="ph">下のパーツをタップして文をつくる</span>')+'</div>'}).join("")+
       '<div class="pool">'+A.ord.map(function(pi){var used=A.s.some(function(L){return L.indexOf(pi)>=0});return '<button class="pc" type="button" data-add="'+pi+'"'+(used?' disabled':'')+'>'+esc(A.p[pi])+'</button>'}).join("")+'</div>'+
       '<div class="ctl"><button class="btn ghost" type="button" data-a="back">1つ戻す</button><button class="btn ghost" type="button" data-a="reset">やり直す</button><button class="btn" type="button" data-a="check">答え合わせ</button></div></div>'}
+  /* ダミー：正しいパーツの数値・語句・肯定否定を入れ替えた「まちがいパーツ」 */
+  var SWAP=[["しない。","する。"],["させない。","させる。"],["立ち入らせない","立ち入らせる"],["使用しない","使用する"],["行わない","行う"],["継がない","継ぐ"],["避ける","行う"],["禁止する","許可する"],["中止する","続行する"],
+    ["以上","以下"],["以下","以上"],["未満","以上"],["超える","下回る"],["最大限","最小限"],["大きく","小さく"],["小さく","大きく"],["大きい","小さい"],["小さい","大きい"],["少なく","多く"],["短く","長く"],["低い","高い"],["高い","低い"],
+    ["スペーサ","セパレータ"],["セパレータ","スペーサ"],["鉛直","水平"],["水平","鉛直"],["湿潤","乾燥"],["ゆっくり","素早く"],["横移動","締固め"],["上方","下方"],["下方","上方"],["突合せ継手","重ね継手"],["組立図","施工図"],["作業主任者","作業指揮者"],["監視人","誘導者"],["誘導者","監視人"],
+    ["技能講習","特別教育"],["定格荷重","つり上げ荷重"],["市町村長","都道府県知事"],["都道府県知事","市町村長"],["低騒音型","高出力型"],["低振動型","大型"],["早朝・夜間","昼間"],["中震","震度3"],["防網","シート"],["断熱材","散水"],["保温","冷却"],["凍結","乾燥"],["せん断強度","引張強度"],["圧縮性","透水性"],
+    ["吸水","乾燥"],["レイタンス","ブリーディング水"],["ブリーディング","レイタンス"],["クリティカルパス","フロート"],["出来高","工期"],["S字形","放物線形"],["地上","荷台"],["敷鉄板","砂"],["アウトリガー","ジブ"],["上部旋回体","下部走行体"],["試掘","ボーリング"],["二酸化炭素","酸素"],["N値","コーン指数"],["コーン指数","N値"],["含水比","間隙比"],["最大乾燥密度","湿潤密度"]];
+  var NUMALT={"1.5":"2.0","2.0":"1.5","2":"3","3":"5","10":"20","50":"100","85":"75","40":"30","6":"4","3.5":"5","0.8":"0.5","4":"5","35":"40","25":"30","5":"10","20":"30","1":"2","30":"50","7":"14","12":"15","60":"90","0.30":"0.50","4.5":"3.0","2.5":"1.5","28":"14","65":"70","175":"185","500":"300","80":"100","90":"95","0.5":"1.0","1.2":"2.0","15":"25","9":"7","100":"50"};
+  function mutate(c){var out=[],m=c.match(/\d+(?:\.\d+)?/);
+    if(m){out.push(c.replace(m[0],NUMALT[m[0]]||String(+m[0]*2)))}
+    SWAP.forEach(function(sw){if(c.indexOf(sw[0])>=0)out.push(c.replace(sw[0],sw[1]))});
+    return out.filter(function(x){return x!==c})}
   function asmInit(targets,extra){var p=[],ex=[];targets.forEach(function(t){chunks(t).forEach(function(c){p.push(c)})});
-    (extra||[]).forEach(function(c){if(p.indexOf(c)<0&&ex.length<2)ex.push(c)});p=p.concat(ex);
+    var mut=[];p.forEach(function(c){mutate(c).forEach(function(d){if(p.indexOf(d)<0&&mut.indexOf(d)<0)mut.push(d)})});
+    var nMut=Math.min(mut.length,targets.length>1?4:3);ex=shuf(mut).slice(0,nMut);
+    var nAll=targets.length>1?5:4;(extra||[]).forEach(function(c){if(p.indexOf(c)<0&&ex.indexOf(c)<0&&ex.length<nAll)ex.push(c)});
+    p=p.concat(ex);
     ASM={t:targets,p:p,ord:shuf(p.map(function(_,i){return i})),s:targets.map(function(){return []}),cur:0}}
   function barHTML(b){return b.rows.map(function(r){var pad=(r[1]-1)/b.total*100,w=(r[2]-r[1]+1)/b.total*100;return '<div class="mqbar"><span>'+esc(r[0])+'</span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")}
   function draw(){
@@ -1268,10 +1283,10 @@ BAR.forEach(function(b){
     $("mqProg").textContent=(qi+1)+" / "+Q.length;$("mqFill").style.width=(qi/Q.length*100)+"%";$("mqScore").textContent=ok+" / "+qi;
     if(x.k==="mc"){h='<p class="mqq">'+esc(q[0])+'</p><div class="mqopts">'+shuf([0,1,2,3]).map(function(i){return '<button type="button" data-i="'+i+'">'+esc(q[1][i])+'</button>'}).join("")+'</div><div id="mqExp"></div>'}
     else if(x.k==="calc"){h='<p class="mqq">'+esc(q.t)+'：'+(q.rows?'工程表（バーチャート）を作成した場合の全所要日数は？':/？$/.test(q.cond)?'答えの日数は？':'全所要日数は？')+'</p><p style="font-size:15px;line-height:1.8;margin:0 0 12px">'+esc(q.cond)+'</p><div class="mqin"><input id="mqNum" type="number" inputmode="numeric" placeholder="日数"><span>日</span><button class="btn" id="mqChk" type="button">答え合わせ</button></div><div id="mqExp"></div>'}
-    else if(x.k==="kij1"){var oth=[];q.g[4].forEach(function(it){if(it[1]!==q.ans)oth=oth.concat(chunks(it[1]))});asmInit([q.ans],shuf(oth));
-      h='<p class="mqsub" style="margin:0 0 6px">テーマ：'+esc(q.th)+'（問われ方：'+esc(q.ask)+'）</p><p class="mqq">キーワード「'+esc(q.kw)+'」の文を、パーツをつなげて完成させなさい。</p><p class="hint" style="margin:-6px 0 10px">関係ないパーツが混ざっています。つなげたパーツはタップで外せます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
-    else{var two=shuf(q[4].slice()).slice(0,2).map(function(it){return it[1]});asmInit(two);
-      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">パーツをつなげて①②の2つの文を完成させなさい。①②の枠をタップすると入れる先を切り替えられます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
+    else if(x.k==="kij1"){var oth=[];q.g[4].forEach(function(it){if(it[1]!==q.ans){var cs=chunks(it[1]);if(cs.length>1)oth.push(shuf(cs)[0])}});asmInit([q.ans],shuf(oth));
+      h='<p class="mqsub" style="margin:0 0 6px">テーマ：'+esc(q.th)+'（問われ方：'+esc(q.ask)+'）</p><p class="mqq">キーワード「'+esc(q.kw)+'」の文を、パーツをつなげて完成させなさい。</p><p class="hint" style="margin:-6px 0 10px">数値や語句をわざと変えた「まちがいパーツ」や、別の文のパーツが混ざっています。つなげたパーツはタップで外せます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
+    else{var pick=shuf(q[4].slice()),two=pick.slice(0,2).map(function(it){return it[1]}),oth2=[];pick.slice(2).forEach(function(it){var cs=chunks(it[1]);if(cs.length>1)oth2.push(shuf(cs)[0])});asmInit(two,shuf(oth2));
+      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">パーツをつなげて①②の2つの文を完成させなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①②の枠をタップすると入れる先を切り替えられます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
     $("mqCard").innerHTML=h;
   }
   $("mqCard").addEventListener("click",function(e){
@@ -1287,9 +1302,9 @@ BAR.forEach(function(b){
       else if(sl){A.cur=+sl.dataset.slot}
       else if(ac&&ac.dataset.a==="back"){if(A.s[A.cur].length)A.s[A.cur].pop()}
       else if(ac&&ac.dataset.a==="reset"){A.s=A.t.map(function(){return []});A.cur=0}
-      else if(ac&&ac.dataset.a==="check"){var got=A.s.map(function(L){return L.map(function(i){return A.p[i]}).join("")}),rest=A.t.slice(),res=got.map(function(g){var k=rest.indexOf(g);if(k>=0){rest.splice(k,1);return true}return false}),good=res.every(Boolean);
+      else if(ac&&ac.dataset.a==="check"){var got=A.s.map(function(L){return L.map(function(i){return A.p[i]}).join("")}),rest=x.k==="kij"?q[4].map(function(it){return it[1]}):A.t.slice(),res=got.map(function(g){var k=rest.indexOf(g);if(k>=0){rest.splice(k,1);return true}return false}),good=res.every(Boolean);
         $("mqAsm").innerHTML=asmHTML();$("mqAsm").querySelectorAll(".slot").forEach(function(el,i){el.classList.add(res[i]?"ok":"ng")});$("mqAsm").querySelectorAll("button").forEach(function(b){b.disabled=true});
-        $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解")+'</div><div class="mqans">'+(x.k==="kij1"?'<div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div>':q[4].filter(function(it){return A.t.indexOf(it[1])>=0}).map(function(it,i){return '<div><b>'+(i?'②':'①')+' '+W(it[0])+'</b>'+esc(it[1])+'</div>'}).join(""))+'</div>'+(x.k==="kij"?'<p class="hint" style="margin:8px 0 0">①②は順番が逆でも正解です。ほかに書ける文は下の「くわしい解説」にあります。</p>':'');
+        $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解")+'</div><div class="mqans">'+(x.k==="kij1"?'<div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div>':q[4].filter(function(it){return A.t.indexOf(it[1])>=0}).map(function(it,i){return '<div><b>'+(i?'②':'①')+' '+W(it[0])+'</b>'+esc(it[1])+'</div>'}).join(""))+'</div>'+(x.k==="kij"?'<p class="hint" style="margin:8px 0 0">①②は順番が逆でも正解です。上の2文以外でも、このテーマの正しい文が組み立てられていれば正解にしています。ほかに書ける文は下の「くわしい解説」にあります。</p>':'');
         mark(x,good);return}
       if(A.cur>=A.t.length)A.cur=0;if(ad&&A.t.length>1&&A.s[A.cur].length>=chunks(A.t[A.cur]).length&&A.cur<A.t.length-1)A.cur++;
       $("mqAsm").innerHTML=asmHTML();return}
