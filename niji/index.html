@@ -533,7 +533,8 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
         <p id="mqPartName" style="margin:0 0 8px;font-size:14px;color:var(--muted)"></p>
         <div class="chips" style="margin-bottom:10px"><button class="chip" id="mqShuffle2" type="button" aria-pressed="false">シャッフル</button></div>
         <div style="display:grid;gap:8px">
-          <button class="btn" id="mqRetry" type="button">もう一回解く（全問）</button>
+          <button class="btn" id="mqNextPart" type="button">次の回へ</button>
+          <button class="btn ghost" id="mqRetry" type="button" style="width:100%">もう一回解く（全問）</button>
           <button class="btn ghost" id="mqRetryMiss" type="button" style="width:100%">まちがえた問題だけ解き直す</button>
           <button class="btn ghost" id="mqAgain" type="button" style="width:100%">問題集の選択に戻る</button>
         </div>
@@ -668,6 +669,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.11.4</b>問題集の結果画面に「次の回へ」ボタンを追加</li>
         <li><b>v1.11.3</b>問題集の結果画面に「もう一回解く」「まちがえた問題だけ解き直す」とシャッフルの切り替えを追加</li>
         <li><b>v1.11.2</b>問題集の「シャッフル」「前回まちがえた問題だけ」を一覧の上に移動</li>
         <li><b>v1.11.1</b>問題集の「次の問題へ」の下に、くわしい解説を追加（なぜそうなるか・まとめ表・覚え方・本番での出方、記述は書ける文と減点例）</li>
@@ -714,7 +716,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.11.3</div>
+  <div class="ver" aria-label="バージョン">v1.11.4</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -727,17 +729,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.11.3"></script>
-<script src="yosou.js?v=1.11.3"></script>
-<script src="advice.js?v=1.11.3"></script>
-<script src="anki.js?v=1.11.3"></script>
-<script src="kijutsu.js?v=1.11.3"></script>
-<script src="mondai.js?v=1.11.3"></script>
-<script src="mqinfo.js?v=1.11.3"></script>
+<script src="kaisetsu.js?v=1.11.4"></script>
+<script src="yosou.js?v=1.11.4"></script>
+<script src="advice.js?v=1.11.4"></script>
+<script src="anki.js?v=1.11.4"></script>
+<script src="kijutsu.js?v=1.11.4"></script>
+<script src="mondai.js?v=1.11.4"></script>
+<script src="mqinfo.js?v=1.11.4"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.11.3";
+var APP_VER="1.11.4";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1204,6 +1206,7 @@ BAR.forEach(function(b){
   $("mqShuffle2").addEventListener("click",function(){syncSh(this.getAttribute("aria-pressed")!=="true")});
   $("mqShuffle").addEventListener("click",function(){$("mqShuffle2").setAttribute("aria-pressed",this.getAttribute("aria-pressed"))});
   $("mqRetry").addEventListener("click",function(){if(curPT)start(curPT.items)});
+  $("mqNextPart").addEventListener("click",function(){var i=PL.indexOf(curPT);if(i<0||i>=PL.length-1)return;curPT=PL[i+1];set=curPT.set;part=curPT.key;start(curPT.items)});
   $("mqRetryMiss").addEventListener("click",function(){if(lastMiss.length)start(lastMiss)});
   function mark(x,good){rec[x.id]=good?1:0;save("d2mq",rec);if(good)ok++;else miss.push(x);$("mqScore").textContent=ok+" / "+(qi+1);answered=true;$("mqNext").hidden=false;$("mqNext").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";more(x)}
   function hasK(v,k){var i=v.indexOf(k);while(i>=0){if(i===0||!/[0-9.]/.test(v.charAt(i-1)))return true;i=v.indexOf(k,i+1)}return false}
@@ -1254,6 +1257,7 @@ BAR.forEach(function(b){
   function fin(){var n=qi+(answered?1:0);lastMiss=miss.slice();
     $("mqPartName").textContent=curPT?curPT.name+" "+curPT.no+"："+curPT.sec:"";$("mqShuffle2").setAttribute("aria-pressed",$("mqShuffle").getAttribute("aria-pressed"));
     $("mqRetry").textContent="もう一回解く（全"+(curPT?curPT.items.length:0)+"問）";
+    var ni=PL.indexOf(curPT),nx=ni>=0&&ni<PL.length-1?PL[ni+1]:null;$("mqNextPart").hidden=!nx;if(nx)$("mqNextPart").textContent="次の回へ："+nx.name+" "+nx.no+"（"+nx.sec+"・"+nx.items.length+"問）";
     $("mqRetryMiss").textContent=lastMiss.length?"まちがえた問題だけ解き直す（"+lastMiss.length+"問）":"まちがえた問題はありません";$("mqRetryMiss").disabled=!lastMiss.length;if(n){best[part]=ok+" / "+n+"（"+Math.round(ok/n*100)+"%）";save("d2mqp",best);parts()}$("mqPlay").hidden=true;$("mqResult").hidden=false;window.scrollTo(0,0);
     $("mqBig").innerHTML=ok+'<small> / '+n+'</small>';$("mqPct").textContent=n?"正答率 "+Math.round(ok/n*100)+"%":"";
     $("mqMissList").innerHTML=miss.length?miss.map(function(x){var q=x.q;return '<div style="padding:8px 0;border-top:1px dashed rgba(255,255,255,.12);font-size:14px">'+(x.k==="mc"?esc(q[0])+'<br><b style="color:var(--success-hi)">→ '+esc(q[1][q[2]])+'</b>':x.k==="calc"?esc(q.t)+'<br><b style="color:var(--success-hi)">→ '+q.total+'日</b>':x.k==="kij1"?'「'+esc(q.kw)+'」（'+esc(q.th)+'）<br><b style="color:var(--success-hi)">→ '+esc(q.ans)+'</b>':esc(q[1])+'<br><b style="color:var(--success-hi)">→ '+esc(q[4][0][1])+'</b>')+'</div>'}).join(""):'<p class="hint" style="text-align:center">まちがえた問題はありません。</p>'}
