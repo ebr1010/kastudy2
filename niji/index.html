@@ -677,6 +677,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.12.2</b>記述の組み立てパーツの区切り方を修正（「により」「ではなく」「となる」などを途中で切らない）</li>
         <li><b>v1.12.1</b>記述の組み立て問題に「まちがいパーツ」を追加（数値・以上/以下・する/しない・取り違えやすい語句を変えたダミー）</li>
         <li><b>v1.12.0</b>記述の問題集を「文のパーツをつなげて完成させる」形式に変更（1文問題は関係ないパーツ入り、2つ書く問題は①②の2文を組み立て）</li>
         <li><b>v1.11.7</b>問題集の検索で、押した語句に余計な語を付けないように修正</li>
@@ -729,7 +730,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.12.1</div>
+  <div class="ver" aria-label="バージョン">v1.12.2</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -742,17 +743,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.12.1"></script>
-<script src="yosou.js?v=1.12.1"></script>
-<script src="advice.js?v=1.12.1"></script>
-<script src="anki.js?v=1.12.1"></script>
-<script src="kijutsu.js?v=1.12.1"></script>
-<script src="mondai.js?v=1.12.1"></script>
-<script src="mqinfo.js?v=1.12.1"></script>
+<script src="kaisetsu.js?v=1.12.2"></script>
+<script src="yosou.js?v=1.12.2"></script>
+<script src="advice.js?v=1.12.2"></script>
+<script src="anki.js?v=1.12.2"></script>
+<script src="kijutsu.js?v=1.12.2"></script>
+<script src="mondai.js?v=1.12.2"></script>
+<script src="mqinfo.js?v=1.12.2"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.12.1";
+var APP_VER="1.12.2";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1251,8 +1252,13 @@ BAR.forEach(function(b){
       if(p.length<=12){out.push(p);return}
       var re=/(を|に|は|で|が|と|へ|から|より|ため|して|ごとに|以上|以下)/g,last=0,m;
       while((m=re.exec(p))){var e=m.index+m[0].length,pv=p.charAt(m.index-1);
-        if(/[一-龠ァ-ヶー0-9０-９a-zA-Z）%m]/.test(pv)&&e-last>=4&&p.length-e>=3){out.push(p.slice(last,e));last=e}}
+        var nx=p.charAt(e);if(/[一-龠ァ-ヶー0-9０-９a-zA-Z）%m]/.test(pv)&&/[一-龠々ァ-ヶー0-9０-９a-zA-Z（「]/.test(nx)&&e-last>=4&&p.length-e>=3){out.push(p.slice(last,e));last=e}}
       out.push(p.slice(last))});
+    /* パーツが少ないときは、述語の前と「は・を・が」の後でさらに分ける */
+    var guard=0;while(out.length<3&&guard++<4){var li=0;out.forEach(function(c,i){if(c.length>out[li].length)li=i});var c=out[li],k=-1,mm;
+      var r2=/(は|を|が)(?=[0-9一-龠々ァ-ヶ])/g;while((mm=r2.exec(c))){var e2=mm.index+1;if(e2>=3&&c.length-e2>=4){k=e2;break}}
+      if(k<0){var tm=c.match(/(とする。|にする。|する。|である。|わかる。|しておく。|こと。)$/);if(tm&&c.length-tm[0].length>=4)k=c.length-tm[0].length}
+      if(k<0)break;out.splice(li,1,c.slice(0,k),c.slice(k))}
     while(out.length>8){var mi=0,ml=1e9;for(var i=0;i<out.length-1;i++){var l=out[i].length+out[i+1].length;if(l<ml){ml=l;mi=i}}out.splice(mi,2,out[mi]+out[mi+1])}
     return out}
   var ASM=null;
@@ -1275,6 +1281,12 @@ BAR.forEach(function(b){
     var mut=[];p.forEach(function(c){mutate(c).forEach(function(d){if(p.indexOf(d)<0&&mut.indexOf(d)<0)mut.push(d)})});
     var nMut=Math.min(mut.length,targets.length>1?4:3);ex=shuf(mut).slice(0,nMut);
     var nAll=targets.length>1?5:4;(extra||[]).forEach(function(c){if(p.indexOf(c)<0&&ex.indexOf(c)<0&&ex.length<nAll)ex.push(c)});
+    /* まちがいパーツが少ないときは、助詞を入れ替えたパーツで補う */
+    if(ex.length<3){var PS={"を":"に","に":"を","は":"が","が":"は","で":"に"};shuf(p.slice()).forEach(function(c){if(ex.length>=3)return;var m2=c.match(/(を|に|は|が|で)(、?)$/);if(!m2)return;var d=c.slice(0,m2.index)+PS[m2[1]]+m2[2];if(p.indexOf(d)<0&&ex.indexOf(d)<0)ex.push(d)})}
+    /* ダミーを混ぜた結果、別の正しい文が組み立てられてしまう場合はそのダミーを外す */
+    var ALL=[];KIJ.forEach(function(g){g[4].forEach(function(it){if(targets.indexOf(it[1])<0)ALL.push(it[1])})});
+    function can(pool,t){var rest=t,used=[],g=0;while(rest&&g++<30){var best=-1;pool.forEach(function(c,i){if(used.indexOf(i)<0&&rest.indexOf(c)===0&&(best<0||c.length>pool[best].length))best=i});if(best<0)return false;used.push(best);rest=rest.slice(pool[best].length)}return !rest}
+    ex=ex.filter(function(d,i){var pool=p.concat(ex.slice(0,i+1));return !ALL.some(function(t){return can(pool,t)&&!can(p,t)})});
     p=p.concat(ex);
     ASM={t:targets,p:p,ord:shuf(p.map(function(_,i){return i})),s:targets.map(function(){return []}),cur:0}}
   function barHTML(b){return b.rows.map(function(r){var pad=(r[1]-1)/b.total*100,w=(r[2]-r[1]+1)/b.total*100;return '<div class="mqbar"><span>'+esc(r[0])+'</span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")}
