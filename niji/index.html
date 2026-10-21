@@ -507,12 +507,12 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <section class="sec">
         <h2><b>DRILL</b>問題集（数値・記述・工程）</h2>
         <p style="margin:0 0 10px;font-size:14px">内容ごとに1回10問以内に分けています。好きな回から選んでください。選択肢の並びは毎回入れ替わります。</p>
-        <div class="mqsets" id="mqParts"></div>
-        <div class="chips" style="margin-top:12px">
+        <div class="chips" style="margin-bottom:6px">
           <button class="chip" id="mqShuffle" type="button" aria-pressed="false">シャッフル</button>
           <button class="chip" id="mqMiss" type="button" aria-pressed="false">前回まちがえた問題だけ</button>
         </div>
-        <p class="hint" id="mqMsg" style="margin:8px 0 0"></p>
+        <p class="hint" id="mqMsg" style="margin:0 0 8px"></p>
+        <div class="mqsets" id="mqParts"></div>
       </section>
     </div>
     <div id="mqPlay" hidden>
@@ -659,6 +659,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.11.2</b>問題集の「シャッフル」「前回まちがえた問題だけ」を一覧の上に移動</li>
         <li><b>v1.11.1</b>問題集の「次の問題へ」の下に、くわしい解説を追加（なぜそうなるか・まとめ表・覚え方・本番での出方、記述は書ける文と減点例）</li>
         <li><b>v1.11.0</b>問題集を大幅に追加（数値104問・工程46問・記述148問）。内容ごとに10問以内で分割、選択肢の順番を毎回入れ替え。土止め支保工の点検時期の誤りを修正（7日をこえない期間ごと）</li>
         <li><b>v1.10.1</b>問題集を10問前後に小分け（数値5回・記述3回・工程3回）。各回に前回の成績を表示</li>
@@ -703,7 +704,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.11.1</div>
+  <div class="ver" aria-label="バージョン">v1.11.2</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -716,17 +717,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.11.1"></script>
-<script src="yosou.js?v=1.11.1"></script>
-<script src="advice.js?v=1.11.1"></script>
-<script src="anki.js?v=1.11.1"></script>
-<script src="kijutsu.js?v=1.11.1"></script>
-<script src="mondai.js?v=1.11.1"></script>
-<script src="mqinfo.js?v=1.11.1"></script>
+<script src="kaisetsu.js?v=1.11.2"></script>
+<script src="yosou.js?v=1.11.2"></script>
+<script src="advice.js?v=1.11.2"></script>
+<script src="anki.js?v=1.11.2"></script>
+<script src="kijutsu.js?v=1.11.2"></script>
+<script src="mondai.js?v=1.11.2"></script>
+<script src="mqinfo.js?v=1.11.2"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.11.1";
+var APP_VER="1.11.2";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
