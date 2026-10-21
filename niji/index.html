@@ -534,10 +534,10 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
         <p id="mqPartName" style="margin:0 0 8px;font-size:14px;color:var(--muted)"></p>
         <div class="chips" style="margin-bottom:10px"><button class="chip" id="mqShuffle2" type="button" aria-pressed="false">シャッフル</button></div>
         <div style="display:grid;gap:8px">
-          <button class="btn" id="mqNextPart" type="button">次の回へ</button>
-          <button class="btn ghost" id="mqRetry" type="button" style="width:100%">もう一回解く（全問）</button>
+          <button class="btn" id="mqRetry" type="button">もう一回解く（全問）</button>
           <button class="btn ghost" id="mqRetryMiss" type="button" style="width:100%">まちがえた問題だけ解き直す</button>
           <button class="btn ghost" id="mqAgain" type="button" style="width:100%">問題集の選択に戻る</button>
+          <button class="btn ghost" id="mqNextPart" type="button" style="width:100%">次の回へ</button>
         </div>
       </section>
       <section class="sec"><h2><b>REVIEW</b>まちがえた問題</h2><div id="mqMissList"></div></section>
@@ -670,6 +670,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.11.6</b>結果画面のボタン順を変更（「もう一回解く」を目立つ色に、「次の回へ」は一番下）</li>
         <li><b>v1.11.5</b>問題集の解説にも検索を追加（正解・まとめ表の項目・キーワードをタップ、他の文字は長押し選択で検索）。暗記・記述暗記でも長押し選択で検索可能に</li>
         <li><b>v1.11.4</b>問題集の結果画面に「次の回へ」ボタンを追加</li>
         <li><b>v1.11.3</b>問題集の結果画面に「もう一回解く」「まちがえた問題だけ解き直す」とシャッフルの切り替えを追加</li>
@@ -718,7 +719,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.11.5</div>
+  <div class="ver" aria-label="バージョン">v1.11.6</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -731,17 +732,17 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.11.5"></script>
-<script src="yosou.js?v=1.11.5"></script>
-<script src="advice.js?v=1.11.5"></script>
-<script src="anki.js?v=1.11.5"></script>
-<script src="kijutsu.js?v=1.11.5"></script>
-<script src="mondai.js?v=1.11.5"></script>
-<script src="mqinfo.js?v=1.11.5"></script>
+<script src="kaisetsu.js?v=1.11.6"></script>
+<script src="yosou.js?v=1.11.6"></script>
+<script src="advice.js?v=1.11.6"></script>
+<script src="anki.js?v=1.11.6"></script>
+<script src="kijutsu.js?v=1.11.6"></script>
+<script src="mondai.js?v=1.11.6"></script>
+<script src="mqinfo.js?v=1.11.6"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.11.5";
+var APP_VER="1.11.6";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
