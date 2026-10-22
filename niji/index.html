@@ -289,6 +289,13 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 #selS{position:fixed;left:50%;transform:translateX(-50%);top:max(10px,env(safe-area-inset-top,0px));z-index:55;font:700 14px var(--f-jp);color:#fff;background:linear-gradient(135deg,#3b82f6,#06b6d4);border:0;border-radius:999px;padding:10px 16px;box-shadow:0 6px 20px rgba(0,0,0,.5);max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #selS[hidden]{display:none}
 #qVerdict:empty{display:none}
+.ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
+.ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
+.ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
+#wsList.hideans .wsq ul{display:none}#wsList.hideans .wsq.open ul{display:block}
+.qpk{border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:8px;margin-bottom:8px}.qpk.on{border-color:rgba(253,230,138,.6);background:rgba(245,158,11,.05)}
+.qpk .qpkb{width:100%;padding:8px;font-size:14px;margin-bottom:6px}.qpk .slot{margin-bottom:0}.asm .slot.off{opacity:.45;cursor:default}
+.qpkh{display:flex;gap:6px;font-weight:700;margin-bottom:6px}.qpkh .no{color:#fde68a;font-weight:900}.qpk .arow{margin-top:4px}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(8,18,36,.98);border-top:1px solid rgba(6,182,212,.45);box-shadow:0 -10px 40px rgba(0,0,0,.6);padding:14px max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:grid;gap:8px}
 .sheet[hidden]{display:none!important}
 .sheet .w{font-weight:900;font-size:18px;color:var(--success-hi)}
@@ -324,6 +331,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="yosou" aria-selected="false">予想</button>
     <button role="tab" data-v="anki" aria-selected="false">暗記</button>
     <button role="tab" data-v="kij" aria-selected="false">記述暗記</button>
+    <button role="tab" data-v="wsum" aria-selected="false">短い答え</button>
     <button role="tab" data-v="mq" aria-selected="false">問題集</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
@@ -529,6 +537,20 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   <!-- ===== 記述暗記 ===== -->
+  <div class="view" id="v-wsum" hidden>
+    <section class="sec">
+      <h2><b>SHORT ANSWERS</b>記述の「そのまま書ける短い答え」まとめ</h2>
+      <p style="margin:0 0 10px;font-size:14px">解説タブ・予想解説タブの記述問題に付いている「そのまま書ける短い答え」を、分野ごとに全部まとめました。問題名の点線をタップするとその問題の解説へ、答えの文字は長押しで選ぶと検索できます。</p>
+      <div class="chips" id="wsFilter"></div>
+      <div class="chips" style="margin-top:8px">
+        <button class="chip" id="wsHideQ" type="button" aria-pressed="false">答えを隠す（問題名だけ）</button>
+        <button class="chip" id="wsPrint" type="button" aria-pressed="false">印刷する</button>
+      </div>
+      <p style="margin:10px 0 0;font-size:14px">全 <span id="wsCount" style="font-family:var(--f-din);font-size:20px;color:var(--success-hi)">0</span> 文</p>
+    </section>
+    <div id="wsList"></div>
+  </div>
+
   <div class="view" id="v-kij" hidden>
     <section class="sec" id="kjTools">
       <h2><b>WRITING</b>記述暗記（本番でそのまま書く文）</h2>
@@ -723,6 +745,8 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.16.0</b>「短い答え」タブを追加（記述問題の「そのまま書ける短い答え」を過去問25問・予想12問の全部、分野ごとに一覧。問題名タップで解説へ、答えを隠すテスト、印刷）。記述の組み立てで、文が完成したら次の枠に移るように修正（文中の「。」で移らない）</li>
+        <li><b>v1.15.1</b>「①〜③（④）から2つ選んで解答」の記述問題で、すべての番号の解答欄を表示し、問題の指示どおり2つだけ選んで答える形式に変更（3つ目は選べない）。R1問5の誤り訂正も①〜④から2つ選ぶ形式に</li>
         <li><b>v1.15.0</b>穴埋めタブに問3・問5・問8・問9を追加（問題集と同じ方式：記述は文のパーツをつなげて解答文を2つ組み立て、工程表は工種を施工順に並べて全所要日数を入力、R1問5の誤り訂正は正しい語句を選択）。採点後に解答例・そのまま書ける短い答え・アドバイスを表示</li>
         <li><b>v1.14.3</b>穴埋め・予想穴埋めで、採点後の「次の問題へ」ボタンを解説より上（解答欄のすぐ下）に移動</li>
         <li><b>v1.14.2</b>穴埋め・予想穴埋めの採点後の解説に検索を追加（正解の語句、解説中の「」で囲んだ語句をタップで検索、その他の文字は長押し選択で検索）。予想解説の「」の語句もタップで検索</li>
@@ -785,7 +809,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.15.0</div>
+  <div class="ver" aria-label="バージョン">v1.16.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -798,26 +822,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.15.0"></script>
-<script src="yosou.js?v=1.15.0"></script>
-<script src="yosou2.js?v=1.15.0"></script>
-<script src="yx1.js?v=1.15.0"></script>
-<script src="yx2.js?v=1.15.0"></script>
-<script src="yx3.js?v=1.15.0"></script>
-<script src="yx4.js?v=1.15.0"></script>
-<script src="yz1.js?v=1.15.0"></script>
-<script src="yz2.js?v=1.15.0"></script>
-<script src="yz3.js?v=1.15.0"></script>
-<script src="yz4.js?v=1.15.0"></script>
-<script src="advice.js?v=1.15.0"></script>
-<script src="anki.js?v=1.15.0"></script>
-<script src="kijutsu.js?v=1.15.0"></script>
-<script src="mondai.js?v=1.15.0"></script>
-<script src="mqinfo.js?v=1.15.0"></script>
+<script src="kaisetsu.js?v=1.16.0"></script>
+<script src="yosou.js?v=1.16.0"></script>
+<script src="yosou2.js?v=1.16.0"></script>
+<script src="yx1.js?v=1.16.0"></script>
+<script src="yx2.js?v=1.16.0"></script>
+<script src="yx3.js?v=1.16.0"></script>
+<script src="yx4.js?v=1.16.0"></script>
+<script src="yz1.js?v=1.16.0"></script>
+<script src="yz2.js?v=1.16.0"></script>
+<script src="yz3.js?v=1.16.0"></script>
+<script src="yz4.js?v=1.16.0"></script>
+<script src="advice.js?v=1.16.0"></script>
+<script src="anki.js?v=1.16.0"></script>
+<script src="kijutsu.js?v=1.16.0"></script>
+<script src="mondai.js?v=1.16.0"></script>
+<script src="mqinfo.js?v=1.16.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.15.0";
+var APP_VER="1.16.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -944,7 +968,7 @@ var PROBS=SETS.map(function(st){var ans=[];st.s.forEach(function(x){x.replace(/\
 /* 記述・工程表・誤り訂正（問3・5・8・9 など） */
 KAISETSU.forEach(function(k){if(k.type==="fill")return;var id=k.y+"-"+k.q;
   if(id==="R1-5"){var a=[],wr=[];k.ans.forEach(function(g){var m=g[1][0].match(/誤：(.+?)\s*→\s*正：(.+)$/);wr.push(m[1]);a.push(m[2])});
-    PROBS.push({y:k.y,q:k.q,t:k.t,kind:"fix",k:k,lb:["①","②","③","④"],ans:a,w:shuffle(a.concat(wr,["1.0m","30cm","レイタンス","散水"]))});return}
+    PROBS.push({y:k.y,q:k.q,t:k.t,kind:"fix",k:k,fa:a,ans:["①","②"],w:shuffle(a.concat(wr,["1.0m","30cm","レイタンス","散水"]))});return}
   if(k.type==="bar"){PROBS.push({y:k.y,q:k.q,t:k.t,kind:"bar",k:k,ans:["順番","日数"],w:[]});return}
   var G=k.ans.map(function(g){return [g[0],g[1].map(function(x){return x.replace(/^【補足】/,"")})]}),rule;
   if(G.length===1||(G.length===2&&!/それぞれ|作業段階/.test(k.lead)))rule="any";else if(G.length===2)rule="each";else rule="diff";
@@ -988,49 +1012,84 @@ function startQ(list,view){Q=list.slice();playIn(view);$("q-setup").hidden=view=
 $("startBtn").addEventListener("click",function(){
   var L=pool().slice();if($("optShuffle").getAttribute("aria-pressed")==="true")shuffle(L);startQ(L,"quiz");
 });
-/* ---- 記述（パーツ組み立て）・工程表（並べ替え＋日数） ---- */
+/* ---- 記述（パーツ組み立て）・工程表（並べ替え＋日数）・誤り訂正 ----
+   rule: any＝解答例から2つ / each＝(1)(2)それぞれ1つずつ / diff＝①〜の中から2つ選んで解答（選ぶ番号は2つだけ） */
 var QA=null;
+function qaPick(p){return p.kind==="fix"||(p.kind==="write"&&p.rule==="diff")}
 function qaInit(p){var K=window.ASMK;
   if(p.kind==="bar"){var names=p.k.rows.map(function(r){return r[0]});QA={kind:"bar",p:names.slice(),ord:K.shuf(names.map(function(_,i){return i})),s:[[]],cur:0,done:false};return}
+  if(p.kind==="fix"){QA={kind:"fix",n:p.k.ans.length,sel:[],v:{},done:false};return}
   var T=[];p.G.forEach(function(g){g[1].forEach(function(x){T.push(x)})});
-  var parts=[];T.forEach(function(t){K.chunks(t).forEach(function(c){if(parts.indexOf(c)<0)parts.push(c)})});
+  /* 同じパーツが2つの文に出てくる場合もあるので、重複も残す */
+  var parts=[];T.forEach(function(t){K.chunks(t).forEach(function(c){parts.push(c)})});
   var mut=[];parts.forEach(function(c){K.mutate(c).forEach(function(d){if(parts.indexOf(d)<0&&mut.indexOf(d)<0)mut.push(d)})});
-  var ex=K.shuf(mut).slice(0,Math.min(mut.length,6));
-  var all=parts.concat(ex);QA={kind:"write",T:T,p:all,ord:K.shuf(all.map(function(_,i){return i})),s:[[],[]],cur:0,done:false}}
-function qaSlotName(p,i){if(p.kind==="bar")return "施工順";return (i?"②":"①")+(p.rule==="each"?" "+p.G[i][0]:"")}
-function qaDraw(){var p=Q[qi],A=QA,h="";
+  var ex=K.shuf(mut).slice(0,Math.min(mut.length,6)),all=parts.concat(ex),n=p.rule==="diff"?p.G.length:2;
+  var S=[];for(var i=0;i<n;i++)S.push([]);
+  QA={kind:"write",T:T,p:all,ord:K.shuf(all.map(function(_,i){return i})),s:S,cur:p.rule==="diff"?-1:0,sel:[],done:false}}
+function qaSlotName(p,i){if(p.kind==="bar")return "施工順";if(p.rule==="diff"||p.rule==="each")return p.G[i][0];return i?"②":"①"}
+function qaUsed(A,pi){return A.s.some(function(L){return L.indexOf(pi)>=0})}
+function qaDraw(){var p=Q[qi],A=QA,h="",pk=qaPick(p);
+  if(p.kind==="fix"){
+    h='<p class="hint" style="margin:0 0 8px">問題の指示どおり、①〜④から<b>2つだけ</b>選んで（「この番号で答える」を押す）、正しい語句又は数値を選びなさい。選んでいる番号：'+A.sel.length+' / 2</p>';
+    var opts=function(v){return '<option value="">選択してください</option>'+p.w.map(function(x){return '<option'+(x===v?' selected':'')+'>'+esc(x)+'</option>'}).join("")};
+    h+=p.k.items.map(function(it,i){var on=A.sel.indexOf(i)>=0;return '<div class="qpk'+(on?' on':'')+'" id="ar'+i+'"><div class="qpkh"><span class="no">'+esc(it.slice(0,1))+'</span><span class="qpkt">'+esc(it.slice(1).trim())+'</span></div>'+
+      (A.done?'':'<button class="btn '+(on?'':'ghost ')+'qpkb" type="button" data-pick="'+i+'">'+(on?'この番号を外す':'この番号で答える')+'</button>')+
+      '<div class="arow"><span class="lb">正しくは</span><select data-fx="'+i+'"'+(on&&!A.done?'':' disabled')+'>'+opts(A.v[i]||"")+'</select><span class="mk"></span></div></div>'}).join("");
+    $("qAns").innerHTML=h;return}
   if(p.kind==="bar")h+='<p class="hint" style="margin:0 0 8px">'+esc(p.k.cond)+'</p><p style="margin:0 0 6px;font-weight:700">工種を施工順にタップして並べなさい。</p>';
-  else h+='<p class="hint" style="margin:0 0 8px">'+(p.rule==="each"?'それぞれ1つずつ':p.rule==="diff"?'違う番号（項目）から2つ':'2つ')+'、解答文をパーツから組み立てなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①が「。」で終わると②に移ります（枠をタップしても切り替えられます）。</p>';
-  h+='<div class="asm">'+A.s.map(function(L,si){return '<div class="slot'+(si===A.cur&&A.s.length>1?' on':'')+'" data-slot="'+si+'"><span class="no">'+esc(qaSlotName(p,si))+'</span>'+(L.length?L.map(function(pi,n){return '<button class="pc" type="button" data-rm="'+pi+'">'+(p.kind==="bar"?(n+1)+'. ':'')+esc(A.p[pi])+'</button>'}).join(p.kind==="bar"?' → ':''):'<span class="ph">下のパーツをタップ</span>')+'</div>'}).join("")+
-    '<div class="pool">'+A.ord.map(function(pi){var used=A.s.some(function(L){return L.indexOf(pi)>=0});return '<button class="pc" type="button" data-add="'+pi+'"'+(used||A.done?' disabled':'')+'>'+esc(A.p[pi])+'</button>'}).join("")+'</div>'+
+  else if(pk)h+='<p class="hint" style="margin:0 0 8px">問題の指示どおり、下の'+p.G.length+'つの番号から<b>2つだけ</b>選んで（「この番号で答える」を押す）、その解答文をパーツから組み立てなさい。選んでいる番号：'+A.sel.length+' / 2。数値や語句を変えた「まちがいパーツ」も混ざっています。</p>';
+  else h+='<p class="hint" style="margin:0 0 8px">'+(p.rule==="each"?'それぞれ1つずつ':'2つ')+'、解答文をパーツから組み立てなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①の文が完成すると②に移ります（枠をタップしても切り替えられます）。</p>';
+  h+='<div class="asm">'+A.s.map(function(L,si){var on=!pk||A.sel.indexOf(si)>=0;
+      var body=L.length?L.map(function(pi,n){return '<button class="pc" type="button" data-rm="'+pi+'">'+(p.kind==="bar"?(n+1)+'. ':'')+esc(A.p[pi])+'</button>'}).join(p.kind==="bar"?' → ':''):'<span class="ph">'+(on?'下のパーツをタップ':'この番号を選ぶと書けます')+'</span>';
+      return (pk?'<div class="qpk'+(on?' on':'')+'">'+(A.done?'':'<button class="btn '+(on?'':'ghost ')+'qpkb" type="button" data-pick="'+si+'">'+(on?'この番号を外す':'この番号で答える')+'</button>'):'')+
+        '<div class="slot'+(si===A.cur&&(A.s.length>1)?' on':'')+(on?'':' off')+'" data-slot="'+si+'"><span class="no">'+esc(qaSlotName(p,si))+'</span>'+body+'</div>'+(pk?'</div>':'')}).join("")+
+    '<div class="pool">'+A.ord.map(function(pi){return '<button class="pc" type="button" data-add="'+pi+'"'+(qaUsed(A,pi)||A.done||A.cur<0?' disabled':'')+'>'+esc(A.p[pi])+'</button>'}).join("")+'</div>'+
     (A.done?'':'<div class="ctl" style="grid-template-columns:1fr 1fr"><button class="btn ghost" type="button" data-a="back">1つ戻す</button><button class="btn ghost" type="button" data-a="reset">やり直す</button></div>')+'</div>';
   if(p.kind==="bar")h+='<div class="mqin" style="margin-top:10px"><input id="qaDays" type="number" inputmode="numeric" placeholder="全所要日数"'+(A.done?' disabled value="'+(A.days||"")+'"':'')+'><span>日</span></div>';
   var keep=$("qaDays")&&$("qaDays").value;$("qAns").innerHTML=h;if(keep&&$("qaDays")&&!A.done)$("qaDays").value=keep}
-$("qAns").addEventListener("click",function(e){if(!QA||QA.done)return;var A=QA,p=Q[qi];if(!p||(p.kind!=="write"&&p.kind!=="bar"))return;
-  var ad=e.target.closest("[data-add]"),rm=e.target.closest("[data-rm]"),sl=e.target.closest("[data-slot]"),ac=e.target.closest("[data-a]");
-  if(ad&&!ad.disabled)A.s[A.cur].push(+ad.dataset.add);
+function qaNote(t){var n=$("qaMsg");if(!n){n=document.createElement("p");n.id="qaMsg";n.className="hint";n.style.cssText="margin:6px 0 0;color:#fca5a5";$("qAns").prepend(n)}n.textContent=t}
+$("qAns").addEventListener("change",function(e){var f=e.target.closest("[data-fx]");if(f&&QA&&QA.kind==="fix")QA.v[+f.dataset.fx]=f.value});
+$("qAns").addEventListener("click",function(e){if(!QA||QA.done)return;var A=QA,p=Q[qi];if(!p||!(p.kind==="write"||p.kind==="bar"||p.kind==="fix"))return;
+  var pick=e.target.closest("[data-pick]");
+  if(pick){var i=+pick.dataset.pick,k=A.sel.indexOf(i);
+    if(k>=0){A.sel.splice(k,1);if(A.s)A.s[i]=[];if(A.kind==="fix")delete A.v[i];if(A.cur===i)A.cur=A.sel.length?A.sel[0]:-1}
+    else{if(A.sel.length>=2){qaDraw();qaNote("選べるのは2つまでです。別の番号にするときは、先に「この番号を外す」を押してください。");return}A.sel.push(i);A.cur=i}
+    qaDraw();return}
+  if(A.kind==="fix")return;
+  var ad=e.target.closest("[data-add]"),rm=e.target.closest("[data-rm]"),sl=e.target.closest("[data-slot]"),ac=e.target.closest("[data-a]"),pk=qaPick(p);
+  if(ad&&!ad.disabled){if(A.cur<0)return;A.s[A.cur].push(+ad.dataset.add)}
   else if(rm){var pi=+rm.dataset.rm;A.s.forEach(function(L){var k=L.indexOf(pi);if(k>=0)L.splice(k,1)})}
-  else if(sl)A.cur=+sl.dataset.slot;
-  else if(ac&&ac.dataset.a==="back"){if(A.s[A.cur].length)A.s[A.cur].pop()}
-  else if(ac&&ac.dataset.a==="reset"){A.s=A.s.map(function(){return []});A.cur=0}
+  else if(sl){var si=+sl.dataset.slot;if(pk&&A.sel.indexOf(si)<0){qaNote("先に「この番号で答える」を押して、この番号を選んでください（選べるのは2つまで）。");return}A.cur=si}
+  else if(ac&&ac.dataset.a==="back"){if(A.cur>=0&&A.s[A.cur].length)A.s[A.cur].pop()}
+  else if(ac&&ac.dataset.a==="reset"){A.s=A.s.map(function(){return []});A.cur=pk?(A.sel.length?A.sel[0]:-1):0}
   else return;
-  var cs=A.s[A.cur];if(ad&&A.s.length>1&&cs.length&&/。$/.test(A.p[cs[cs.length-1]])&&A.cur<A.s.length-1)A.cur++;
+  /* 文が「。」で終わったら次の枠へ */
+  if(ad&&A.kind==="write"&&A.cur>=0){var cs=A.s[A.cur];if(cs.length&&A.T.indexOf(cs.map(function(i){return A.p[i]}).join(""))>=0){var order=pk?A.sel:A.s.map(function(_,i){return i}),k2=order.indexOf(A.cur);if(k2>=0&&k2<order.length-1)A.cur=order[k2+1]}}
   qaDraw()});
-function qaGrade(p){var A=QA,res=[],wrong=[],ok=0,gi=[];
-  if(p.kind==="bar"){var order=A.s[0].map(function(i){return A.p[i]}),okO=order.join("|")===p.k.rows.map(function(r){return r[0]}).join("|");
+function qaGrade(p){var A=QA,res=[],wrong=[],ok=0,gi=[],slots=[];
+  if(p.kind==="fix"){if(A.sel.length!==2){qaNote("①〜④から2つ選んでから採点してください（いま "+A.sel.length+" つ）。");return}
+    slots=A.sel.slice().sort();res=slots.map(function(i){return (A.v[i]||"")===p.fa[i]});
+    slots.forEach(function(i,k){if(!res[k])wrong.push(p.k.items[i].slice(0,1)+"：正しくは "+p.fa[i]+(A.v[i]?"（あなた："+A.v[i]+"）":"（未回答）"))})}
+  else if(p.kind==="bar"){var order=A.s[0].map(function(i){return A.p[i]}),okO=order.join("|")===p.k.rows.map(function(r){return r[0]}).join("|");
     var d=parseInt($("qaDays").value,10);A.days=isNaN(d)?"":d;var okD=d===p.k.total;res=[okO,okD];
     if(!okO)wrong.push("施工順："+p.k.rows.map(function(r){return r[0]}).join("→"));if(!okD)wrong.push("全所要日数："+p.k.total+"日"+(isNaN(d)?"（未回答）":"（あなた："+d+"日）"))}
-  else{var got=A.s.map(function(L){return L.map(function(i){return A.p[i]}).join("")});
-    got.forEach(function(g,i){var k=-1;p.G.forEach(function(G,j){if(G[1].indexOf(g)>=0&&k<0)k=j});gi.push(k)});
-    res=got.map(function(g,i){var k=gi[i];if(k<0)return false;if(p.rule==="each")return k===i;if(i===1){if(got[0]===g)return false;if(p.rule==="diff"&&gi[0]===k)return false}return true});
-    res.forEach(function(r,i){if(!r)wrong.push((i?"②":"①")+"："+(got[i]||"（未入力）"))})}
+  else{var pk=qaPick(p);
+    if(pk&&A.sel.length!==2){qaNote("問題の指示どおり、番号を2つ選んでから採点してください（いま "+A.sel.length+" つ）。");return}
+    slots=pk?A.sel.slice().sort():[0,1];
+    var got=slots.map(function(si){return A.s[si].map(function(i){return A.p[i]}).join("")});
+    got.forEach(function(g,k){var j=-1;if(pk||p.rule==="each"){var G=p.G[pk?slots[k]:k];if(G[1].indexOf(g)>=0)j=pk?slots[k]:k}else p.G.forEach(function(G,jj){if(G[1].indexOf(g)>=0&&j<0)j=jj});gi.push(j)});
+    res=got.map(function(g,k){if(gi[k]<0)return false;if(p.rule==="any"&&k===1&&got[0]===g)return false;return true});
+    res.forEach(function(r,k){if(!r)wrong.push((pk?p.G[slots[k]][0]:(k?"②":"①"))+"："+(got[k]||"（未入力）"))})}
   res.forEach(function(r,k){var id=pid(p)+"-"+LBL[k],h=hist[id]||{n:0,ok:0,last:0};h.n++;if(r){h.ok++;ok++}h.last=r?1:0;hist[id]=h});
   save("d2hist",hist);score+=ok;total+=res.length;if(wrong.length)missed.push({p:p,w:wrong});$("scoreBadge").textContent=score+" / "+total;
-  A.done=true;qaDraw();$("qAns").querySelectorAll(".slot").forEach(function(el,i){el.classList.add(p.kind==="bar"?(res[0]?"ok":"ng"):(res[i]?"ok":"ng"))});
+  A.done=true;qaDraw();
+  if(p.kind==="fix"){slots.forEach(function(i,k){var r=$("ar"+i);r.classList.add(res[k]?"ok":"ng");r.querySelector(".mk").innerHTML='正解：<span class="mqw" data-w="'+esc(p.fa[i])+'">'+esc(p.fa[i])+'</span>'})}
+  else $("qAns").querySelectorAll(".slot").forEach(function(el){var si=+el.dataset.slot,k=slots.indexOf(si);if(p.kind==="bar")el.classList.add(res[0]?"ok":"ng");else if(k>=0)el.classList.add(res[k]?"ok":"ng")});
   var ad=ADV[p.y+"-"+p.q]||{},h='<div class="verdict '+(ok===res.length?"ok":"ng")+'">'+ok+' / '+res.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div>';
   if(p.kind==="bar"){h+='<div class="kdesc"><b>正解：全所要日数 '+p.k.total+'日（'+esc(p.k.calc)+'）</b>'+p.k.rows.map(function(r){var pad=(r[1]-1)/p.k.total*100,w=(r[2]-r[1]+1)/p.k.total*100;return '<div class="mqbar"><span><span class="mqw" data-w="'+esc(r[0])+'">'+esc(r[0])+'</span></span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")+'</div>'+(res[0]?'':'<p class="hint">あなたの順番：'+esc(A.s[0].map(function(i){return A.p[i]}).join("→")||"（未入力）")+'</p>')}
-  else{h+='<div class="mqans">'+A.s.map(function(L,i){var g=L.map(function(x){return A.p[x]}).join("");return '<div><b>'+(i?'②':'①')+' '+(res[i]?'正しい文'+(gi[i]>=0?'（'+esc(p.G[gi[i]][0])+'）':''):'まちがい')+'</b>'+qw(g||'（未入力）')+'</div>'}).join("")+'</div>';
-    h+='<div class="kdesc"><b>解答例（'+(p.rule==="each"?'それぞれ1つずつ':p.rule==="diff"?'違う番号から2つ':'2つ')+'）</b>'+p.G.map(function(g){return '<p style="margin:6px 0 2px;font-weight:700;color:var(--accent-hi)"><span class="mqw" data-w="'+esc(g[0].replace(/^[①-⑨]\s*|^\(\d\)\s*/,""))+'">'+esc(g[0])+'</span></p><ul class="kex" style="margin:0">'+g[1].map(function(x){return '<li>'+qw(x)+'</li>'}).join("")+'</ul>'}).join("")+'</div>'}
+  else if(p.kind==="fix"){h+='<div class="kdesc"><b>正解（①〜④すべて）</b><ul class="kex" style="margin:0">'+p.k.ans.map(function(g){return '<li>'+qw(g[0])+'：'+qw(g[1][0])+'</li>'}).join("")+'</ul></div>'}
+  else{var pk2=qaPick(p);h+='<div class="mqans">'+slots.map(function(si,k){var g=A.s[si].map(function(x){return A.p[x]}).join("");return '<div><b>'+esc(pk2||p.rule==="each"?p.G[si][0]:(k?'②':'①'))+'：'+(res[k]?'正しい文'+(!pk2&&p.rule==="any"&&gi[k]>=0&&p.G.length>1?'（'+esc(p.G[gi[k]][0])+'）':''):'まちがい')+'</b>'+qw(g||'（未入力）')+'</div>'}).join("")+'</div>';
+    h+='<div class="kdesc"><b>解答例（'+(p.rule==="each"?'それぞれ1つずつ':p.rule==="diff"?p.G.length+'つから2つ選ぶ':'2つ')+'）</b>'+p.G.map(function(g){return '<p style="margin:6px 0 2px;font-weight:700;color:var(--accent-hi)"><span class="mqw" data-w="'+esc(g[0].replace(/^[①-⑨]\s*|^\(\d\)\s*/,""))+'">'+esc(g[0])+'</span></p><ul class="kex" style="margin:0">'+g[1].map(function(x){return '<li>'+qw(x)+'</li>'}).join("")+'</ul>'}).join("")+'</div>'}
   if(ad.w)h+='<div class="kpt" style="margin-top:10px"><b class="kh">そのまま書ける短い答え</b><ul class="kw2">'+ad.w.map(function(x){return '<li>'+qw(x)+'</li>'}).join("")+'</ul>'+(ad.a?'<b class="kh">合格へのアドバイス</b><p>'+qw(ad.a)+'</p>':'')+'</div>';
   h+='<div class="srcrow">'+aLink(p.y,p.q)+'</div>'+repBox(p.y+"-"+p.q);
   $("qVerdict").innerHTML=h;$("gradeBtn").hidden=true;$("nextBtn").hidden=false;$("nextBtn").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";$("nextBtn").focus()}
@@ -1047,14 +1106,14 @@ function render(){
   $("qSrc").innerHTML=qLinks(p.y,p.q);
   $("qImg").src="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;$("qImg").alt=p.y+" 問"+p.q+" 問題用紙";
   $("qImgLink").href="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;}
-  if(p.kind==="write"||p.kind==="bar"){qaInit(p);qaDraw()}else{
+  if(p.kind==="write"||p.kind==="bar"||p.kind==="fix"){qaInit(p);qaDraw()}else{
   var opts='<option value="">選択してください</option>'+p.w.map(function(x){return '<option>'+esc(x)+'</option>'}).join("");
   $("qAns").innerHTML=(p.kind==="fix"?'<p class="hint" style="margin:0 0 8px">①〜④の誤っている語句又は数値を、正しいものに直しなさい（本番は2つ選んで解答）。</p>':'')+p.ans.map(function(_,k){var lb=p.lb?p.lb[k]:"("+LBL[k]+")";return '<div class="arow" id="ar'+k+'"><span class="lb">'+lb+'</span><select id="as'+k+'" aria-label="'+lb+'の答え">'+opts+'</select><span class="mk"></span></div>'}).join("");}
   $("qVerdict").innerHTML="";$("gradeBtn").hidden=false;$("nextBtn").hidden=true;
 }
 $("gradeBtn").addEventListener("click",function(){
   var p=Q[qi],ok=0,wrong=[];
-  if(p.kind==="write"||p.kind==="bar"){qaGrade(p);return}
+  if(p.kind==="write"||p.kind==="bar"||p.kind==="fix"){qaGrade(p);return}
   p.ans.forEach(function(a,k){
     var v=$("as"+k).value,good=v===a,row=$("ar"+k);
     row.classList.add(good?"ok":"ng");$("as"+k).disabled=true;
@@ -1159,7 +1218,7 @@ $("shB").addEventListener("click",function(){$("sheet").hidden=true});
 $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 var selT="";
-document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
+document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
 $("q-play").addEventListener("click",function(e){var w=e.target.closest(".mqw[data-w]");if(!w)return;if(String(getSelection()).trim())return;openSheet(w.dataset.w,"")});
 $("selS").addEventListener("mousedown",function(e){e.preventDefault()});
 $("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
@@ -1314,6 +1373,26 @@ BAR.forEach(function(b){
   draw();
 })();
 
+/* ---------- 短い答えまとめ ---------- */
+(function(){
+  var FO=["安全","工程","コンクリート","土工","計画・環境","品質"],cat="すべて",L=[];
+  Object.keys(ADV).forEach(function(id){var a=ADV[id];if(!a.w)return;var yo=id.indexOf("予想-")===0,k,th;
+    if(yo){k=YM[id.slice(3)];th=k&&k.th}else{var x=id.split("-");k=KAISETSU.filter(function(z){return z.y===x[0]&&z.q===x[1]})[0];th=qTh(x[0],x[1])}
+    if(!k)return;var f=(THEMES[th]&&THEMES[th].f)||"その他";L.push({id:id,yo:yo,t:k.t,f:f,w:a.w,lead:k.lead})});
+  var cats=["すべて"].concat(FO.filter(function(f){return L.some(function(x){return x.f===f})}));
+  cats.forEach(function(c){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c;b.setAttribute("aria-pressed",c===cat);
+    b.addEventListener("click",function(){cat=c;document.querySelectorAll("#wsFilter .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});draw()});$("wsFilter").appendChild(b)});
+  function draw(){var n=0,h="";cats.slice(1).forEach(function(f){if(cat!=="すべて"&&cat!==f)return;var G=L.filter(function(x){return x.f===f});if(!G.length)return;
+      G.sort(function(a,b){return a.yo===b.yo?(a.id<b.id?1:-1):(a.yo?1:-1)});
+      h+='<section class="sec ws"><h2><b>'+esc(f)+'</b>'+G.reduce(function(s,x){return s+x.w.length},0)+'文</h2>'+G.map(function(x){n+=x.w.length;
+        return '<div class="wsq"><div class="wsh"><span class="tag">'+(x.yo?'予想':esc(x.id.replace("-"," 問")))+'</span><button class="jump wst" type="button" data-j="'+x.id+'">'+esc(x.t)+'</button></div><ul>'+x.w.map(function(w){var m=w.match(/^([^：]{1,24})：(.+)$/);return '<li>'+(m?'<b>'+esc(m[1])+'</b>：'+esc(m[2]):esc(w))+'</li>'}).join("")+'</ul></div>'}).join("")+'</section>'});
+    $("wsList").innerHTML=h;$("wsCount").textContent=n}
+  $("wsHideQ").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("wsList").classList.toggle("hideans",on)});
+  $("wsList").addEventListener("click",function(e){var q=e.target.closest(".wsq");if(q&&$("wsList").classList.contains("hideans")&&!e.target.closest(".jump"))q.classList.toggle("open")});
+  $("wsPrint").addEventListener("click",function(){window.print()});
+  draw();
+})();
+
 /* ---------- 問題集 ---------- */
 (function(){
   var rec=load("d2mq",{}),set="",Q=[],qi=0,ok=0,miss=[],answered=false;
@@ -1431,7 +1510,7 @@ BAR.forEach(function(b){
     else if(x.k==="kij1"){var oth=[];q.g[4].forEach(function(it){if(it[1]!==q.ans){var cs=chunks(it[1]);if(cs.length>1)oth.push(shuf(cs)[0])}});asmInit([q.ans],shuf(oth));
       h='<p class="mqsub" style="margin:0 0 6px">テーマ：'+esc(q.th)+'（問われ方：'+esc(q.ask)+'）</p><p class="mqq">キーワード「'+esc(q.kw)+'」の文を、パーツをつなげて完成させなさい。</p><p class="hint" style="margin:-6px 0 10px">数値や語句をわざと変えた「まちがいパーツ」や、別の文のパーツが混ざっています。つなげたパーツはタップで外せます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
     else{asmInit(q[4].map(function(it){return it[1]}),[],2);
-      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">このテーマで書ける文のパーツがすべて並んでいます。好きな文を2つ選んで①②に組み立てなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①が「。」で終わると②に移ります（枠をタップしても切り替えられます）。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
+      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">このテーマで書ける文のパーツがすべて並んでいます。好きな文を2つ選んで①②に組み立てなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①の文が完成すると②に移ります（枠をタップしても切り替えられます）。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
     $("mqCard").innerHTML=h;
   }
   $("mqCard").addEventListener("click",function(e){
