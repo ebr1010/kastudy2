@@ -288,6 +288,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .kcard h3 .tt[data-w]{text-decoration-color:rgba(103,232,249,.5)}
 #selS{position:fixed;left:50%;transform:translateX(-50%);top:max(10px,env(safe-area-inset-top,0px));z-index:55;font:700 14px var(--f-jp);color:#fff;background:linear-gradient(135deg,#3b82f6,#06b6d4);border:0;border-radius:999px;padding:10px 16px;box-shadow:0 6px 20px rgba(0,0,0,.5);max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #selS[hidden]{display:none}
+#qVerdict:empty{display:none}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(8,18,36,.98);border-top:1px solid rgba(6,182,212,.45);box-shadow:0 -10px 40px rgba(0,0,0,.6);padding:14px max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:grid;gap:8px}
 .sheet[hidden]{display:none!important}
 .sheet .w{font-weight:900;font-size:18px;color:var(--success-hi)}
@@ -413,13 +414,13 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <section class="sec">
         <h2><b>ANSWER</b>解答欄</h2>
         <div class="ansgrid" id="qAns"></div>
-        <div id="qVerdict"></div>
       </section>
       <div class="row">
         <button class="btn ghost" id="quitBtn" type="button">やめる</button>
         <button class="btn" id="gradeBtn" type="button" style="flex:1">採点</button>
         <button class="btn" id="nextBtn" type="button" style="flex:1" hidden>次へ</button>
       </div>
+      <div id="qVerdict" class="sec" style="margin-top:12px"></div>
     </div>
 
     <div id="q-result" class="view" hidden>
@@ -722,6 +723,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.14.3</b>穴埋め・予想穴埋めで、採点後の「次の問題へ」ボタンを解説より上（解答欄のすぐ下）に移動</li>
         <li><b>v1.14.2</b>穴埋め・予想穴埋めの採点後の解説に検索を追加（正解の語句、解説中の「」で囲んだ語句をタップで検索、その他の文字は長押し選択で検索）。予想解説の「」の語句もタップで検索</li>
         <li><b>v1.14.1</b>2次検定の全データ（過去問56問を問題用紙と照合、予想問題163問、解説・暗記・記述暗記・問題集）を再確認し修正：スランプ許容差の表記、かぶりの定義（鉄筋の表面から）、絶縁用防護具・監視人の用語、数値タブ「敷均し厚さ」→「1層の仕上り厚さ」、フロートの求め方、酸欠・硫化水素の表、出題年の参照ミス（ネットワークの計算は未出題、R4問2・R4問3・R5問5・R5問6・R6問3の内容）、出題回数の数え違い、法面保護工と湧水の説明、締固め機械の土質、確認しきれない条文番号の削除</li>
         <li><b>v1.14.0</b>予想穴埋めを70問から150問に増やした（15セット：土工①〜③、コンクリート①〜④、安全管理①〜④、工程・品質管理①②、施工計画・環境①②）。追加80問すべてに空欄ごとのくわしい解説・覚えておくこと・合格へのアドバイス付き</li>
@@ -782,7 +784,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.14.2</div>
+  <div class="ver" aria-label="バージョン">v1.14.3</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -795,26 +797,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.14.2"></script>
-<script src="yosou.js?v=1.14.2"></script>
-<script src="yosou2.js?v=1.14.2"></script>
-<script src="yx1.js?v=1.14.2"></script>
-<script src="yx2.js?v=1.14.2"></script>
-<script src="yx3.js?v=1.14.2"></script>
-<script src="yx4.js?v=1.14.2"></script>
-<script src="yz1.js?v=1.14.2"></script>
-<script src="yz2.js?v=1.14.2"></script>
-<script src="yz3.js?v=1.14.2"></script>
-<script src="yz4.js?v=1.14.2"></script>
-<script src="advice.js?v=1.14.2"></script>
-<script src="anki.js?v=1.14.2"></script>
-<script src="kijutsu.js?v=1.14.2"></script>
-<script src="mondai.js?v=1.14.2"></script>
-<script src="mqinfo.js?v=1.14.2"></script>
+<script src="kaisetsu.js?v=1.14.3"></script>
+<script src="yosou.js?v=1.14.3"></script>
+<script src="yosou2.js?v=1.14.3"></script>
+<script src="yx1.js?v=1.14.3"></script>
+<script src="yx2.js?v=1.14.3"></script>
+<script src="yx3.js?v=1.14.3"></script>
+<script src="yx4.js?v=1.14.3"></script>
+<script src="yz1.js?v=1.14.3"></script>
+<script src="yz2.js?v=1.14.3"></script>
+<script src="yz3.js?v=1.14.3"></script>
+<script src="yz4.js?v=1.14.3"></script>
+<script src="advice.js?v=1.14.3"></script>
+<script src="anki.js?v=1.14.3"></script>
+<script src="kijutsu.js?v=1.14.3"></script>
+<script src="mondai.js?v=1.14.3"></script>
+<script src="mqinfo.js?v=1.14.3"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.14.2";
+var APP_VER="1.14.3";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
