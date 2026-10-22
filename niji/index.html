@@ -750,6 +750,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.18.1</b>「似ている過去問」ボタンを別タブで開くように変更（その過去問の解説が新しいタブで表示される）</li>
         <li><b>v1.18.0</b>予想穴埋めで、(1)〜(5)の文の順番を毎回バラバラに出題（空欄の記号は表示順にイ・ロ・ハ…と付け直し）。「同じ条件で」「(3)の」のように前の文とつながる文はまとめて動かすか、順番を変えない。予想解説は元の順番のまま</li>
         <li><b>v1.17.0</b>記述問題の答え方を全体で「語句だけ選ぶ」形式に変更（穴埋めタブの問3・5・8・9、問題集の記述）。解答文の大事な語句（数値・用語）が空欄になり、選択肢から選ぶ。「別の文で答える」でほかの解答例に切り替えられる。「2つ選んで解答」の問題は、引き続き2つだけ選ぶ</li>
         <li><b>v1.16.0</b>「短い答え」タブを追加（記述問題の「そのまま書ける短い答え」を過去問25問・予想12問の全部、分野ごとに一覧。問題名タップで解説へ、答えを隠すテスト、印刷）。記述の組み立てで、文が完成したら次の枠に移るように修正（文中の「。」で移らない）</li>
@@ -816,7 +817,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.18.0</div>
+  <div class="ver" aria-label="バージョン">v1.18.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -829,26 +830,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.18.0"></script>
-<script src="yosou.js?v=1.18.0"></script>
-<script src="yosou2.js?v=1.18.0"></script>
-<script src="yx1.js?v=1.18.0"></script>
-<script src="yx2.js?v=1.18.0"></script>
-<script src="yx3.js?v=1.18.0"></script>
-<script src="yx4.js?v=1.18.0"></script>
-<script src="yz1.js?v=1.18.0"></script>
-<script src="yz2.js?v=1.18.0"></script>
-<script src="yz3.js?v=1.18.0"></script>
-<script src="yz4.js?v=1.18.0"></script>
-<script src="advice.js?v=1.18.0"></script>
-<script src="anki.js?v=1.18.0"></script>
-<script src="kijutsu.js?v=1.18.0"></script>
-<script src="mondai.js?v=1.18.0"></script>
-<script src="mqinfo.js?v=1.18.0"></script>
+<script src="kaisetsu.js?v=1.18.1"></script>
+<script src="yosou.js?v=1.18.1"></script>
+<script src="yosou2.js?v=1.18.1"></script>
+<script src="yx1.js?v=1.18.1"></script>
+<script src="yx2.js?v=1.18.1"></script>
+<script src="yx3.js?v=1.18.1"></script>
+<script src="yx4.js?v=1.18.1"></script>
+<script src="yz1.js?v=1.18.1"></script>
+<script src="yz2.js?v=1.18.1"></script>
+<script src="yz3.js?v=1.18.1"></script>
+<script src="yz4.js?v=1.18.1"></script>
+<script src="advice.js?v=1.18.1"></script>
+<script src="anki.js?v=1.18.1"></script>
+<script src="kijutsu.js?v=1.18.1"></script>
+<script src="mondai.js?v=1.18.1"></script>
+<script src="mqinfo.js?v=1.18.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.18.0";
+var APP_VER="1.18.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -916,7 +917,7 @@ function lv(p){return p>=60?"hi":p>=40?"md":"lo"}
 function qTh(y,q){return y==="予想"?(YM[q]||{}).th:(QTHEME[y+"-"+q]||[])[0]}
 function probHTML(th){if(!th||!THEMES[th])return "";var p=thProb(th),ys=thYears(th);
   return '<div class="prob '+lv(p)+'"><div class="pt"><b>今年の出題確率 '+p+'%</b><span>（同じテーマが出る確率の目安）</span></div><div class="pb"><i style="width:'+p+'%"></i></div><small>テーマ「'+esc(THEMES[th].n)+'」：過去7年で'+ys.length+'回'+(ys.length?'（'+yLinks(thIds(th))+'）':'（未出題）')+'</small></div>'}
-function simBtns(k){return '<div class="basis"><b>根拠：</b>'+esc(k.basis||"")+'</div>'+(k.sim&&k.sim.length?k.sim.map(function(id){var a=id.split("-");return '<button class="srcbtn jump" type="button" data-j="'+id+'">似ている過去問 '+a[0]+' 問'+a[1]+'</button>'}).join(""):'<div class="basis">似ている過去問：なし（7年間未出題のテーマ）</div>')}
+function simBtns(k){return '<div class="basis"><b>根拠：</b>'+esc(k.basis||"")+'</div>'+(k.sim&&k.sim.length?k.sim.map(function(id){var a=id.split("-");return '<a class="srcbtn" href="'+location.pathname+'?v='+APP_VER+'#j='+encodeURIComponent(id)+'" target="_blank" rel="noopener">似ている過去問 '+a[0]+' 問'+a[1]+' ↗</a>'}).join(""):'<div class="basis">似ている過去問：なし（7年間未出題のテーマ）</div>')}
 
 /* ---------- 同じ文章の過去問（穴埋め） ---------- */
 var SIMS=(function(){
@@ -1661,6 +1662,8 @@ try{fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){retu
 }).catch(function(){})}catch(e){}
 stats();
 var t0=load("d2tab","home");if(document.querySelector('.tabs button[data-v="'+t0+'"]'))show(t0);
+/* 別タブで開いたとき（#j=R5-3 など）は、その問題の解説を表示 */
+(function(){var m=location.hash.match(/^#j=(.+)$/);if(m)jumpTo(decodeURIComponent(m[1]))})();
 })();
 </script>
 </body>
