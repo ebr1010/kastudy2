@@ -453,10 +453,10 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <div class="view" id="v-yosou" hidden>
     <section class="sec">
       <h2><b>FORECAST</b>今年（令和8年度）の出題予想</h2>
-      <p style="margin:0 0 10px">過去7年（R1〜R7）の二次検定の出題から、テーマごとに「今年出る確率の目安」を出しました。確率の高いテーマを中心に、まだ聞かれていない内容で予想問題（穴埋め70問・記述12問・工程表1問）を作っています。</p>
+      <p style="margin:0 0 10px">過去7年（R1〜R7）の二次検定の出題から、テーマごとに「今年出る確率の目安」を出しました。確率の高いテーマを中心に、まだ聞かれていない内容で予想問題（穴埋め150問・記述12問・工程表1問）を作っています。</p>
       <div style="display:grid;gap:8px">
-        <button class="btn" id="ySolve" type="button">予想問題を解く（穴埋め70問）</button>
-        <button class="btn ghost" id="yRead" type="button" style="width:100%">予想問題の解説を見る（全83問）</button>
+        <button class="btn" id="ySolve" type="button">予想問題を解く（穴埋め150問）</button>
+        <button class="btn ghost" id="yRead" type="button" style="width:100%">予想問題の解説を見る（全163問）</button>
       </div>
     </section>
     <section class="sec">
@@ -722,7 +722,9 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
-        <li><b>v1.13.2</b>タブを「穴埋め・解説・予想穴埋め・予想解説」の順に。予想穴埋め・予想解説を穴埋め・解説と同じ画面構成にし、カテゴリー別10問のセット（土工・コンクリート①②・安全管理①②・工程・品質管理・施工計画・環境）で選べるように</li>
+        <li><b>v1.14.0</b>予想穴埋めを70問から150問に増やした（15セット：土工①〜③、コンクリート①〜④、安全管理①〜④、工程・品質管理①②、施工計画・環境①②）。追加80問すべてに空欄ごとのくわしい解説・覚えておくこと・合格へのアドバイス付き</li>
+        <li><b>v1.13.2</b>予想問題70問すべてに、空欄ごとのくわしい解説（なぜこの答えか・まちがえやすい選択肢・セットで覚えること）を追加。追加問題（Y31〜Y70）にも「覚えておくこと」「合格へのアドバイス」を追加。予想穴埋めの採点画面にも同じ解説を表示</li>
+        <li><b>v1.13.1</b>タブを「穴埋め・解説・予想穴埋め・予想解説」の順に。予想穴埋め・予想解説を穴埋め・解説と同じ画面構成にし、カテゴリー別10問のセット（土工・コンクリート①②・安全管理①②・工程・品質管理・施工計画・環境）で選べるように</li>
         <li><b>v1.13.0</b>予想問題（穴埋め）を70問に増やし、「予想穴埋め」タブに独立（7カテゴリー×10問、複数選択・シャッフル・要復習だけ）。全問にくわしい解説を追加。「予想解説」タブを新設</li>
         <li><b>v1.12.3</b>記述の「2つ書く」組み立てで、テーマの正しい文のパーツをすべて並べ、好きな2文を選べるように。まちがいパーツも増量</li>
         <li><b>v1.12.2</b>記述の組み立てパーツの区切り方を修正（「により」「ではなく」「となる」などを途中で切らない）</li>
@@ -778,7 +780,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.13.2</div>
+  <div class="ver" aria-label="バージョン">v1.14.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -791,22 +793,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.13.2"></script>
-<script src="yosou.js?v=1.13.2"></script>
-<script src="yosou2.js?v=1.13.2"></script>
-<script src="yx1.js?v=1.13.2"></script>
-<script src="yx2.js?v=1.13.2"></script>
-<script src="yx3.js?v=1.13.2"></script>
-<script src="yx4.js?v=1.13.2"></script>
-<script src="advice.js?v=1.13.2"></script>
-<script src="anki.js?v=1.13.2"></script>
-<script src="kijutsu.js?v=1.13.2"></script>
-<script src="mondai.js?v=1.13.2"></script>
-<script src="mqinfo.js?v=1.13.2"></script>
+<script src="kaisetsu.js?v=1.14.0"></script>
+<script src="yosou.js?v=1.14.0"></script>
+<script src="yosou2.js?v=1.14.0"></script>
+<script src="yx1.js?v=1.14.0"></script>
+<script src="yx2.js?v=1.14.0"></script>
+<script src="yx3.js?v=1.14.0"></script>
+<script src="yx4.js?v=1.14.0"></script>
+<script src="yz1.js?v=1.14.0"></script>
+<script src="yz2.js?v=1.14.0"></script>
+<script src="yz3.js?v=1.14.0"></script>
+<script src="yz4.js?v=1.14.0"></script>
+<script src="advice.js?v=1.14.0"></script>
+<script src="anki.js?v=1.14.0"></script>
+<script src="kijutsu.js?v=1.14.0"></script>
+<script src="mondai.js?v=1.14.0"></script>
+<script src="mqinfo.js?v=1.14.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.13.2";
+var APP_VER="1.14.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1404,9 +1410,10 @@ BAR.forEach(function(b){
 var YP={};PROBS.forEach(function(p){if(p.y==="予想")YP[p.q]=p});
 var yqSel={};
 /* カテゴリーごとに10問単位のセットに分ける（10問を超えるカテゴリーはセットを増やす） */
-var YGRP=[["土工",[0]],["コンクリート",[1,2]],["安全管理",[3,4]],["工程・品質管理",[5]],["施工計画・環境",[6]]],YSET=[];
-YGRP.forEach(function(g){var ids=[],sub=[];g[1].forEach(function(ci){ids=ids.concat(YCAT[ci][2]);sub.push(YCAT[ci][1])});var n=Math.ceil(ids.length/10);
-  for(var i=0;i<n;i++){var part=ids.slice(i*10,(i+1)*10);YSET.push([g[0]+(n>1?"①②③④⑤".charAt(i):""),part,n>1?g[1].map(function(ci){return YCAT[ci][1]})[i]||sub.join("・"):sub.join("・")])}});
+/* YCAT[i] = [名前, 内容, 問題ID(10問), グループ]。同じグループのセットに①②③…を付ける */
+var YSET=[],YGC={};
+YCAT.forEach(function(c){var g=c[3]||c[0];YGC[g]=(YGC[g]||0)+1});
+var YGN={};YCAT.forEach(function(c){var g=c[3]||c[0];YGN[g]=(YGN[g]||0)+1;YSET.push([g+(YGC[g]>1?"①②③④⑤⑥".charAt(YGN[g]-1):""),c[2],c[1]])});
 YSET.forEach(function(c,i){var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");b.textContent=c[0]+"（"+c[1].length+"問）";
   b.addEventListener("click",function(){yqSel[i]=!yqSel[i];b.setAttribute("aria-pressed",!!yqSel[i]);yqUpd()});$("yqCats").appendChild(b)});
 $("yqInfo").innerHTML=YSET.map(function(c){return '<div><b style="color:var(--text)">'+esc(c[0])+'</b>：'+esc(c[2])+'</div>'}).join("");
