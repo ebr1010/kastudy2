@@ -750,6 +750,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.18.0</b>予想穴埋めで、(1)〜(5)の文の順番を毎回バラバラに出題（空欄の記号は表示順にイ・ロ・ハ…と付け直し）。「同じ条件で」「(3)の」のように前の文とつながる文はまとめて動かすか、順番を変えない。予想解説は元の順番のまま</li>
         <li><b>v1.17.0</b>記述問題の答え方を全体で「語句だけ選ぶ」形式に変更（穴埋めタブの問3・5・8・9、問題集の記述）。解答文の大事な語句（数値・用語）が空欄になり、選択肢から選ぶ。「別の文で答える」でほかの解答例に切り替えられる。「2つ選んで解答」の問題は、引き続き2つだけ選ぶ</li>
         <li><b>v1.16.0</b>「短い答え」タブを追加（記述問題の「そのまま書ける短い答え」を過去問25問・予想12問の全部、分野ごとに一覧。問題名タップで解説へ、答えを隠すテスト、印刷）。記述の組み立てで、文が完成したら次の枠に移るように修正（文中の「。」で移らない）</li>
         <li><b>v1.15.1</b>「①〜③（④）から2つ選んで解答」の記述問題で、すべての番号の解答欄を表示し、問題の指示どおり2つだけ選んで答える形式に変更（3つ目は選べない）。R1問5の誤り訂正も①〜④から2つ選ぶ形式に</li>
@@ -815,7 +816,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.17.0</div>
+  <div class="ver" aria-label="バージョン">v1.18.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -828,26 +829,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.17.0"></script>
-<script src="yosou.js?v=1.17.0"></script>
-<script src="yosou2.js?v=1.17.0"></script>
-<script src="yx1.js?v=1.17.0"></script>
-<script src="yx2.js?v=1.17.0"></script>
-<script src="yx3.js?v=1.17.0"></script>
-<script src="yx4.js?v=1.17.0"></script>
-<script src="yz1.js?v=1.17.0"></script>
-<script src="yz2.js?v=1.17.0"></script>
-<script src="yz3.js?v=1.17.0"></script>
-<script src="yz4.js?v=1.17.0"></script>
-<script src="advice.js?v=1.17.0"></script>
-<script src="anki.js?v=1.17.0"></script>
-<script src="kijutsu.js?v=1.17.0"></script>
-<script src="mondai.js?v=1.17.0"></script>
-<script src="mqinfo.js?v=1.17.0"></script>
+<script src="kaisetsu.js?v=1.18.0"></script>
+<script src="yosou.js?v=1.18.0"></script>
+<script src="yosou2.js?v=1.18.0"></script>
+<script src="yx1.js?v=1.18.0"></script>
+<script src="yx2.js?v=1.18.0"></script>
+<script src="yx3.js?v=1.18.0"></script>
+<script src="yx4.js?v=1.18.0"></script>
+<script src="yz1.js?v=1.18.0"></script>
+<script src="yz2.js?v=1.18.0"></script>
+<script src="yz3.js?v=1.18.0"></script>
+<script src="yz4.js?v=1.18.0"></script>
+<script src="advice.js?v=1.18.0"></script>
+<script src="anki.js?v=1.18.0"></script>
+<script src="kijutsu.js?v=1.18.0"></script>
+<script src="mondai.js?v=1.18.0"></script>
+<script src="mqinfo.js?v=1.18.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.17.0";
+var APP_VER="1.18.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1065,6 +1066,12 @@ function wsOK(S,si){var B=wsCur(S,si),v=S.v[si]||[];return B.bl.every(function(b
 function wsCyc(S,si,distinct){var L=S.L[si],n=L.length,j=S.idx[si];for(var k=1;k<n;k++){var c=(j+k)%n;if(!distinct||S.L.every(function(LL,o){return o===si||LL[S.idx[o]]!==L[c]})){S.idx[si]=c;break}}S.v[si]=[]}
 function wsIdx(L,distinct){var idx=[];L.forEach(function(LL,si){var o=shuffle(LL.map(function(_,i){return i}));for(var k=0;k<o.length;k++){if(!distinct||!idx.some(function(j,s2){return L[s2][j]===LL[o[k]]})){idx.push(o[k]);return}}idx.push(o[0])});return idx}
 
+/* 予想穴埋めの文の並べ替え。all＝順番を変えない（「(3)の」など番号で前の文を指す問題）／配列＝まとめて動かす文のまとまり */
+var YFIX={Y52:"all",Y79:"all",Y126:"all",Y09:[[0,1,2]],Y60:[[0,1]],Y47:[[1,2]],Y147:[[0,1,2,3]]};
+function yOrd(k){var n=k.s.length,F=YFIX[k.q],id=k.s.map(function(_,i){return i});if(F==="all"||n<2)return id;
+  var used={},B=[];(F||[]).forEach(function(g){B.push(g);g.forEach(function(i){used[i]=1})});id.forEach(function(i){if(!used[i])B.push([i])});
+  if(B.length<2)return id;var o;for(var t=0;t<6;t++){o=[].concat.apply([],shuffle(B.slice()));if(o.join()!==id.join())break}return o}
+
 var QA=null;
 function qaPick(p){return p.kind==="fix"||(p.kind==="write"&&p.rule==="diff")}
 function qaInit(p){var K=window.ASMK;
@@ -1155,15 +1162,20 @@ function render(){
   $("qTags").innerHTML=yo?'<span class="tag">予想</span><span class="tag">'+p.q+'</span><span class="tag t">'+esc(p.t)+'</span>':'<span class="tag">'+p.y+'</span><span class="tag">問'+p.q+'</span><span class="tag t">'+esc(p.t)+'</span>';
   $("qProb").innerHTML=probHTML(p.th);
   $("qImgBox").hidden=yo;$("qText").hidden=!yo;
+  p.dl=null;p.dord=null;
   if(yo){$("qSrc").innerHTML=simBtns(p.k);
-    $("qText").innerHTML='<p class="lead">'+esc(p.k.lead)+'</p>'+p.k.s.map(function(x){return '<p>'+esc(x).replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l){return '<span class="qb">('+l+')</span>'})+'</p>'}).join("")+'<div class="wgrp"><b>［語句又は数値］</b>'+p.w.map(esc).join("、　")+'</div>';
+    /* 予想穴埋め：(1)〜(5)の文の順番をバラバラにする（つながりのある文はまとめて動かす）。空欄の記号は表示順にイ・ロ・ハ…と付け直す */
+    var ord=yOrd(p.k),mp={},nx=0,ss=ord.map(function(oi,ni){return p.k.s[oi].replace(/^\(\d\)\s*/,"("+(ni+1)+") ")});
+    ss.forEach(function(x){x.replace(/\{([イロハニホ]):[^}]+\}/g,function(_,l){if(!mp[l])mp[l]=LBL[nx++]})});
+    p.dl=p.ans.map(function(_,k){return mp[LBL[k]]||LBL[k]});p.dord=p.ans.map(function(_,k){return k}).sort(function(a,b){return LBL.indexOf(p.dl[a])-LBL.indexOf(p.dl[b])});
+    $("qText").innerHTML='<p class="lead">'+esc(p.k.lead)+'</p>'+ss.map(function(x){return '<p>'+esc(x).replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l){return '<span class="qb">('+mp[l]+')</span>'})+'</p>'}).join("")+'<div class="wgrp"><b>［語句又は数値］</b>'+p.w.map(esc).join("、　")+'</div>';
   }else{
   $("qSrc").innerHTML=qLinks(p.y,p.q);
   $("qImg").src="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;$("qImg").alt=p.y+" 問"+p.q+" 問題用紙";
   $("qImgLink").href="q/"+p.y+"-"+p.q+".jpg?v="+APP_VER;}
   if(p.kind==="write"||p.kind==="bar"||p.kind==="fix"){qaInit(p);qaDraw()}else{
   var opts='<option value="">選択してください</option>'+p.w.map(function(x){return '<option>'+esc(x)+'</option>'}).join("");
-  $("qAns").innerHTML=(p.kind==="fix"?'<p class="hint" style="margin:0 0 8px">①〜④の誤っている語句又は数値を、正しいものに直しなさい（本番は2つ選んで解答）。</p>':'')+p.ans.map(function(_,k){var lb=p.lb?p.lb[k]:"("+LBL[k]+")";return '<div class="arow" id="ar'+k+'"><span class="lb">'+lb+'</span><select id="as'+k+'" aria-label="'+lb+'の答え">'+opts+'</select><span class="mk"></span></div>'}).join("");}
+  $("qAns").innerHTML=(p.kind==="fix"?'<p class="hint" style="margin:0 0 8px">①〜④の誤っている語句又は数値を、正しいものに直しなさい（本番は2つ選んで解答）。</p>':'')+(p.dord||p.ans.map(function(_,k){return k})).map(function(k){var lb=p.lb?p.lb[k]:"("+(p.dl?p.dl[k]:LBL[k])+")";return '<div class="arow" id="ar'+k+'"><span class="lb">'+lb+'</span><select id="as'+k+'" aria-label="'+lb+'の答え">'+opts+'</select><span class="mk"></span></div>'}).join("");}
   $("qVerdict").innerHTML="";$("gradeBtn").hidden=false;$("nextBtn").hidden=true;
 }
 $("gradeBtn").addEventListener("click",function(){
@@ -1174,12 +1186,13 @@ $("gradeBtn").addEventListener("click",function(){
     row.classList.add(good?"ok":"ng");$("as"+k).disabled=true;
     row.querySelector(".mk").innerHTML=(good?"正解：":"正解：")+'<span class="mqw" data-w="'+esc(a)+'">'+esc(a)+'</span>';
     var id=pid(p)+"-"+LBL[k],h=hist[id]||{n:0,ok:0,last:0};h.n++;if(good)h.ok++;h.last=good?1:0;hist[id]=h;
-    if(good)ok++;else wrong.push("("+LBL[k]+") "+a+(v?"（あなた："+v+"）":"（未回答）"));
+    if(good)ok++;else wrong.push("("+(p.dl?p.dl[k]:LBL[k])+") "+a+(v?"（あなた："+v+"）":"（未回答）"));
   });
+  if(p.dord)wrong.sort(function(a,b){return LBL.indexOf(a.charAt(1))-LBL.indexOf(b.charAt(1))});
   save("d2hist",hist);score+=ok;total+=p.ans.length;
   if(wrong.length)missed.push({p:p,w:wrong});
   $("scoreBadge").textContent=score+" / "+total;
-  $("qVerdict").innerHTML=p.y==="予想"?'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>本アプリの予想問題（根拠：'+esc(p.k.basis)+'）</small></div><ul class="kex" style="font-size:13px">'+p.k.ex.map(function(x,j){return '<li><span class="lb">('+LBL[j]+')</span><b class="mqw" data-w="'+esc(p.ans[j])+'">'+esc(p.ans[j])+'</b>：'+qw(x)+xdHTML(p.q,j)+'</li>'}).join("")+'</ul>'+(p.k.desc?'<div class="kdesc"><b>くわしい解説</b><p>'+qw(p.k.desc)+'</p></div>':'')+repBox("予想-"+p.q):'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div><div class="srcrow">'+aLink(p.y,p.q)+'</div>'+repBox(p.y+"-"+p.q);
+  $("qVerdict").innerHTML=p.y==="予想"?'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>本アプリの予想問題（根拠：'+esc(p.k.basis)+'）</small></div><ul class="kex" style="font-size:13px">'+(p.dord||p.k.ex.map(function(_,j){return j})).map(function(j){var x=p.k.ex[j];return '<li><span class="lb">('+(p.dl?p.dl[j]:LBL[j])+')</span><b class="mqw" data-w="'+esc(p.ans[j])+'">'+esc(p.ans[j])+'</b>：'+qw(x)+xdHTML(p.q,j)+'</li>'}).join("")+'</ul>'+(p.k.desc?'<div class="kdesc"><b>くわしい解説</b><p>'+qw(p.k.desc)+'</p></div>':'')+repBox("予想-"+p.q):'<div class="verdict '+(ok===p.ans.length?"ok":"ng")+'">'+ok+' / '+p.ans.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div><div class="srcrow">'+aLink(p.y,p.q)+'</div>'+repBox(p.y+"-"+p.q);
   $("gradeBtn").hidden=true;$("nextBtn").hidden=false;$("nextBtn").textContent=qi===Q.length-1?"結果を見る":"次の問題へ";$("nextBtn").focus();
 });
 $("nextBtn").addEventListener("click",function(){if(qi<Q.length-1){qi++;render();window.scrollTo(0,0)}else finish()});
