@@ -289,6 +289,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 #selS{position:fixed;left:50%;transform:translateX(-50%);top:max(10px,env(safe-area-inset-top,0px));z-index:55;font:700 14px var(--f-jp);color:#fff;background:linear-gradient(135deg,#3b82f6,#06b6d4);border:0;border-radius:999px;padding:10px 16px;box-shadow:0 6px 20px rgba(0,0,0,.5);max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #selS[hidden]{display:none}
 #qVerdict:empty{display:none}
+.asm .wsl{display:block;cursor:default}.wsl .no{display:inline-block;margin-bottom:4px}.wsl .wst{margin:0;font-size:16px;line-height:2.3}
+.wsb{font:700 15px var(--f-jp);color:#fde68a;background:rgba(2,11,23,.85);border:1.5px solid #fde68a;border-radius:8px;padding:4px 6px;margin:0 3px;max-width:100%;vertical-align:middle}
+.wsb:disabled{opacity:1}.wsb.ok{border-color:var(--success);color:var(--success-hi)}.wsb.ng{border-color:var(--danger);color:#fca5a5}
+.wsc{color:var(--success-hi);margin-right:4px}.wsl .wcy{width:auto;padding:6px 12px;font-size:13px;margin-top:6px}
+.wsa{color:var(--success-hi);font-weight:700}.wsa.ng{color:#fca5a5}
 .ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
 .ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
@@ -745,6 +750,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.17.0</b>記述問題の答え方を全体で「語句だけ選ぶ」形式に変更（穴埋めタブの問3・5・8・9、問題集の記述）。解答文の大事な語句（数値・用語）が空欄になり、選択肢から選ぶ。「別の文で答える」でほかの解答例に切り替えられる。「2つ選んで解答」の問題は、引き続き2つだけ選ぶ</li>
         <li><b>v1.16.0</b>「短い答え」タブを追加（記述問題の「そのまま書ける短い答え」を過去問25問・予想12問の全部、分野ごとに一覧。問題名タップで解説へ、答えを隠すテスト、印刷）。記述の組み立てで、文が完成したら次の枠に移るように修正（文中の「。」で移らない）</li>
         <li><b>v1.15.1</b>「①〜③（④）から2つ選んで解答」の記述問題で、すべての番号の解答欄を表示し、問題の指示どおり2つだけ選んで答える形式に変更（3つ目は選べない）。R1問5の誤り訂正も①〜④から2つ選ぶ形式に</li>
         <li><b>v1.15.0</b>穴埋めタブに問3・問5・問8・問9を追加（問題集と同じ方式：記述は文のパーツをつなげて解答文を2つ組み立て、工程表は工種を施工順に並べて全所要日数を入力、R1問5の誤り訂正は正しい語句を選択）。採点後に解答例・そのまま書ける短い答え・アドバイスを表示</li>
@@ -809,7 +815,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.16.0</div>
+  <div class="ver" aria-label="バージョン">v1.17.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -822,26 +828,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.16.0"></script>
-<script src="yosou.js?v=1.16.0"></script>
-<script src="yosou2.js?v=1.16.0"></script>
-<script src="yx1.js?v=1.16.0"></script>
-<script src="yx2.js?v=1.16.0"></script>
-<script src="yx3.js?v=1.16.0"></script>
-<script src="yx4.js?v=1.16.0"></script>
-<script src="yz1.js?v=1.16.0"></script>
-<script src="yz2.js?v=1.16.0"></script>
-<script src="yz3.js?v=1.16.0"></script>
-<script src="yz4.js?v=1.16.0"></script>
-<script src="advice.js?v=1.16.0"></script>
-<script src="anki.js?v=1.16.0"></script>
-<script src="kijutsu.js?v=1.16.0"></script>
-<script src="mondai.js?v=1.16.0"></script>
-<script src="mqinfo.js?v=1.16.0"></script>
+<script src="kaisetsu.js?v=1.17.0"></script>
+<script src="yosou.js?v=1.17.0"></script>
+<script src="yosou2.js?v=1.17.0"></script>
+<script src="yx1.js?v=1.17.0"></script>
+<script src="yx2.js?v=1.17.0"></script>
+<script src="yx3.js?v=1.17.0"></script>
+<script src="yx4.js?v=1.17.0"></script>
+<script src="yz1.js?v=1.17.0"></script>
+<script src="yz2.js?v=1.17.0"></script>
+<script src="yz3.js?v=1.17.0"></script>
+<script src="yz4.js?v=1.17.0"></script>
+<script src="advice.js?v=1.17.0"></script>
+<script src="anki.js?v=1.17.0"></script>
+<script src="kijutsu.js?v=1.17.0"></script>
+<script src="mondai.js?v=1.17.0"></script>
+<script src="mqinfo.js?v=1.17.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.16.0";
+var APP_VER="1.17.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1014,18 +1020,59 @@ $("startBtn").addEventListener("click",function(){
 });
 /* ---- 記述（パーツ組み立て）・工程表（並べ替え＋日数）・誤り訂正 ----
    rule: any＝解答例から2つ / each＝(1)(2)それぞれ1つずつ / diff＝①〜の中から2つ選んで解答（選ぶ番号は2つだけ） */
+/* ---- 記述：解答文の大事な語句を空欄にして、語句だけ選ぶ ---- */
+var WSTOP="作業,確認,実施,使用,場合,必要,施工,工事,注意,状態,管理,範囲,前後,事前,時間,周囲,十分,適切,所定,方法,内容,実際,現場,箇所,部分,全体,一般,程度,以上,以下,未満,以内,各種,種類,状況,計画,対策,措置,配置,設置,目的,影響,発生,防止,実施,場所,作成,検討,以外".split(",");
+function wsTok(t){var c=[];function f(re,ty,sc){var m;while((m=re.exec(t))){c.push({i:m.index,w:m[0],ty:ty,sc:sc+(m[0].length>=3?1:0)})}}
+  f(/\d+(?:\.\d+)?(?!つ)(?:N\/mm2|kN|m3|m2|mm|cm|m|t|N|％|%|℃|日|時間|回|分|秒|倍|度|kg|本|層|か月|ヶ月|週間|週|年|割|人|名|台|段|枚)?(?:以上|以下|未満|以内|を超える)?/g,"num",5);
+  f(/[ァ-ヴ][ァ-ヴー・]{2,}/g,"kata",3);
+  f(/[一-龥々]{2,}/g,"kanji",2);
+  /* 「又は」「及び」「等」の漢字や、送りがなの付く語（締固め・取付け など）は空欄にしない */
+  return c.filter(function(x){if(x.ty!=="kanji")return true;
+    var a=x.w.match(/^[等及又並]*/)[0].length,b=x.w.match(/[等及又並]*$/)[0].length;if(a){x.i+=a;x.w=x.w.slice(a)}if(b)x.w=x.w.slice(0,x.w.length-b);
+    if(x.w.length<2||WSTOP.indexOf(x.w)>=0)return false;
+    var nx=t.charAt(x.i+x.w.length),pv=t.charAt(x.i-1);
+    if(!b&&/[ぁ-ゖ]/.test(nx)&&"をにはがでとのへやもかよまな".indexOf(nx)<0)return false;
+    if(pv==="ん")return false;
+    x.sc=2+(x.w.length>=3?1:0);return true})}
+var WSPOOL=null;
+function wsPool(){if(WSPOOL)return WSPOOL;WSPOOL={num:[],kata:[],kanji:[]};var all=[];
+  KAISETSU.forEach(function(k){if(k.type!=="fill"&&k.type!=="bar"&&k.ans)k.ans.forEach(function(g){g[1].forEach(function(x){all.push(x)})})});
+  if(typeof KIJ!=="undefined")KIJ.forEach(function(g){g[4].forEach(function(it){all.push(it[1])})});
+  all.forEach(function(t){wsTok(t).forEach(function(x){if(WSPOOL[x.ty].indexOf(x.w)<0)WSPOOL[x.ty].push(x.w)})});return WSPOOL}
+function wsOpts(p,t,ctx){var w=p.w,out=[];function add(x){if(x&&x!==w&&out.indexOf(x)<0&&out.length<3&&t.indexOf(x)<0)out.push(x)}
+  if(p.ty==="num"){var m=w.match(/^(\d+(?:\.\d+)?)(.*)$/),n=+m[1],dec=(m[1].split(".")[1]||"").length,u=m[2];
+    var fmt=function(v){return dec?v.toFixed(dec):String(Math.round(v*100)/100)},sw={"以上":"以下","以下":"以上","未満":"以上","以内":"以上","を超える":"以下"},um=u.match(/(以上|以下|未満|以内|を超える)$/);
+    if(um)add(m[1]+u.slice(0,u.length-um[1].length)+sw[um[1]]);
+    if(window.ASMK)ASMK.mutate(w).forEach(add);
+    if(n>0)(dec?[n*2,n/2,n*1.5,n*3]:[n*2,n/2,n*3,n>=10?n+10:n+1,n-1]).forEach(function(v){if(v>0&&(dec||v===Math.round(v)))add(fmt(v)+u)})}
+  else{if(window.ASMK)ASMK.mutate(w).forEach(add);
+    shuffle((ctx||[]).slice()).forEach(function(c){if(c!==t)wsTok(c).forEach(function(x){if(x.ty===p.ty)add(x.w)})});
+    var P=wsPool()[p.ty].filter(function(x){return Math.abs(x.length-w.length)<=1});shuffle(P.slice()).forEach(add);
+    shuffle(wsPool()[p.ty].slice()).forEach(add)}
+  return shuffle(out.concat([w]))}
+function wsBuild(t,ctx){var c=wsTok(t).sort(function(a,b){return b.sc-a.sc||b.w.length-a.w.length}),nb=t.length<20?1:t.length<40?2:3,pick=[];
+  c.forEach(function(x){if(pick.length>=nb)return;if(pick.some(function(p){return (x.i<p.i+p.w.length&&p.i<x.i+x.w.length)||p.w===x.w}))return;pick.push(x)});
+  if(!pick.length){var m=/[一-龥々]{2,}/.exec(t);if(m)pick.push({i:m.index,w:m[0],ty:"kanji"})}
+  pick.sort(function(a,b){return a.i-b.i});var parts=[],bl=[],last=0;
+  pick.forEach(function(p){parts.push(t.slice(last,p.i));parts.push({b:bl.length});bl.push({a:p.w,o:wsOpts(p,t,ctx)});last=p.i+p.w.length});parts.push(t.slice(last));
+  return {t:t,parts:parts,bl:bl}}
+function wsGet(S,t){return S.B[t]||(S.B[t]=wsBuild(t,S.ctx))}
+function wsCur(S,si){return wsGet(S,S.L[si][S.idx[si]])}
+function wsHTML(B,si,vals,dis,done){vals=vals||[];return B.parts.map(function(x){if(typeof x==="string")return esc(x);var b=B.bl[x.b],v=vals[x.b]||"",ok=v===b.a;
+  return '<select class="wsb'+(done?(ok?' ok':' ng'):'')+'" data-wb="'+si+'|'+x.b+'"'+(dis||done?' disabled':'')+'><option value="">（選ぶ）</option>'+b.o.map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>'}).join("")+'</select>'+(done&&!ok?'<b class="wsc">→'+esc(b.a)+'</b>':'')}).join("")}
+function wsFill(B,vals){vals=vals||[];return B.parts.map(function(x){if(typeof x==="string")return esc(x);var b=B.bl[x.b],v=vals[x.b];return '<span class="mqw wsa'+(v===b.a?'':' ng')+'" data-w="'+esc(b.a)+'">'+esc(b.a)+'</span>'}).join("")}
+function wsOK(S,si){var B=wsCur(S,si),v=S.v[si]||[];return B.bl.every(function(b,i){return v[i]===b.a})}
+function wsCyc(S,si,distinct){var L=S.L[si],n=L.length,j=S.idx[si];for(var k=1;k<n;k++){var c=(j+k)%n;if(!distinct||S.L.every(function(LL,o){return o===si||LL[S.idx[o]]!==L[c]})){S.idx[si]=c;break}}S.v[si]=[]}
+function wsIdx(L,distinct){var idx=[];L.forEach(function(LL,si){var o=shuffle(LL.map(function(_,i){return i}));for(var k=0;k<o.length;k++){if(!distinct||!idx.some(function(j,s2){return L[s2][j]===LL[o[k]]})){idx.push(o[k]);return}}idx.push(o[0])});return idx}
+
 var QA=null;
 function qaPick(p){return p.kind==="fix"||(p.kind==="write"&&p.rule==="diff")}
 function qaInit(p){var K=window.ASMK;
   if(p.kind==="bar"){var names=p.k.rows.map(function(r){return r[0]});QA={kind:"bar",p:names.slice(),ord:K.shuf(names.map(function(_,i){return i})),s:[[]],cur:0,done:false};return}
   if(p.kind==="fix"){QA={kind:"fix",n:p.k.ans.length,sel:[],v:{},done:false};return}
   var T=[];p.G.forEach(function(g){g[1].forEach(function(x){T.push(x)})});
-  /* 同じパーツが2つの文に出てくる場合もあるので、重複も残す */
-  var parts=[];T.forEach(function(t){K.chunks(t).forEach(function(c){parts.push(c)})});
-  var mut=[];parts.forEach(function(c){K.mutate(c).forEach(function(d){if(parts.indexOf(d)<0&&mut.indexOf(d)<0)mut.push(d)})});
-  var ex=K.shuf(mut).slice(0,Math.min(mut.length,6)),all=parts.concat(ex),n=p.rule==="diff"?p.G.length:2;
-  var S=[];for(var i=0;i<n;i++)S.push([]);
-  QA={kind:"write",T:T,p:all,ord:K.shuf(all.map(function(_,i){return i})),s:S,cur:p.rule==="diff"?-1:0,sel:[],done:false}}
+  var L=p.rule==="any"?[T,T]:p.G.map(function(g){return g[1]});
+  QA={kind:"write",L:L,idx:wsIdx(L,p.rule==="any"),v:L.map(function(){return []}),B:{},ctx:T,sel:[],done:false}}
 function qaSlotName(p,i){if(p.kind==="bar")return "施工順";if(p.rule==="diff"||p.rule==="each")return p.G[i][0];return i?"②":"①"}
 function qaUsed(A,pi){return A.s.some(function(L){return L.indexOf(pi)>=0})}
 function qaDraw(){var p=Q[qi],A=QA,h="",pk=qaPick(p);
@@ -1035,6 +1082,13 @@ function qaDraw(){var p=Q[qi],A=QA,h="",pk=qaPick(p);
     h+=p.k.items.map(function(it,i){var on=A.sel.indexOf(i)>=0;return '<div class="qpk'+(on?' on':'')+'" id="ar'+i+'"><div class="qpkh"><span class="no">'+esc(it.slice(0,1))+'</span><span class="qpkt">'+esc(it.slice(1).trim())+'</span></div>'+
       (A.done?'':'<button class="btn '+(on?'':'ghost ')+'qpkb" type="button" data-pick="'+i+'">'+(on?'この番号を外す':'この番号で答える')+'</button>')+
       '<div class="arow"><span class="lb">正しくは</span><select data-fx="'+i+'"'+(on&&!A.done?'':' disabled')+'>'+opts(A.v[i]||"")+'</select><span class="mk"></span></div></div>'}).join("");
+    $("qAns").innerHTML=h;return}
+  if(p.kind==="write"){
+    h='<p class="hint" style="margin:0 0 8px">'+(pk?'問題の指示どおり、下の'+p.G.length+'つの番号から<b>2つだけ</b>選んで（「この番号で答える」を押す）、解答文の空欄に入る語句を選びなさい。選んでいる番号：'+A.sel.length+' / 2':(p.rule==="each"?'それぞれ1つずつ':'2つ')+'、解答文の空欄に入る語句を選びなさい')+'。「別の文で答える」で、ほかの解答例に切り替えられます。</p>';
+    h+='<div class="asm">'+A.L.map(function(LL,si){var on=!pk||A.sel.indexOf(si)>=0,B=wsCur(A,si);
+      return (pk?'<div class="qpk'+(on?' on':'')+'">'+(A.done?'':'<button class="btn '+(on?'':'ghost ')+'qpkb" type="button" data-pick="'+si+'">'+(on?'この番号を外す':'この番号で答える')+'</button>'):'')+
+        '<div class="slot wsl'+(on?'':' off')+'" data-slot="'+si+'"><span class="no">'+esc(qaSlotName(p,si))+'</span><p class="wst">'+(A.done&&!on?esc(B.t):wsHTML(B,si,A.v[si],!on,A.done))+'</p>'+
+        (!A.done&&LL.length>1&&(p.rule!=="any"||LL.length>2)?'<button class="btn ghost wcy" type="button" data-cyc="'+si+'"'+(on?'':' disabled')+'>別の文で答える</button>':'')+'</div>'+(pk?'</div>':'')}).join("")+'</div>';
     $("qAns").innerHTML=h;return}
   if(p.kind==="bar")h+='<p class="hint" style="margin:0 0 8px">'+esc(p.k.cond)+'</p><p style="margin:0 0 6px;font-weight:700">工種を施工順にタップして並べなさい。</p>';
   else if(pk)h+='<p class="hint" style="margin:0 0 8px">問題の指示どおり、下の'+p.G.length+'つの番号から<b>2つだけ</b>選んで（「この番号で答える」を押す）、その解答文をパーツから組み立てなさい。選んでいる番号：'+A.sel.length+' / 2。数値や語句を変えた「まちがいパーツ」も混ざっています。</p>';
@@ -1048,14 +1102,17 @@ function qaDraw(){var p=Q[qi],A=QA,h="",pk=qaPick(p);
   if(p.kind==="bar")h+='<div class="mqin" style="margin-top:10px"><input id="qaDays" type="number" inputmode="numeric" placeholder="全所要日数"'+(A.done?' disabled value="'+(A.days||"")+'"':'')+'><span>日</span></div>';
   var keep=$("qaDays")&&$("qaDays").value;$("qAns").innerHTML=h;if(keep&&$("qaDays")&&!A.done)$("qaDays").value=keep}
 function qaNote(t){var n=$("qaMsg");if(!n){n=document.createElement("p");n.id="qaMsg";n.className="hint";n.style.cssText="margin:6px 0 0;color:#fca5a5";$("qAns").prepend(n)}n.textContent=t}
-$("qAns").addEventListener("change",function(e){var f=e.target.closest("[data-fx]");if(f&&QA&&QA.kind==="fix")QA.v[+f.dataset.fx]=f.value});
+$("qAns").addEventListener("change",function(e){var f=e.target.closest("[data-fx]");if(f&&QA&&QA.kind==="fix")QA.v[+f.dataset.fx]=f.value;
+  var b=e.target.closest("[data-wb]");if(b&&QA&&QA.kind==="write"){var a=b.dataset.wb.split("|");QA.v[+a[0]][+a[1]]=b.value}});
 $("qAns").addEventListener("click",function(e){if(!QA||QA.done)return;var A=QA,p=Q[qi];if(!p||!(p.kind==="write"||p.kind==="bar"||p.kind==="fix"))return;
   var pick=e.target.closest("[data-pick]");
   if(pick){var i=+pick.dataset.pick,k=A.sel.indexOf(i);
-    if(k>=0){A.sel.splice(k,1);if(A.s)A.s[i]=[];if(A.kind==="fix")delete A.v[i];if(A.cur===i)A.cur=A.sel.length?A.sel[0]:-1}
+    if(k>=0){A.sel.splice(k,1);if(A.s)A.s[i]=[];if(A.kind==="write")A.v[i]=[];if(A.kind==="fix")delete A.v[i];if(A.cur===i)A.cur=A.sel.length?A.sel[0]:-1}
     else{if(A.sel.length>=2){qaDraw();qaNote("選べるのは2つまでです。別の番号にするときは、先に「この番号を外す」を押してください。");return}A.sel.push(i);A.cur=i}
     qaDraw();return}
   if(A.kind==="fix")return;
+  if(A.kind==="write"){var cy=e.target.closest("[data-cyc]");if(cy&&!cy.disabled){wsCyc(A,+cy.dataset.cyc,p.rule==="any");qaDraw()}
+    else if(!cy&&qaPick(p)&&e.target.closest(".wsl.off"))qaNote("先に「この番号で答える」を押して、この番号を選んでください（選べるのは2つまで）。");return}
   var ad=e.target.closest("[data-add]"),rm=e.target.closest("[data-rm]"),sl=e.target.closest("[data-slot]"),ac=e.target.closest("[data-a]"),pk=qaPick(p);
   if(ad&&!ad.disabled){if(A.cur<0)return;A.s[A.cur].push(+ad.dataset.add)}
   else if(rm){var pi=+rm.dataset.rm;A.s.forEach(function(L){var k=L.indexOf(pi);if(k>=0)L.splice(k,1)})}
@@ -1076,10 +1133,8 @@ function qaGrade(p){var A=QA,res=[],wrong=[],ok=0,gi=[],slots=[];
   else{var pk=qaPick(p);
     if(pk&&A.sel.length!==2){qaNote("問題の指示どおり、番号を2つ選んでから採点してください（いま "+A.sel.length+" つ）。");return}
     slots=pk?A.sel.slice().sort():[0,1];
-    var got=slots.map(function(si){return A.s[si].map(function(i){return A.p[i]}).join("")});
-    got.forEach(function(g,k){var j=-1;if(pk||p.rule==="each"){var G=p.G[pk?slots[k]:k];if(G[1].indexOf(g)>=0)j=pk?slots[k]:k}else p.G.forEach(function(G,jj){if(G[1].indexOf(g)>=0&&j<0)j=jj});gi.push(j)});
-    res=got.map(function(g,k){if(gi[k]<0)return false;if(p.rule==="any"&&k===1&&got[0]===g)return false;return true});
-    res.forEach(function(r,k){if(!r)wrong.push((pk?p.G[slots[k]][0]:(k?"②":"①"))+"："+(got[k]||"（未入力）"))})}
+    res=slots.map(function(si){return wsOK(A,si)});
+    res.forEach(function(r,k){if(!r)wrong.push(qaSlotName(p,slots[k])+"："+wsCur(A,slots[k]).t)})}
   res.forEach(function(r,k){var id=pid(p)+"-"+LBL[k],h=hist[id]||{n:0,ok:0,last:0};h.n++;if(r){h.ok++;ok++}h.last=r?1:0;hist[id]=h});
   save("d2hist",hist);score+=ok;total+=res.length;if(wrong.length)missed.push({p:p,w:wrong});$("scoreBadge").textContent=score+" / "+total;
   A.done=true;qaDraw();
@@ -1088,7 +1143,7 @@ function qaGrade(p){var A=QA,res=[],wrong=[],ok=0,gi=[],slots=[];
   var ad=ADV[p.y+"-"+p.q]||{},h='<div class="verdict '+(ok===res.length?"ok":"ng")+'">'+ok+' / '+res.length+' 正解<small>解答の出典：'+esc(SRC[p.y].n)+'</small></div>';
   if(p.kind==="bar"){h+='<div class="kdesc"><b>正解：全所要日数 '+p.k.total+'日（'+esc(p.k.calc)+'）</b>'+p.k.rows.map(function(r){var pad=(r[1]-1)/p.k.total*100,w=(r[2]-r[1]+1)/p.k.total*100;return '<div class="mqbar"><span><span class="mqw" data-w="'+esc(r[0])+'">'+esc(r[0])+'</span></span><span><i style="left:'+pad+'%;width:'+w+'%"></i></span><span style="font-family:var(--f-din);color:var(--muted)">'+r[1]+'〜'+r[2]+'日</span></div>'}).join("")+'</div>'+(res[0]?'':'<p class="hint">あなたの順番：'+esc(A.s[0].map(function(i){return A.p[i]}).join("→")||"（未入力）")+'</p>')}
   else if(p.kind==="fix"){h+='<div class="kdesc"><b>正解（①〜④すべて）</b><ul class="kex" style="margin:0">'+p.k.ans.map(function(g){return '<li>'+qw(g[0])+'：'+qw(g[1][0])+'</li>'}).join("")+'</ul></div>'}
-  else{var pk2=qaPick(p);h+='<div class="mqans">'+slots.map(function(si,k){var g=A.s[si].map(function(x){return A.p[x]}).join("");return '<div><b>'+esc(pk2||p.rule==="each"?p.G[si][0]:(k?'②':'①'))+'：'+(res[k]?'正しい文'+(!pk2&&p.rule==="any"&&gi[k]>=0&&p.G.length>1?'（'+esc(p.G[gi[k]][0])+'）':''):'まちがい')+'</b>'+qw(g||'（未入力）')+'</div>'}).join("")+'</div>';
+  else{var pk2=qaPick(p);h+='<div class="mqans">'+slots.map(function(si,k){var B=wsCur(A,si),gn="";if(p.rule==="any"&&p.G.length>1)p.G.forEach(function(G){if(!gn&&G[1].indexOf(B.t)>=0)gn=G[0]});return '<div><b>'+esc(qaSlotName(p,si))+'：'+(res[k]?'正解':'まちがい')+(gn?'（'+esc(gn)+'）':'')+'</b>'+wsFill(B,A.v[si])+'</div>'}).join("")+'</div>';
     h+='<div class="kdesc"><b>解答例（'+(p.rule==="each"?'それぞれ1つずつ':p.rule==="diff"?p.G.length+'つから2つ選ぶ':'2つ')+'）</b>'+p.G.map(function(g){return '<p style="margin:6px 0 2px;font-weight:700;color:var(--accent-hi)"><span class="mqw" data-w="'+esc(g[0].replace(/^[①-⑨]\s*|^\(\d\)\s*/,""))+'">'+esc(g[0])+'</span></p><ul class="kex" style="margin:0">'+g[1].map(function(x){return '<li>'+qw(x)+'</li>'}).join("")+'</ul>'}).join("")+'</div>'}
   if(ad.w)h+='<div class="kpt" style="margin-top:10px"><b class="kh">そのまま書ける短い答え</b><ul class="kw2">'+ad.w.map(function(x){return '<li>'+qw(x)+'</li>'}).join("")+'</ul>'+(ad.a?'<b class="kh">合格へのアドバイス</b><p>'+qw(ad.a)+'</p>':'')+'</div>';
   h+='<div class="srcrow">'+aLink(p.y,p.q)+'</div>'+repBox(p.y+"-"+p.q);
@@ -1471,7 +1526,12 @@ BAR.forEach(function(b){
       if(k<0)break;out.splice(li,1,c.slice(0,k),c.slice(k))}
     while(out.length>8){var mi=0,ml=1e9;for(var i=0;i<out.length-1;i++){var l=out[i].length+out[i+1].length;if(l<ml){ml=l;mi=i}}out.splice(mi,2,out[mi]+out[mi+1])}
     return out}
-  var ASM=null;
+  var ASM=null,MW=null;
+  function mwHTML(res){var S=MW,done=!!res;return '<div class="asm">'+S.L.map(function(LL,si){var B=wsCur(S,si);
+      return '<div class="slot wsl'+(done?(res[si]?' ok':' ng'):'')+'">'+(S.L.length>1?'<span class="no">'+(si?'②':'①')+'</span>':'')+'<p class="wst">'+wsHTML(B,si,S.v[si],false,done)+'</p>'+
+        (!done&&LL.length>S.L.length?'<button class="btn ghost wcy" type="button" data-cyc="'+si+'">別の文で答える</button>':'')+'</div>'}).join("")+
+      (done?'':'<div class="ctl" style="grid-template-columns:1fr"><button class="btn" type="button" data-a="check">答え合わせ</button></div>')+'</div>'}
+  $("mqCard").addEventListener("change",function(e){var b=e.target.closest("[data-wb]");if(b&&MW){var a=b.dataset.wb.split("|");MW.v[+a[0]][+a[1]]=b.value}});
   window.ASMK={chunks:chunks,mutate:function(c){return mutate(c)},shuf:function(a){return shuf(a)}};
   function asmHTML(){var A=ASM;
     return '<div class="asm">'+A.s.map(function(_,si){return '<div class="slot'+(si===A.cur&&A.s.length>1?' on':'')+'" data-slot="'+si+'">'+(A.s.length>1?'<span class="no">'+(si?'②':'①')+'</span>':'')+(A.s[si].length?A.s[si].map(function(pi){return '<button class="pc" type="button" data-rm="'+pi+'">'+esc(A.p[pi])+'</button>'}).join(""):'<span class="ph">下のパーツをタップして文をつくる</span>')+'</div>'}).join("")+
@@ -1507,10 +1567,10 @@ BAR.forEach(function(b){
     $("mqProg").textContent=(qi+1)+" / "+Q.length;$("mqFill").style.width=(qi/Q.length*100)+"%";$("mqScore").textContent=ok+" / "+qi;
     if(x.k==="mc"){h='<p class="mqq">'+esc(q[0])+'</p><div class="mqopts">'+shuf([0,1,2,3]).map(function(i){return '<button type="button" data-i="'+i+'">'+esc(q[1][i])+'</button>'}).join("")+'</div><div id="mqExp"></div>'}
     else if(x.k==="calc"){h='<p class="mqq">'+esc(q.t)+'：'+(q.rows?'工程表（バーチャート）を作成した場合の全所要日数は？':/？$/.test(q.cond)?'答えの日数は？':'全所要日数は？')+'</p><p style="font-size:15px;line-height:1.8;margin:0 0 12px">'+esc(q.cond)+'</p><div class="mqin"><input id="mqNum" type="number" inputmode="numeric" placeholder="日数"><span>日</span><button class="btn" id="mqChk" type="button">答え合わせ</button></div><div id="mqExp"></div>'}
-    else if(x.k==="kij1"){var oth=[];q.g[4].forEach(function(it){if(it[1]!==q.ans){var cs=chunks(it[1]);if(cs.length>1)oth.push(shuf(cs)[0])}});asmInit([q.ans],shuf(oth));
-      h='<p class="mqsub" style="margin:0 0 6px">テーマ：'+esc(q.th)+'（問われ方：'+esc(q.ask)+'）</p><p class="mqq">キーワード「'+esc(q.kw)+'」の文を、パーツをつなげて完成させなさい。</p><p class="hint" style="margin:-6px 0 10px">数値や語句をわざと変えた「まちがいパーツ」や、別の文のパーツが混ざっています。つなげたパーツはタップで外せます。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
-    else{asmInit(q[4].map(function(it){return it[1]}),[],2);
-      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">このテーマで書ける文のパーツがすべて並んでいます。好きな文を2つ選んで①②に組み立てなさい。数値や語句を変えた「まちがいパーツ」も混ざっています。①の文が完成すると②に移ります（枠をタップしても切り替えられます）。</p><div id="mqAsm">'+asmHTML()+'</div><div id="mqExp"></div>'}
+    else if(x.k==="kij1"){var L1=[[q.ans]];MW={L:L1,idx:[0],v:[[]],B:{},ctx:q.g[4].map(function(it){return it[1]})};
+      h='<p class="mqsub" style="margin:0 0 6px">テーマ：'+esc(q.th)+'（問われ方：'+esc(q.ask)+'）</p><p class="mqq">キーワード「'+esc(q.kw)+'」の文の空欄に入る語句を選びなさい。</p><p class="hint" style="margin:-6px 0 10px">数値や語句をわざと変えた「まちがい」も選択肢に混ざっています。</p><div id="mqAsm">'+mwHTML()+'</div><div id="mqExp"></div>'}
+    else{var all=q[4].map(function(it){return it[1]}),L2=[all,all];MW={L:L2,idx:wsIdx(L2,true),v:[[],[]],B:{},ctx:all};
+      h='<p class="mqq">'+esc(q[1])+'</p><p class="mqsub">問われ方：'+esc(q[2])+'（出題：'+esc(q[3])+'）</p><p class="hint" style="margin:-6px 0 10px">このテーマで書ける文が2つ出ています。空欄に入る語句を選びなさい。「別の文で答える」で、ほかの文に切り替えられます。</p><div id="mqAsm">'+mwHTML()+'</div><div id="mqExp"></div>'}
     $("mqCard").innerHTML=h;
   }
   $("mqCard").addEventListener("click",function(e){
@@ -1520,18 +1580,13 @@ BAR.forEach(function(b){
       $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解：":"不正解：正解は ")+W(q[1][q[2]])+'</div><div class="mqexp">'+esc(q[3])+(q[4]&&q[4]!=="—"?'<br><span class="hint">出題：'+esc(q[4])+'</span>':'')+'</div>';mark(x,good);return}
     if(e.target.id==="mqChk"){var v=parseInt($("mqNum").value,10);if(isNaN(v))return;var g=v===q.total;$("mqNum").disabled=true;
       $("mqExp").innerHTML='<div class="verdict '+(g?"ok":"ng")+'">'+(g?"正解":"不正解：正解は "+q.total+"日")+'</div><div class="mqexp"><b>'+esc(q.calc)+'</b>'+(q.rows?'<div style="margin-top:8px">'+barHTML(q)+'</div>':'')+'<span class="hint">出題：'+esc(q.src)+'</span></div>';mark(x,g);return}
-    if(ASM&&(x.k==="kij"||x.k==="kij1")&&e.target.closest("#mqAsm")){var A=ASM,ad=e.target.closest("[data-add]"),rm=e.target.closest("[data-rm]"),sl=e.target.closest("[data-slot]"),ac=e.target.closest("[data-a]");
-      if(ad&&!ad.disabled){A.s[A.cur].push(+ad.dataset.add)}
-      else if(rm){var pi=+rm.dataset.rm;A.s.forEach(function(L){var k=L.indexOf(pi);if(k>=0)L.splice(k,1)})}
-      else if(sl){A.cur=+sl.dataset.slot}
-      else if(ac&&ac.dataset.a==="back"){if(A.s[A.cur].length)A.s[A.cur].pop()}
-      else if(ac&&ac.dataset.a==="reset"){A.s=A.s.map(function(){return []});A.cur=0}
-      else if(ac&&ac.dataset.a==="check"){var got=A.s.map(function(L){return L.map(function(i){return A.p[i]}).join("")}),rest=x.k==="kij"?q[4].map(function(it){return it[1]}):A.t.slice(),res=got.map(function(g){var k=rest.indexOf(g);if(k>=0){rest.splice(k,1);return true}return false}),good=res.every(Boolean);
-        $("mqAsm").innerHTML=asmHTML();$("mqAsm").querySelectorAll(".slot").forEach(function(el,i){el.classList.add(res[i]?"ok":"ng")});$("mqAsm").querySelectorAll("button").forEach(function(b){b.disabled=true});
-        $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解")+'</div><div class="mqans">'+(x.k==="kij1"?'<div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div>':got.map(function(g,i){var it=q[4].filter(function(z){return z[1]===g})[0];return '<div><b>'+(i?'②':'①')+' '+(res[i]?'正しい文：'+W(it[0]):'まちがい')+'</b>'+esc(g||'（未入力）')+'</div>'}).join(""))+'</div>'+(x.k==="kij"?'<p class="hint" style="margin:8px 0 0">このテーマの正しい文を、違う2つで組み立てられていれば正解です。正しい文の一覧は下の「くわしい解説」にあります。</p>':'');
-        mark(x,good);return}
-      if(A.cur>=A.s.length)A.cur=0;var cs=A.s[A.cur];if(ad&&A.s.length>1&&cs.length&&/。$/.test(A.p[cs[cs.length-1]])&&A.cur<A.s.length-1)A.cur++;
-      $("mqAsm").innerHTML=asmHTML();return}
+    if(MW&&(x.k==="kij"||x.k==="kij1")&&e.target.closest("#mqAsm")){var S=MW,cy=e.target.closest("[data-cyc]"),ac=e.target.closest("[data-a]");
+      if(cy){wsCyc(S,+cy.dataset.cyc,true);$("mqAsm").innerHTML=mwHTML();return}
+      if(ac&&ac.dataset.a==="check"){var res=S.L.map(function(_,si){return wsOK(S,si)}),good=res.every(Boolean);
+        $("mqAsm").innerHTML=mwHTML(res);
+        $("mqExp").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解")+'</div><div class="mqans">'+S.L.map(function(_,si){var B=wsCur(S,si),it=x.k==="kij"?q[4].filter(function(z){return z[1]===B.t})[0]:[q.kw];return '<div><b>'+(S.L.length>1?(si?'②':'①')+' ':'')+W(it[0])+'：'+(res[si]?'正解':'まちがい')+'</b>'+wsFill(B,S.v[si])+'</div>'}).join("")+'</div>';
+        mark(x,good)}
+      return}
     if(e.target.id==="mqShow"&&x.k==="kij1"){e.target.hidden=true;
       $("mqExp").innerHTML='<div class="mqans"><div><b>'+W(q.kw)+'</b>'+esc(q.ans)+'</div></div><p class="hint" style="margin:10px 0 0">要点（キーワードと数値）が入っていれば「書けた」。</p><div class="mqself"><button class="btn" type="button" data-s="1">書けた</button><button class="btn ghost" type="button" data-s="0">一部だけ</button><button class="btn ghost" type="button" data-s="0">書けない</button></div>';return}
     if(e.target.id==="mqShow"){e.target.hidden=true;
