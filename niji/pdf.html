@@ -36,12 +36,12 @@ main.z{justify-items:start;overflow-x:auto}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 (function(){
-  var q=new URLSearchParams(location.search),f=(q.get("f")||"").replace(/[^R0-9]/g,""),p=parseInt(q.get("p")||"1",10)||1;
-  var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度"};
+  var q=new URLSearchParams(location.search),f=(q.get("f")||"").replace(/[^RH0-9]/g,""),p=parseInt(q.get("p")||"1",10)||1;
+  var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度",H30:"平成30年度",H29:"平成29年度",H28:"平成28年度"};
   var main=document.getElementById("main"),msg=document.getElementById("msg");
   if(!YN[f]){msg.textContent="ファイルが指定されていません。";return}
   var url="pdf/"+f+".pdf";
-  document.getElementById("ttl").textContent=YN[f]+" 2級土木 第二次検定 問題用紙"+(q.get("q")?"（問"+q.get("q")+"）":"");
+  document.getElementById("ttl").textContent=YN[f]+(f.charAt(0)==="H"?" 2級土木 実地試験 問題用紙":" 2級土木 第二次検定 問題用紙")+(q.get("q")?"（問"+q.get("q")+"）":"");
   document.title=f+" 問題用紙｜2級土木 二次検定ノート";
   document.getElementById("raw").href=url;
   if(!window.pdfjsLib){msg.innerHTML='ビューアを読み込めませんでした。「PDFファイルを直接開く」で開いてください。';return}

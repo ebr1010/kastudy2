@@ -464,7 +464,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <!-- ===== KAISETSU ===== -->
   <div class="view" id="v-kai" hidden>
     <section class="sec">
-      <h2><b>EXPLAIN</b>過去問の解説（R1〜R7）</h2>
+      <h2><b>EXPLAIN</b>過去問の解説（H28〜R7）</h2>
       <div class="chips" id="kYear"></div>
       <div class="chips" id="kNum" style="margin-top:8px"></div>
       <div class="chips" style="margin-top:8px"><button class="chip" id="kSort" type="button" aria-pressed="false">出題確率の高い順に並べる</button></div>
@@ -781,6 +781,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.20.0</b>平成28〜30年度（旧・実地試験）の問2〜問9（24問）を追加。解説・穴埋め（記述・工程表を含む）・要点まとめ・PDF一覧・問題用紙画像に反映。解答は九州建設専門学院の解答試案。出題確率と頻出の回数は、これまでどおり過去7年（R1〜R7）で計算</li>
         <li><b>v1.19.2</b>要点まとめ：各解説に「問題を表示／隠す」ボタンを追加（元の問題文を答え入りで表示。過去問は問題用紙へのリンクつき）。「問題をすべて表示」で一括切り替え</li>
         <li><b>v1.19.1</b>要点まとめ：テーマごとに過去7年の出題年・問題番号・出題確率を表示。4回以上を「最頻出」（赤）、3回を「頻出」（黄）で強調し、出題回数の多い順に並べ替え。「頻出テーマだけ」ボタンを追加</li>
         <li><b>v1.19.0</b>「要点まとめ」タブを追加（解説の「ポイント」「覚えておくこと」「合格へのアドバイス」だけを分野ごと・テーマごとに一覧。過去問／予想問題の切り替え、アドバイスだけの表示、印刷。問題名タップで解説へ）</li>
@@ -852,7 +853,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.19.2</div>
+  <div class="ver" aria-label="バージョン">v1.20.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -865,26 +866,27 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.19.2"></script>
-<script src="yosou.js?v=1.19.2"></script>
-<script src="yosou2.js?v=1.19.2"></script>
-<script src="yx1.js?v=1.19.2"></script>
-<script src="yx2.js?v=1.19.2"></script>
-<script src="yx3.js?v=1.19.2"></script>
-<script src="yx4.js?v=1.19.2"></script>
-<script src="yz1.js?v=1.19.2"></script>
-<script src="yz2.js?v=1.19.2"></script>
-<script src="yz3.js?v=1.19.2"></script>
-<script src="yz4.js?v=1.19.2"></script>
-<script src="advice.js?v=1.19.2"></script>
-<script src="anki.js?v=1.19.2"></script>
-<script src="kijutsu.js?v=1.19.2"></script>
-<script src="mondai.js?v=1.19.2"></script>
-<script src="mqinfo.js?v=1.19.2"></script>
+<script src="kaisetsu.js?v=1.20.0"></script>
+<script src="yosou.js?v=1.20.0"></script>
+<script src="yosou2.js?v=1.20.0"></script>
+<script src="yx1.js?v=1.20.0"></script>
+<script src="yx2.js?v=1.20.0"></script>
+<script src="yx3.js?v=1.20.0"></script>
+<script src="yx4.js?v=1.20.0"></script>
+<script src="yz1.js?v=1.20.0"></script>
+<script src="yz2.js?v=1.20.0"></script>
+<script src="yz3.js?v=1.20.0"></script>
+<script src="yz4.js?v=1.20.0"></script>
+<script src="advice.js?v=1.20.0"></script>
+<script src="anki.js?v=1.20.0"></script>
+<script src="kijutsu.js?v=1.20.0"></script>
+<script src="mondai.js?v=1.20.0"></script>
+<script src="mqinfo.js?v=1.20.0"></script>
+<script src="hsei.js?v=1.20.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.19.2";
+var APP_VER="1.20.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -921,6 +923,7 @@ var SETS=[
  {y:"R1",q:"問6",t:"盛土の締固め管理",w:"積算,安全,品質,工場,土かぶり,敷均し,余盛,現場,総合,環境基準,現場配合,工法,コスト,設計,乾燥密度",s:["締固めの管理方法には、{品質}規定方式と{工法}規定方式がある。","締固め度 ＝ {現場}で測定された土の乾燥密度 ÷ 室内試験から得られる土の最大{乾燥密度} × 100（%）","工法規定方式は、締固め機械の種類や締固め回数、盛土材料の{敷均し}厚さなどを仕様書に規定する。"]},
  {y:"R1",q:"問7",t:"生コンの受入れ検査",w:"フロー,仮設備,スランプ,1.0,1.5,作業,0.4,0.3,配合,2.0,ひずみ,せん断強度,0.5,引張強度,呼び強度",s:["{スランプ}が8cmの場合、試験結果が±2.5cmの範囲に収まればよい。","空気量は、試験結果が±{1.5}%の範囲に収まればよい。","塩化物イオン量は、{0.3}kg/m³以下の判定基準がある。","圧縮強度は、1回の試験結果が指定した{呼び強度}の強度値の85%以上でなければならない。","アルカリシリカ反応の対策は、{配合}計画書を用いて確認する。"]}
 ];
+if(window.HSETS)SETS=SETS.concat(HSETS);
 var ITEMS=[];
 SETS.forEach(function(st){
   st.s.forEach(function(sent,si){
@@ -930,6 +933,7 @@ SETS.forEach(function(st){
 });
 
 var SRC={"R1":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[5,6],"6":[6],"7":[7],"8":[8],"9":[8]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":2,"8":2,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2019-02_jitti.pdf","n":"九州建設専門学院 解答試案"},"R2":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":3,"8":3,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2020-02_jitti.pdf","n":"九州建設専門学院 解答試案"},"R3":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":3,"7":3,"8":3,"9":4},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2021-02-02_02.pdf","n":"九州建設専門学院 解答試案"},"R4":{"q":{"1":[2],"2":[3],"3":[3],"4":[4],"5":[4,5],"6":[5],"7":[6],"8":[7],"9":[7]},"a":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2,"7":2,"8":2,"9":2},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2022-02-02.pdf","n":"九州建設専門学院 解答試案"},"R5":{"q":{"1":[2],"2":[3],"3":[4],"4":[5],"5":[6,7],"6":[7],"7":[8],"8":[9],"9":[9]},"a":{"1":1,"2":1,"3":1,"4":1,"5":2,"6":2,"7":2,"8":2,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2023-02-02.pdf","n":"九州建設専門学院 解答試案"},"R6":{"q":{"1":[2,3],"2":[4],"3":[5],"4":[5],"5":[6,7],"6":[7],"7":[8],"8":[9],"9":[9]},"a":{"1":1,"2":1,"3":1,"4":2,"5":2,"6":2,"7":2,"8":3,"9":3},"u":"https://s3-us-west-1.amazonaws.com/static.l-mate.net/pdf/answer_doboku/2024-02-02.pdf","n":"九州建設専門学院 解答試案"},"R7":{"q":{"1":[2,3],"2":[4],"3":[5],"4":[6],"5":[7,8],"6":[8],"7":[9],"8":[10],"9":[10]},"a":{"1":2,"2":2,"3":2,"4":3,"5":3,"6":4,"7":4,"8":5,"9":5},"u":"https://www.cic-ct.co.jp/wp-content/uploads/2025/11/r7_2cgOfkQ6fhFhBfvI.pdf","n":"CIC日本建設情報センター 解答試案"}};
+if(window.HSRC)Object.keys(HSRC).forEach(function(y){SRC[y]=HSRC[y]});
 function ansUrl(y,q){var r=SRC[y];return r.u+"#page="+(r.a[q]||1)}
 function pageUrl(y,n,q){return "pdf.html?f="+y+"&p="+n+(q?"&q="+q:"")+"&v="+APP_VER}
 function qLinks(y,q,label){
@@ -999,7 +1003,7 @@ tabs.forEach(function(b){b.addEventListener("click",function(){show(b.dataset.v)
 var hist=load("d2hist",{}); // id -> {n,ok,last}
 var wdone=load("d2write",{});
 function stats(){
-  var n=0,ok=0,miss=0;Object.keys(hist).forEach(function(k){if(!/^(R\d-\d|予想-Y\d+)-/.test(k))return;n+=hist[k].n;ok+=hist[k].ok;if(hist[k].last===0)miss++});
+  var n=0,ok=0,miss=0;Object.keys(hist).forEach(function(k){if(!/^((R\d|H\d\d)-\d|予想-Y\d+)-/.test(k))return;n+=hist[k].n;ok+=hist[k].ok;if(hist[k].last===0)miss++});
   $("s-ans").textContent=n;$("s-rate").textContent=n?Math.round(ok/n*100)+"%":"—";$("s-miss").textContent=miss;
   $("s-write").textContent=Object.keys(wdone).filter(function(k){return wdone[k]}).length;
 }
@@ -1022,9 +1026,10 @@ YOSOU.forEach(function(k){if(k.type!=="fill")return;var m={},L=[];k.s.join("").r
 function pid(p){return p.y+"-"+p.q}
 function pMiss(p){return p.ans.some(function(_,k){var h=hist[pid(p)+"-"+LBL[k]];return h&&h.last===0})}
 var selY={},selQ={};
-var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度","予想":"予想問題"};
+var YN={R7:"令和7年度",R6:"令和6年度",R5:"令和5年度",R4:"令和4年度",R3:"令和3年度",R2:"令和2年度",R1:"令和元年度",H30:"平成30年度",H29:"平成29年度",H28:"平成28年度","予想":"予想問題"};
+var YALL=["R7","R6","R5","R4","R3","R2","R1","H30","H29","H28"];
 var yChip={};
-["R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){
+YALL.forEach(function(y){
   var b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed","false");b.textContent=YN[y];yChip[y]=b;
   b.addEventListener("click",function(){selY[y]=!selY[y];b.setAttribute("aria-pressed",!!selY[y]);upd()});$("yearChips").appendChild(b);
 });
@@ -1254,7 +1259,7 @@ $("againBtn").addEventListener("click",back);
 var kY=load("d2kY","R7"),kQ={},kHideAll=true;if(kY==="予想")kY="R7";
 var KDATA=KAISETSU,kSort=false;
 function setKY(y){$("kPad").style.height="0";kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.y===y)});renderK()}
-["R7","R6","R5","R4","R3","R2","R1"].forEach(function(y){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=YN[y];b.dataset.y=y;b.setAttribute("aria-pressed",y===kY);
+YALL.forEach(function(y){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=YN[y];b.dataset.y=y;b.setAttribute("aria-pressed",y===kY);
   b.addEventListener("click",function(){$("kPad").style.height="0";kY=y;save("d2kY",y);document.querySelectorAll("#kYear .chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});renderK()});$("kYear").appendChild(b)});
 ["2","3","4","5","6","7","8","9"].forEach(function(q){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent="問"+q;b.setAttribute("aria-pressed","false");
   b.addEventListener("click",function(){kQ[q]=!kQ[q];b.setAttribute("aria-pressed",!!kQ[q]);renderK()});$("kNum").appendChild(b)});
@@ -1345,7 +1350,7 @@ $("kAll").addEventListener("click",function(){var b=$("kAll");keepPos(b,function
 renderK();
 
 /* ---------- PDF一覧 ---------- */
-$("pList").innerHTML=["R7","R6","R5","R4","R3","R2","R1"].map(function(y){
+$("pList").innerHTML=YALL.map(function(y){
   return '<div class="prow"><b>'+YN[y]+'</b><div class="bt"><a class="q" href="pdf.html?f='+y+'&p=1&v='+APP_VER+'" target="_blank" rel="noopener">問題用紙PDF ↗</a><a class="a" href="'+SRC[y].u+'" target="_blank" rel="noopener">解答PDF ↗</a></div><small>解答：'+esc(SRC[y].n)+'</small></div>';
 }).join("");
 
