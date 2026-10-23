@@ -298,6 +298,12 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
 .ps .wsh,.ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ps .wst,.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
+.ps .psqt{width:auto;padding:6px 12px;font-size:13px;margin:6px 0 2px}
+.ps .psqb{margin:6px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(2,11,23,.55);border:1px solid var(--border);font-size:14px;line-height:1.8}
+.ps .psqb .pslead{margin:0 0 6px;color:var(--muted)}.ps .psqb .psks{margin:0 0 6px;padding-left:1.4em}.ps .psqb .psw{margin:4px 0;font-size:13px;color:var(--muted)}
+.ps .psb{display:inline-block;margin:0 2px;padding:0 6px;border-radius:6px;background:rgba(16,185,129,.16);border:1px solid rgba(16,185,129,.5);color:var(--success-hi);font-weight:700}.ps .psb i{font-style:normal;color:#fde68a;margin-right:3px;font-weight:700}
+.ps .psans{margin:4px 0 6px}.ps .psans>b{color:var(--success-hi)}.ps .psans span{display:block;margin-top:4px;font-weight:700;color:var(--accent-hi)}.ps .psans ul{margin:0;padding-left:1.2em}
+.ps .psqb .srcbtn{margin-top:4px}
 .ps .psthb{margin:16px 0 4px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:rgba(255,255,255,.03)}
 .ps .psthb.hot{border-color:rgba(245,158,11,.6);background:rgba(245,158,11,.10)}.ps .psthb.top{border-color:#f87171;background:rgba(248,113,113,.12)}
 .ps .psth{margin:0;font-size:16px;color:#fde68a}.ps .psyr{margin:4px 0 0;font-size:13px;line-height:1.8;color:var(--muted)}.ps .psyr b{color:var(--text)}
@@ -553,10 +559,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <div class="view" id="v-psum" hidden>
     <section class="sec">
       <h2><b>POINTS</b>解説の要点まとめ</h2>
-      <p style="margin:0 0 10px;font-size:14px">解説タブ・予想解説タブの「ポイント」「覚えておくこと」「合格へのアドバイス」だけを、分野ごと・テーマごとにまとめました。テーマは出題回数が多い順に並び、過去7年で4回以上は<b style="color:#f87171">最頻出</b>、3回は<b style="color:#f59e0b">頻出</b>で強調しています。出題年の「問○」をタップすると問題用紙が別タブで開きます。問題名をタップするとその問題の解説へ移動します。</p>
+      <p style="margin:0 0 10px;font-size:14px">解説タブ・予想解説タブの「ポイント」「覚えておくこと」「合格へのアドバイス」だけを、分野ごと・テーマごとにまとめました。テーマは出題回数が多い順に並び、過去7年で4回以上は<b style="color:#f87171">最頻出</b>、3回は<b style="color:#f59e0b">頻出</b>で強調しています。出題年の「問○」をタップすると問題用紙が別タブで開きます。問題名をタップするとその問題の解説へ移動します。「問題を表示」で、その解説の元になった問題（答え入り）を開けます。</p>
       <div class="chips" id="psFilter"></div>
       <div class="chips" style="margin-top:8px" id="psSrc"></div>
       <div class="chips" style="margin-top:8px">
+        <button class="chip" id="psShowQ" type="button" aria-pressed="false">問題をすべて表示</button>
         <button class="chip" id="psHiOnly" type="button" aria-pressed="false">頻出テーマだけ（7年で3回以上）</button>
         <button class="chip" id="psAdvOnly" type="button" aria-pressed="false">合格へのアドバイスだけ</button>
         <button class="chip" id="psPrint" type="button" aria-pressed="false">印刷する</button>
@@ -774,6 +781,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.19.2</b>要点まとめ：各解説に「問題を表示／隠す」ボタンを追加（元の問題文を答え入りで表示。過去問は問題用紙へのリンクつき）。「問題をすべて表示」で一括切り替え</li>
         <li><b>v1.19.1</b>要点まとめ：テーマごとに過去7年の出題年・問題番号・出題確率を表示。4回以上を「最頻出」（赤）、3回を「頻出」（黄）で強調し、出題回数の多い順に並べ替え。「頻出テーマだけ」ボタンを追加</li>
         <li><b>v1.19.0</b>「要点まとめ」タブを追加（解説の「ポイント」「覚えておくこと」「合格へのアドバイス」だけを分野ごと・テーマごとに一覧。過去問／予想問題の切り替え、アドバイスだけの表示、印刷。問題名タップで解説へ）</li>
         <li><b>v1.18.2</b>穴埋め（年度・問題番号ごと）と予想穴埋め（セットごと）のボタンに、前回の正答率を表示（各空欄の最後の結果で計算）</li>
@@ -844,7 +852,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.19.1</div>
+  <div class="ver" aria-label="バージョン">v1.19.2</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -857,26 +865,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.19.1"></script>
-<script src="yosou.js?v=1.19.1"></script>
-<script src="yosou2.js?v=1.19.1"></script>
-<script src="yx1.js?v=1.19.1"></script>
-<script src="yx2.js?v=1.19.1"></script>
-<script src="yx3.js?v=1.19.1"></script>
-<script src="yx4.js?v=1.19.1"></script>
-<script src="yz1.js?v=1.19.1"></script>
-<script src="yz2.js?v=1.19.1"></script>
-<script src="yz3.js?v=1.19.1"></script>
-<script src="yz4.js?v=1.19.1"></script>
-<script src="advice.js?v=1.19.1"></script>
-<script src="anki.js?v=1.19.1"></script>
-<script src="kijutsu.js?v=1.19.1"></script>
-<script src="mondai.js?v=1.19.1"></script>
-<script src="mqinfo.js?v=1.19.1"></script>
+<script src="kaisetsu.js?v=1.19.2"></script>
+<script src="yosou.js?v=1.19.2"></script>
+<script src="yosou2.js?v=1.19.2"></script>
+<script src="yx1.js?v=1.19.2"></script>
+<script src="yx2.js?v=1.19.2"></script>
+<script src="yx3.js?v=1.19.2"></script>
+<script src="yx4.js?v=1.19.2"></script>
+<script src="yz1.js?v=1.19.2"></script>
+<script src="yz2.js?v=1.19.2"></script>
+<script src="yz3.js?v=1.19.2"></script>
+<script src="yz4.js?v=1.19.2"></script>
+<script src="advice.js?v=1.19.2"></script>
+<script src="anki.js?v=1.19.2"></script>
+<script src="kijutsu.js?v=1.19.2"></script>
+<script src="mondai.js?v=1.19.2"></script>
+<script src="mqinfo.js?v=1.19.2"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.19.1";
+var APP_VER="1.19.2";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1482,7 +1490,17 @@ BAR.forEach(function(b){
   KAISETSU.concat(YOSOU).forEach(function(k){var yo=k.y==="予想",id=(yo?"予想-":k.y+"-")+k.q,th=qTh(k.y,k.q),ad=ADV[id]||{};
     if(yo&&window.YX&&YX[k.q]){var yx=YX[k.q];ad={k:ad.k||yx.k,a:ad.a||yx.a}}
     if(!k.pt&&!ad.k&&!ad.a)return;
-    L.push({id:id,yo:yo,y:k.y,q:k.q,t:k.t,th:th,f:(THEMES[th]&&THEMES[th].f)||"その他",pt:k.pt,k:ad.k,a:ad.a})});
+    L.push({id:id,yo:yo,y:k.y,q:k.q,t:k.t,th:th,f:(THEMES[th]&&THEMES[th].f)||"その他",pt:k.pt,k:ad.k,a:ad.a,src:k})});
+  var showQ=false,openQ={};
+  /* その解説の元の問題（答え入り） */
+  function qBody(k){var h='<p class="pslead">'+esc(k.lead||"")+'</p>';
+    if(k.type==="fill"){h+='<ol class="psks">'+k.s.map(function(x){return '<li>'+esc(x.replace(/^\(\d\)\s*/,"")).replace(/\{([イロハニホ]):([^}]+)\}/g,function(_,l,a){return '<span class="psb"><i>('+l+')</i>'+a+'</span>'})+'</li>'}).join("")+'</ol>';
+      if(k.w)h+='<p class="psw"><b>［語句又は数値］</b>'+esc(k.w.split(",").join("、"))+'</p>'}
+    else if(k.type==="write"){if(k.items&&k.items.length)h+='<ul class="psks">'+k.items.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>';
+      h+='<div class="psans"><b>解答例</b>'+k.ans.map(function(g){return '<div><span>'+esc(g[0])+'</span><ul>'+g[1].map(function(x){return '<li>'+esc(x.replace(/^【補足】/,"（補足）"))+'</li>'}).join("")+'</ul></div>'}).join("")+'</div>'}
+    else if(k.type==="bar"){h+='<p class="pslead">'+esc(k.cond||"")+'</p><div class="psans"><b>正解：全所要日数 '+k.total+'日</b>（'+esc(k.calc||"")+'）<ul>'+k.rows.map(function(r){return '<li>'+esc(r[0])+'：'+(r[1]===r[2]?r[1]:r[1]+'〜'+r[2])+'日目</li>'}).join("")+'</ul></div>'}
+    if(k.y!=="予想")h+='<a class="srcbtn" href="q/'+k.y+'-'+k.q+'.jpg?v='+APP_VER+'" target="_blank" rel="noopener">問題用紙を開く ↗</a>';
+    return h}
   var fs=FO.filter(function(f){return L.some(function(x){return x.f===f})});L.forEach(function(x){if(fs.indexOf(x.f)<0)fs.push(x.f)});cat=fs[0];
   function chips(box,list,cur,fn){$(box).innerHTML="";list.forEach(function(c){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=c;b.setAttribute("aria-pressed",c===cur);
     b.addEventListener("click",function(){$(box).querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});fn(c)});$(box).appendChild(b)})}
@@ -1499,9 +1517,13 @@ BAR.forEach(function(b){
         var ys=thYears(th),c=ys.length,lvl=c>=4?"最頻出":c>=3?"頻出":"";
         return '<div class="psthb'+(lvl?' hot':'')+(c>=4?' top':'')+'"><h3 class="psth">'+(lvl?'<span class="pshot">'+lvl+'</span>':'')+esc((THEMES[th]&&THEMES[th].n)||"その他")+'</h3>'+
           '<p class="psyr">'+(c?'<b>過去7年で'+c+'回出題</b>（出題確率 '+thProb(th)+'%）：'+yLinks(thIds(th)):'<b>過去7年は出題なし</b>（予想問題のみ）')+'</p></div>'+T.map(function(x){n++;
+          var op=openQ[x.id]!==undefined?openQ[x.id]:showQ;
           return '<div class="psq"><div class="wsh"><span class="tag">'+(x.yo?'予想':esc(x.y+" 問"+x.q))+'</span><button class="jump wst" type="button" data-j="'+x.id+'">'+esc(x.t)+'</button></div>'+
+            '<button class="btn ghost psqt" type="button" data-psq="'+x.id+'">'+(op?'問題を隠す':'問題を表示')+'</button><div class="psqb"'+(op?'':' hidden')+'>'+qBody(x.src)+'</div>'+
             (!advOnly&&x.pt?'<b class="kh">ポイント</b><p>'+qw(x.pt)+'</p>':'')+(!advOnly&&x.k?'<b class="kh">覚えておくこと</b>'+ul(x.k):'')+(x.a?'<b class="kh">合格へのアドバイス</b><p>'+qw(x.a)+'</p>':'')+'</div>'}).join("")}).join("")+'</section>'});
     $("psList").innerHTML=h||'<section class="sec"><p class="hint">該当する問題がありません。</p></section>';$("psCount").textContent=n}
+  $("psShowQ").addEventListener("click",function(){showQ=!showQ;openQ={};this.setAttribute("aria-pressed",showQ);this.textContent=showQ?"問題をすべて隠す":"問題をすべて表示";draw()});
+  $("psList").addEventListener("click",function(e){var b=e.target.closest("[data-psq]");if(!b)return;var box=b.nextElementSibling,op=box.hidden;box.hidden=!op;openQ[b.dataset.psq]=op;b.textContent=op?"問題を隠す":"問題を表示"});
   $("psHiOnly").addEventListener("click",function(){hiOnly=!hiOnly;this.setAttribute("aria-pressed",hiOnly);draw()});
   $("psAdvOnly").addEventListener("click",function(){advOnly=!advOnly;this.setAttribute("aria-pressed",advOnly);draw()});
   $("psPrint").addEventListener("click",function(){window.print()});
