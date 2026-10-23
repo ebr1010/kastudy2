@@ -298,7 +298,10 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
 .ps .wsh,.ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ps .wst,.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
-.ps .psth{margin:14px 0 4px;font-size:15px;color:#fde68a}.ps .psth:first-of-type{margin-top:4px}
+.ps .psthb{margin:16px 0 4px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:rgba(255,255,255,.03)}
+.ps .psthb.hot{border-color:rgba(245,158,11,.6);background:rgba(245,158,11,.10)}.ps .psthb.top{border-color:#f87171;background:rgba(248,113,113,.12)}
+.ps .psth{margin:0;font-size:16px;color:#fde68a}.ps .psyr{margin:4px 0 0;font-size:13px;line-height:1.8;color:var(--muted)}.ps .psyr b{color:var(--text)}
+.ps .pshot{display:inline-block;margin-right:6px;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:900;background:#f59e0b;color:#1f1300;vertical-align:2px}.ps .psthb.top .pshot{background:#f87171;color:#2a0606}
 .ps .psq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ps .psq .kh{display:block;margin:8px 0 2px;font-size:13px;color:var(--accent-hi)}
 .ps .psq p{margin:0;font-size:15px;line-height:1.8}.ps .psq ul{margin:2px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}
 #wsList.hideans .wsq ul{display:none}#wsList.hideans .wsq.open ul{display:block}
@@ -550,10 +553,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <div class="view" id="v-psum" hidden>
     <section class="sec">
       <h2><b>POINTS</b>解説の要点まとめ</h2>
-      <p style="margin:0 0 10px;font-size:14px">解説タブ・予想解説タブの「ポイント」「覚えておくこと」「合格へのアドバイス」だけを、分野ごと・テーマごとにまとめました。問題名をタップするとその問題の解説へ移動します。</p>
+      <p style="margin:0 0 10px;font-size:14px">解説タブ・予想解説タブの「ポイント」「覚えておくこと」「合格へのアドバイス」だけを、分野ごと・テーマごとにまとめました。テーマは出題回数が多い順に並び、過去7年で4回以上は<b style="color:#f87171">最頻出</b>、3回は<b style="color:#f59e0b">頻出</b>で強調しています。出題年の「問○」をタップすると問題用紙が別タブで開きます。問題名をタップするとその問題の解説へ移動します。</p>
       <div class="chips" id="psFilter"></div>
       <div class="chips" style="margin-top:8px" id="psSrc"></div>
       <div class="chips" style="margin-top:8px">
+        <button class="chip" id="psHiOnly" type="button" aria-pressed="false">頻出テーマだけ（7年で3回以上）</button>
         <button class="chip" id="psAdvOnly" type="button" aria-pressed="false">合格へのアドバイスだけ</button>
         <button class="chip" id="psPrint" type="button" aria-pressed="false">印刷する</button>
       </div>
@@ -770,6 +774,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.19.1</b>要点まとめ：テーマごとに過去7年の出題年・問題番号・出題確率を表示。4回以上を「最頻出」（赤）、3回を「頻出」（黄）で強調し、出題回数の多い順に並べ替え。「頻出テーマだけ」ボタンを追加</li>
         <li><b>v1.19.0</b>「要点まとめ」タブを追加（解説の「ポイント」「覚えておくこと」「合格へのアドバイス」だけを分野ごと・テーマごとに一覧。過去問／予想問題の切り替え、アドバイスだけの表示、印刷。問題名タップで解説へ）</li>
         <li><b>v1.18.2</b>穴埋め（年度・問題番号ごと）と予想穴埋め（セットごと）のボタンに、前回の正答率を表示（各空欄の最後の結果で計算）</li>
         <li><b>v1.18.1</b>「似ている過去問」ボタンを別タブで開くように変更（その過去問の解説が新しいタブで表示される）</li>
@@ -839,7 +844,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.19.0</div>
+  <div class="ver" aria-label="バージョン">v1.19.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -852,26 +857,26 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.19.0"></script>
-<script src="yosou.js?v=1.19.0"></script>
-<script src="yosou2.js?v=1.19.0"></script>
-<script src="yx1.js?v=1.19.0"></script>
-<script src="yx2.js?v=1.19.0"></script>
-<script src="yx3.js?v=1.19.0"></script>
-<script src="yx4.js?v=1.19.0"></script>
-<script src="yz1.js?v=1.19.0"></script>
-<script src="yz2.js?v=1.19.0"></script>
-<script src="yz3.js?v=1.19.0"></script>
-<script src="yz4.js?v=1.19.0"></script>
-<script src="advice.js?v=1.19.0"></script>
-<script src="anki.js?v=1.19.0"></script>
-<script src="kijutsu.js?v=1.19.0"></script>
-<script src="mondai.js?v=1.19.0"></script>
-<script src="mqinfo.js?v=1.19.0"></script>
+<script src="kaisetsu.js?v=1.19.1"></script>
+<script src="yosou.js?v=1.19.1"></script>
+<script src="yosou2.js?v=1.19.1"></script>
+<script src="yx1.js?v=1.19.1"></script>
+<script src="yx2.js?v=1.19.1"></script>
+<script src="yx3.js?v=1.19.1"></script>
+<script src="yx4.js?v=1.19.1"></script>
+<script src="yz1.js?v=1.19.1"></script>
+<script src="yz2.js?v=1.19.1"></script>
+<script src="yz3.js?v=1.19.1"></script>
+<script src="yz4.js?v=1.19.1"></script>
+<script src="advice.js?v=1.19.1"></script>
+<script src="anki.js?v=1.19.1"></script>
+<script src="kijutsu.js?v=1.19.1"></script>
+<script src="mondai.js?v=1.19.1"></script>
+<script src="mqinfo.js?v=1.19.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.19.0";
+var APP_VER="1.19.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1473,7 +1478,7 @@ BAR.forEach(function(b){
 
 /* ---------- 要点まとめ（ポイント・覚えておくこと・合格へのアドバイス） ---------- */
 (function(){
-  var FO=["土工","コンクリート","安全","工程","品質","計画・環境"],cat=null,src="過去問と予想",advOnly=false,L=[];
+  var FO=["土工","コンクリート","安全","工程","品質","計画・環境"],cat=null,src="過去問と予想",advOnly=false,hiOnly=false,L=[];
   KAISETSU.concat(YOSOU).forEach(function(k){var yo=k.y==="予想",id=(yo?"予想-":k.y+"-")+k.q,th=qTh(k.y,k.q),ad=ADV[id]||{};
     if(yo&&window.YX&&YX[k.q]){var yx=YX[k.q];ad={k:ad.k||yx.k,a:ad.a||yx.a}}
     if(!k.pt&&!ad.k&&!ad.a)return;
@@ -1487,11 +1492,17 @@ BAR.forEach(function(b){
   function draw(){var n=0,h="";(cat==="全分野"?fs:[cat]).forEach(function(f){
       var G=L.filter(function(x){return x.f===f&&(src==="過去問と予想"||(src==="過去問だけ")!==x.yo)&&(!advOnly||x.a)});if(!G.length)return;
       var ths=[];G.forEach(function(x){if(ths.indexOf(x.th)<0)ths.push(x.th)});
+      if(hiOnly)ths=ths.filter(function(th){return thYears(th).length>=3});if(!ths.length)return;
+      /* よく出るテーマを先に */
+      ths.sort(function(a,b){return thYears(b).length-thYears(a).length||thProb(b)-thProb(a)});G=G.filter(function(x){return ths.indexOf(x.th)>=0});
       h+='<section class="sec ps"><h2><b>'+esc(f)+'</b>'+G.length+'問</h2>'+ths.map(function(th){var T=G.filter(function(x){return x.th===th}).sort(function(a,b){return a.yo===b.yo?(a.yo?(a.q<b.q?-1:1):(a.y===b.y?(+a.q)-(+b.q):(a.y<b.y?1:-1))):(a.yo?1:-1)});
-        return '<h3 class="psth">'+esc((THEMES[th]&&THEMES[th].n)||"その他")+'</h3>'+T.map(function(x){n++;
+        var ys=thYears(th),c=ys.length,lvl=c>=4?"最頻出":c>=3?"頻出":"";
+        return '<div class="psthb'+(lvl?' hot':'')+(c>=4?' top':'')+'"><h3 class="psth">'+(lvl?'<span class="pshot">'+lvl+'</span>':'')+esc((THEMES[th]&&THEMES[th].n)||"その他")+'</h3>'+
+          '<p class="psyr">'+(c?'<b>過去7年で'+c+'回出題</b>（出題確率 '+thProb(th)+'%）：'+yLinks(thIds(th)):'<b>過去7年は出題なし</b>（予想問題のみ）')+'</p></div>'+T.map(function(x){n++;
           return '<div class="psq"><div class="wsh"><span class="tag">'+(x.yo?'予想':esc(x.y+" 問"+x.q))+'</span><button class="jump wst" type="button" data-j="'+x.id+'">'+esc(x.t)+'</button></div>'+
             (!advOnly&&x.pt?'<b class="kh">ポイント</b><p>'+qw(x.pt)+'</p>':'')+(!advOnly&&x.k?'<b class="kh">覚えておくこと</b>'+ul(x.k):'')+(x.a?'<b class="kh">合格へのアドバイス</b><p>'+qw(x.a)+'</p>':'')+'</div>'}).join("")}).join("")+'</section>'});
     $("psList").innerHTML=h||'<section class="sec"><p class="hint">該当する問題がありません。</p></section>';$("psCount").textContent=n}
+  $("psHiOnly").addEventListener("click",function(){hiOnly=!hiOnly;this.setAttribute("aria-pressed",hiOnly);draw()});
   $("psAdvOnly").addEventListener("click",function(){advOnly=!advOnly;this.setAttribute("aria-pressed",advOnly);draw()});
   $("psPrint").addEventListener("click",function(){window.print()});
   $("psList").addEventListener("click",function(e){var w=e.target.closest(".mqw[data-w]");if(!w||String(getSelection()).trim())return;openSheet(w.dataset.w,"")});
