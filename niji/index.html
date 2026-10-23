@@ -298,6 +298,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
 .ps .wsh,.ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ps .wst,.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
+.ks .ksp{margin:0 0 8px;font-size:16px;line-height:2.2}.kstap{font:inherit;min-width:3em;padding:0 6px;margin:0 2px;border:1.5px dashed #fde68a;border-radius:6px;background:rgba(245,158,11,.08);color:#fde68a;cursor:pointer;line-height:1.6}.kstap.open{border-style:solid;border-color:var(--success);color:var(--success-hi);background:rgba(16,185,129,.12);font-weight:700}
 .kesheet{display:grid;gap:10px}.kesum{margin:6px 0 14px;padding:10px 12px;border-radius:10px;background:rgba(2,11,23,.55);border:1px solid var(--border)}.kesumt{display:block;font-size:13px;color:var(--accent-hi);margin-bottom:4px}.kesumq{padding:8px 0;border-top:1px dashed rgba(255,255,255,.12)}.kesumq:first-of-type{border-top:0}.kesumq h4{margin:0 0 4px;font-size:14px;color:#fde68a}.kesumq p{margin:0 0 4px;font-size:15px;line-height:1.8}.kesheet a{display:block;text-decoration:none;color:var(--accent-hi);font-weight:700;font-size:14px}.kesheet img{display:block;width:100%;height:auto;border-radius:8px;background:#fff;margin-bottom:4px}
 .ke .keh{margin:0 0 8px;font-size:15px;color:#fde68a}.ke .kep{margin:0 0 6px;font-size:16px;line-height:1.9}
 .ke .kep{padding:8px 0;border-top:1px dashed rgba(255,255,255,.1)}.ke .keh+.kep{border-top:0;padding-top:0}
@@ -362,6 +363,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="wsum" aria-selected="false">短い答え</button>
     <button role="tab" data-v="psum" aria-selected="false">要点まとめ</button>
     <button role="tab" data-v="keik" aria-selected="false">経験記述</button>
+    <button role="tab" data-v="kesum" aria-selected="false">要約穴埋め</button>
     <button role="tab" data-v="mq" aria-selected="false">問題集</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
@@ -567,6 +569,19 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   <!-- ===== 記述暗記 ===== -->
+  <div class="view" id="v-kesum" hidden>
+    <section class="sec">
+      <h2><b>FILL</b>経験記述の要約を穴埋めで覚える</h2>
+      <p style="margin:0 0 10px;font-size:14px">経験記述の「12項目の要点」（安全・工程・品質 × 設問1(1)〜設問2(2)）の数値や用語が空欄になっています。「空欄を変える」を押すたびに、空欄の場所が変わります。</p>
+      <div class="chips" id="ksTheme"></div>
+      <div class="chips" style="margin-top:8px" id="ksDen"></div>
+      <div class="chips" style="margin-top:8px" id="ksHow"></div>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="ksNew" type="button" aria-pressed="false">空欄を変える</button></div>
+      <p style="margin:10px 0 0;font-size:14px" id="ksScore"></p>
+    </section>
+    <div id="ksList"></div>
+  </div>
+
   <div class="view" id="v-keik" hidden>
     <section class="sec">
       <h2><b>MY ANSWER</b>自分の経験記述を覚える</h2>
@@ -580,11 +595,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.21.9" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.21.9" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.21.9" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.21.9" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.21.9" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.21.9" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.22.0" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.22.0" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.22.0" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.22.0" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.22.0" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.22.0" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.21.9" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.22.0" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -814,6 +829,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.22.0</b>「要約穴埋め」タブを追加（経験記述の12項目の要点を穴埋めで練習。分野の切り替え、空欄の多い／少ない、選んで答える／タップで答えを見る、「空欄を変える」で空欄の場所を入れ替え）</li>
         <li><b>v1.21.9</b>安全2(1)の「留意した危険は」を元の「おそれは」に戻した（「留意」を付けるのは「留意した状況は」だけ）</li>
         <li><b>v1.21.8</b>設問2(1)（留意事項）の要約の文頭を「留意した状況は〜」「留意した危険は〜」「留意事項は〜」にそろえた</li>
         <li><b>v1.21.7</b>経験記述タブの解答用紙（安全・工程・品質）の画像の下に、それぞれの分野の要点（設問1(1)〜設問2(2)の4項目）を表示</li>
@@ -896,7 +912,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.21.9</div>
+  <div class="ver" aria-label="バージョン">v1.22.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -909,28 +925,28 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.21.9"></script>
-<script src="yosou.js?v=1.21.9"></script>
-<script src="yosou2.js?v=1.21.9"></script>
-<script src="yx1.js?v=1.21.9"></script>
-<script src="yx2.js?v=1.21.9"></script>
-<script src="yx3.js?v=1.21.9"></script>
-<script src="yx4.js?v=1.21.9"></script>
-<script src="yz1.js?v=1.21.9"></script>
-<script src="yz2.js?v=1.21.9"></script>
-<script src="yz3.js?v=1.21.9"></script>
-<script src="yz4.js?v=1.21.9"></script>
-<script src="advice.js?v=1.21.9"></script>
-<script src="anki.js?v=1.21.9"></script>
-<script src="kijutsu.js?v=1.21.9"></script>
-<script src="mondai.js?v=1.21.9"></script>
-<script src="mqinfo.js?v=1.21.9"></script>
-<script src="hsei.js?v=1.21.9"></script>
-<script src="keiken.js?v=1.21.9"></script>
+<script src="kaisetsu.js?v=1.22.0"></script>
+<script src="yosou.js?v=1.22.0"></script>
+<script src="yosou2.js?v=1.22.0"></script>
+<script src="yx1.js?v=1.22.0"></script>
+<script src="yx2.js?v=1.22.0"></script>
+<script src="yx3.js?v=1.22.0"></script>
+<script src="yx4.js?v=1.22.0"></script>
+<script src="yz1.js?v=1.22.0"></script>
+<script src="yz2.js?v=1.22.0"></script>
+<script src="yz3.js?v=1.22.0"></script>
+<script src="yz4.js?v=1.22.0"></script>
+<script src="advice.js?v=1.22.0"></script>
+<script src="anki.js?v=1.22.0"></script>
+<script src="kijutsu.js?v=1.22.0"></script>
+<script src="mondai.js?v=1.22.0"></script>
+<script src="mqinfo.js?v=1.22.0"></script>
+<script src="hsei.js?v=1.22.0"></script>
+<script src="keiken.js?v=1.22.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.21.9";
+var APP_VER="1.22.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1114,13 +1130,15 @@ $("startBtn").addEventListener("click",function(){
 /* ---- 記述（パーツ組み立て）・工程表（並べ替え＋日数）・誤り訂正 ----
    rule: any＝解答例から2つ / each＝(1)(2)それぞれ1つずつ / diff＝①〜の中から2つ選んで解答（選ぶ番号は2つだけ） */
 /* ---- 記述：解答文の大事な語句を空欄にして、語句だけ選ぶ ---- */
-var WSTOP="作業,確認,実施,使用,場合,必要,施工,工事,注意,状態,管理,範囲,前後,事前,時間,周囲,十分,適切,所定,方法,内容,実際,現場,箇所,部分,全体,一般,程度,以上,以下,未満,以内,各種,種類,状況,計画,対策,措置,配置,設置,目的,影響,発生,防止,実施,場所,作成,検討,以外".split(",");
+var WSTOP="作業,確認,実施,使用,場合,必要,施工,工事,注意,処置,課題,結果,理由,留意事項,状況,検討,状態,管理,範囲,前後,事前,時間,周囲,十分,適切,所定,方法,内容,実際,現場,箇所,部分,全体,一般,程度,以上,以下,未満,以内,各種,種類,状況,計画,対策,措置,配置,設置,目的,影響,発生,防止,実施,場所,作成,検討,以外".split(",");
 function wsTok(t){var c=[];function f(re,ty,sc){var m;while((m=re.exec(t))){c.push({i:m.index,w:m[0],ty:ty,sc:sc+(m[0].length>=3?1:0)})}}
-  f(/(?<![A-Za-z0-9.,\-])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?!つ)(?:N\/mm2|kN|m3|m2|mm|cm|m|t|N|％|%|℃|日|時間|回|分|秒|倍|度|kg|本|層|か月|ヶ月|週間|週|年|割|人|名|台|段|枚)?(?:以上|以下|未満|以内|を超える)?/g,"num",5);
+  f(/(?<![A-Za-z0-9.,\-])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?!つ)(?:N\/mm2|kN|m3|m2|mm|cm|m|t|N|％|%|℃|日|時間|時|回|分|秒|倍|度|kg|本|層|か月|ヶ月|週間|週|年|割|人|名|台|段|枚)?(?:以上|以下|未満|以内|を超える)?/g,"num",5);
+  f(/\d{1,2}月\d{1,2}日/g,"date",7);
   f(/[ァ-ヴ][ァ-ヴー・]{2,}/g,"kata",3);
   f(/[一-龥々]{2,}/g,"kanji",2);
   /* 「又は」「及び」「等」の漢字や、送りがなの付く語（締固め・取付け など）は空欄にしない */
   return c.filter(function(x){
+    if(x.ty==="date")return true;
     if(x.ty==="num"){if(x.i===0||/^\.(?!\d)/.test(t.slice(x.i+x.w.length)))return false;return true}
     if(x.ty==="kata"){x.w=x.w.replace(/・+$/,"");return x.w.length>=3}
     var pc=t.charAt(x.i-1);if(/[A-Za-z0-9]/.test(pc)||(/[ぁ-ゖ]/.test(pc)&&"をにはがでとのへやもかよまなてりし".indexOf(pc)<0))return false;
@@ -1131,22 +1149,23 @@ function wsTok(t){var c=[];function f(re,ty,sc){var m;while((m=re.exec(t))){c.pu
     if(pv==="ん")return false;
     x.sc=2+(x.w.length>=3?1:0);return true})}
 var WSPOOL=null;
-function wsPool(){if(WSPOOL)return WSPOOL;WSPOOL={num:[],kata:[],kanji:[]};var all=[];
+function wsPool(){if(WSPOOL)return WSPOOL;WSPOOL={num:[],kata:[],kanji:[],date:[]};var all=[];
   KAISETSU.forEach(function(k){if(k.type!=="fill"&&k.type!=="bar"&&k.ans)k.ans.forEach(function(g){g[1].forEach(function(x){all.push(x)})})});
   if(typeof KIJ!=="undefined")KIJ.forEach(function(g){g[4].forEach(function(it){all.push(it[1])})});
   all.forEach(function(t){wsTok(t).forEach(function(x){if(WSPOOL[x.ty].indexOf(x.w)<0)WSPOOL[x.ty].push(x.w)})});return WSPOOL}
-function wsOpts(p,t,ctx){var w=p.w,out=[];function add(x){if(x&&x!==w&&out.indexOf(x)<0&&out.length<3&&t.indexOf(x)<0)out.push(x)}
-  if(p.ty==="num"){var m=w.match(/^([\d,]+(?:\.\d+)?)(.*)$/),cm=/,/.test(m[1]),n=+m[1].replace(/,/g,""),dec=(m[1].split(".")[1]||"").length,u=m[2];
+function wsOpts(p,t,ctx){var w=p.w,out=[];function add(x){var nm=p.ty==="num"&&String(x).match(/^([\d,.]+)(時|日)(?!間)/);if(nm&&+nm[1].replace(/,/g,"")>(nm[2]==="時"?24:31))return;if(x&&x!==w&&out.indexOf(x)<0&&out.length<3&&t.indexOf(x)<0)out.push(x)}
+  if(p.ty==="date"){var dm=w.match(/(\d+)月(\d+)日/),mo=+dm[1],dd=+dm[2];[[0,1],[0,-1],[0,7],[1,0],[-1,0],[0,-7]].forEach(function(o){var a=mo+o[0],b=dd+o[1];if(a>=1&&a<=12&&b>=1&&b<=31)add(a+"月"+b+"日")})}
+  else if(p.ty==="num"){var m=w.match(/^([\d,]+(?:\.\d+)?)(.*)$/),cm=/,/.test(m[1]),n=+m[1].replace(/,/g,""),dec=(m[1].split(".")[1]||"").length,u=m[2];
     var fmt=function(v){var x=dec?v.toFixed(dec):String(Math.round(v*100)/100);return cm?x.replace(/^\d+/,function(d){return (+d).toLocaleString("en-US")}):x},sw={"以上":"以下","以下":"以上","未満":"以上","以内":"以上","を超える":"以下"},um=u.match(/(以上|以下|未満|以内|を超える)$/);
     if(um)add(m[1]+u.slice(0,u.length-um[1].length)+sw[um[1]]);
     if(window.ASMK)ASMK.mutate(w).forEach(add);
-    if(n>0)(dec?[n*2,n/2,n*1.5,n*3]:[n*2,n/2,n*3,n>=10?n+10:n+1,n-1]).forEach(function(v){if(v>0&&(dec||v===Math.round(v)))add(fmt(v)+u)})}
+    if(n>0)(dec?[n*2,n/2,n*1.5,n*3]:[n*2,n/2,n*3,n>=10?n+10:n+1,n-1,n+1,n+2,n-2]).forEach(function(v){if(v>0&&(dec||v===Math.round(v))&&!(/^時/.test(u)&&v>24)&&!(/^日/.test(u)&&v>31))add(fmt(v)+u)})}
   else{if(window.ASMK)ASMK.mutate(w).forEach(add);
     shuffle((ctx||[]).slice()).forEach(function(c){if(c!==t)wsTok(c).forEach(function(x){if(x.ty===p.ty)add(x.w)})});
     var P=wsPool()[p.ty].filter(function(x){return Math.abs(x.length-w.length)<=1});shuffle(P.slice()).forEach(add);
     shuffle(wsPool()[p.ty].slice()).forEach(add)}
   return shuffle(out.concat([w]))}
-function wsBuild(t,ctx){var c=wsTok(t).sort(function(a,b){return b.sc-a.sc||b.w.length-a.w.length}),nb=t.length<20?1:t.length<40?2:3,pick=[];
+function wsBuild(t,ctx,opt){opt=opt||{};var c=wsTok(t);if(opt.rnd)c.forEach(function(x){x.sc+=Math.random()*2.5});c.sort(function(a,b){return b.sc-a.sc||b.w.length-a.w.length});var nb=opt.nb?Math.max(1,Math.round(t.length/opt.nb)):(t.length<20?1:t.length<40?2:3),pick=[];
   c.forEach(function(x){if(pick.length>=nb)return;if(pick.some(function(p){return (x.i<p.i+p.w.length&&p.i<x.i+x.w.length)||p.w===x.w}))return;pick.push(x)});
   if(!pick.length){var m=/[一-龥々]{2,}/.exec(t);if(m)pick.push({i:m.index,w:m[0],ty:"kanji"})}
   pick.sort(function(a,b){return a.i-b.i});var parts=[],bl=[],last=0;
@@ -1381,7 +1400,7 @@ $("shB").addEventListener("click",function(){$("sheet").hidden=true});
 $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 var selT="";
-document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList","keList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
+document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList","keList","ksList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
 $("q-play").addEventListener("click",function(e){var w=e.target.closest(".mqw[data-w]");if(!w)return;if(String(getSelection()).trim())return;openSheet(w.dataset.w,"")});
 $("selS").addEventListener("mousedown",function(e){e.preventDefault()});
 $("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
@@ -1533,6 +1552,34 @@ BAR.forEach(function(b){
   $("kjTest").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("test",on);$("kjList").querySelectorAll(".it.open").forEach(function(r){r.classList.remove("open")})});
   $("kjHide").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("hidedone",on)});
   $("kjPrint").addEventListener("click",function(){window.print()});
+  draw();
+})();
+
+/* ---------- 要約穴埋め（経験記述の12項目の要点） ---------- */
+(function(){
+  var M=window.KEIKEN&&KEIKEN.matome;if(!M)return;
+  var TH=[["all","全部"],["0","安全管理"],["1","工程管理"],["2","品質管理"]],DEN=[["few","空欄 少なめ"],["many","空欄 多め"]],HOW=[["pick","選んで答える"],["tap","タップで答えを見る"]];
+  var th=load("d2ksT","all"),den=load("d2ksD","few"),how=load("d2ksH","pick"),rnd=false,S=null,res={};
+  function chips(box,list,val,fn){$(box).innerHTML="";list.forEach(function(x){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=x[1];b.setAttribute("aria-pressed",x[0]===val);
+    b.addEventListener("click",function(){$(box).querySelectorAll(".chip").forEach(function(y){y.setAttribute("aria-pressed",y===b)});fn(x[0])});$(box).appendChild(b)})}
+  chips("ksTheme",TH,th,function(v){th=v;save("d2ksT",v);draw()});
+  chips("ksDen",DEN,den,function(v){den=v;save("d2ksD",v);draw()});
+  chips("ksHow",HOW,how,function(v){how=v;save("d2ksH",v);draw()});
+  $("ksNew").addEventListener("click",function(){rnd=true;draw()});
+  function score(){var ok=0,n=0;Object.keys(res).forEach(function(k){ok+=res[k][0];n+=res[k][1]});$("ksScore").textContent=how==="pick"?(n?"答え合わせした分："+ok+" / "+n+" 正解（"+Math.round(ok/n*100)+"%）":"空欄を選んでから、項目ごとに「答え合わせ」を押してください。"):"空欄をタップすると答えが出ます。思い出してからタップ。"}
+  function tapHTML(B){return B.parts.map(function(x){if(typeof x==="string")return esc(x);var a=B.bl[x.b].a;return '<button class="kstap" type="button" data-a="'+esc(a)+'">'+"　".repeat(Math.min(6,Math.max(2,a.length)))+'</button>'}).join("")}
+  function draw(){var L=[];M.forEach(function(p,i){if(th==="all"||Math.floor(i/4)===+th)L.push(i)});
+    var ctx=[];M.forEach(function(p){ctx=ctx.concat(p.t)});S={B:[],v:[]};res={};var si=0;
+    $("ksList").innerHTML=L.map(function(i){var p=M[i],first=si;
+      var body=p.t.map(function(t){var B=wsBuild(t,ctx,{rnd:rnd,nb:den==="many"?14:28});S.B[si]=B;S.v[si]=[];var h=how==="pick"?wsHTML(B,si,[],false,false):tapHTML(B);si++;return '<p class="ksp">'+h+'</p>'}).join("");
+      return '<section class="sec ks"><h3 class="keh">'+esc(p.h)+'</h3>'+body+'<div class="kectl">'+(how==="pick"?'<button class="btn" type="button" data-kschk="'+first+'-'+si+'" data-ksi="'+i+'">答え合わせ</button>':'<button class="btn ghost" type="button" data-ksall>全部表示</button>')+'</div><div class="keres"></div></section>'}).join("");
+    rnd=false;score()}
+  $("ksList").addEventListener("click",function(e){var t=e.target.closest(".kstap");if(t){t.textContent=t.dataset.a;t.classList.add("open");return}
+    var a=e.target.closest("[data-ksall]");if(a){a.closest(".ks").querySelectorAll(".kstap").forEach(function(x){x.textContent=x.dataset.a;x.classList.add("open")});return}
+    var c=e.target.closest("[data-kschk]");if(c){var r=c.dataset.kschk.split("-"),ok=0,n=0,box=c.closest(".ks"),ps=box.querySelectorAll(".ksp");
+      for(var i=+r[0];i<+r[1];i++){var B=S.B[i];B.bl.forEach(function(b,bi){n++;if(S.v[i][bi]===b.a)ok++});ps[i-(+r[0])].innerHTML=wsHTML(B,i,S.v[i],false,true)}
+      c.disabled=true;res[c.dataset.ksi]=[ok,n];box.querySelector(".keres").innerHTML='<div class="verdict '+(ok===n?"ok":"ng")+'">'+ok+' / '+n+' 正解</div>';score()}});
+  $("ksList").addEventListener("change",function(e){var w=e.target.closest("[data-wb]");if(w&&S){var a=w.dataset.wb.split("|");S.v[+a[0]][+a[1]]=w.value}});
   draw();
 })();
 
