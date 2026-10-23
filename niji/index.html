@@ -298,6 +298,13 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
 .ps .wsh,.ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ps .wst,.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
+.ke .keh{margin:0 0 8px;font-size:15px;color:#fde68a}.ke .kep{margin:0 0 6px;font-size:16px;line-height:1.9}
+.ke .kelab{display:inline-block;min-width:5.5em;margin-right:6px;color:var(--accent-hi);font-size:13px}
+.ke .kes.hid{color:transparent;background:rgba(255,255,255,.12);border-radius:6px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.ke .kes.hid.open{color:inherit;background:rgba(16,185,129,.12)}.ke .kes.head{cursor:pointer}.ke .kes.head i{color:var(--muted);font-style:normal;margin-left:2px;padding:0 6px;border-radius:6px;background:rgba(255,255,255,.12)}
+.ke .kes.open{background:rgba(16,185,129,.12);border-radius:6px}
+.ke .kectl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}.ke .kectl .btn{width:auto;padding:8px 14px;font-size:14px}
+.ke .kemem{display:flex;gap:6px;align-items:center;font-size:14px;margin-left:auto}.ke.kedone{border-color:rgba(16,185,129,.6)}.ke .keres .verdict{margin-top:8px}
 .ps .psqt{width:auto;padding:6px 12px;font-size:13px;margin:6px 0 2px}
 .ps .psqb{margin:6px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(2,11,23,.55);border:1px solid var(--border);font-size:14px;line-height:1.8}
 .ps .psqb .pslead{margin:0 0 6px;color:var(--muted)}.ps .psqb .psks{margin:0 0 6px;padding-left:1.4em}.ps .psqb .psw{margin:4px 0;font-size:13px;color:var(--muted)}
@@ -351,6 +358,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="kij" aria-selected="false">記述暗記</button>
     <button role="tab" data-v="wsum" aria-selected="false">短い答え</button>
     <button role="tab" data-v="psum" aria-selected="false">要点まとめ</button>
+    <button role="tab" data-v="keik" aria-selected="false">経験記述</button>
     <button role="tab" data-v="mq" aria-selected="false">問題集</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
@@ -556,6 +564,18 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   <!-- ===== 記述暗記 ===== -->
+  <div class="view" id="v-keik" hidden>
+    <section class="sec">
+      <h2><b>MY ANSWER</b>自分の経験記述を覚える</h2>
+      <p style="margin:0 0 10px;font-size:14px">解答用紙に書いた自分の経験記述（安全・工程・品質）です。「隠す」「書き出しだけ」で思い出す練習、「穴埋め」で数値や用語を確認できます。覚えた設問には「覚えた」を付けておくと、進み具合が残ります。</p>
+      <div class="chips" id="keTheme"></div>
+      <div class="chips" style="margin-top:8px" id="keMode"></div>
+      <p style="margin:10px 0 0;font-size:14px">覚えた設問 <span id="keCount" style="font-family:var(--f-din);font-size:20px;color:var(--success-hi)">0</span></p>
+      <p class="hint" id="keHint" style="margin:6px 0 0"></p>
+    </section>
+    <div id="keList"></div>
+  </div>
+
   <div class="view" id="v-psum" hidden>
     <section class="sec">
       <h2><b>POINTS</b>解説の要点まとめ</h2>
@@ -781,6 +801,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.21.0</b>「経験記述」タブを追加（解答用紙に記入した自分の経験記述：工事概要・安全・工程・品質）。覚えるための4つの表示：読む／隠す（タップで1文ずつ表示）／書き出しだけ／穴埋め（数値・用語を選んで採点）。設問ごとに「覚えた」を記録</li>
         <li><b>v1.20.0</b>平成28〜30年度（旧・実地試験）の問2〜問9（24問）を追加。解説・穴埋め（記述・工程表を含む）・要点まとめ・PDF一覧・問題用紙画像に反映。解答は九州建設専門学院の解答試案。出題確率と頻出の回数は、これまでどおり過去7年（R1〜R7）で計算</li>
         <li><b>v1.19.2</b>要点まとめ：各解説に「問題を表示／隠す」ボタンを追加（元の問題文を答え入りで表示。過去問は問題用紙へのリンクつき）。「問題をすべて表示」で一括切り替え</li>
         <li><b>v1.19.1</b>要点まとめ：テーマごとに過去7年の出題年・問題番号・出題確率を表示。4回以上を「最頻出」（赤）、3回を「頻出」（黄）で強調し、出題回数の多い順に並べ替え。「頻出テーマだけ」ボタンを追加</li>
@@ -853,7 +874,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.20.0</div>
+  <div class="ver" aria-label="バージョン">v1.21.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -866,27 +887,28 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.20.0"></script>
-<script src="yosou.js?v=1.20.0"></script>
-<script src="yosou2.js?v=1.20.0"></script>
-<script src="yx1.js?v=1.20.0"></script>
-<script src="yx2.js?v=1.20.0"></script>
-<script src="yx3.js?v=1.20.0"></script>
-<script src="yx4.js?v=1.20.0"></script>
-<script src="yz1.js?v=1.20.0"></script>
-<script src="yz2.js?v=1.20.0"></script>
-<script src="yz3.js?v=1.20.0"></script>
-<script src="yz4.js?v=1.20.0"></script>
-<script src="advice.js?v=1.20.0"></script>
-<script src="anki.js?v=1.20.0"></script>
-<script src="kijutsu.js?v=1.20.0"></script>
-<script src="mondai.js?v=1.20.0"></script>
-<script src="mqinfo.js?v=1.20.0"></script>
-<script src="hsei.js?v=1.20.0"></script>
+<script src="kaisetsu.js?v=1.21.0"></script>
+<script src="yosou.js?v=1.21.0"></script>
+<script src="yosou2.js?v=1.21.0"></script>
+<script src="yx1.js?v=1.21.0"></script>
+<script src="yx2.js?v=1.21.0"></script>
+<script src="yx3.js?v=1.21.0"></script>
+<script src="yx4.js?v=1.21.0"></script>
+<script src="yz1.js?v=1.21.0"></script>
+<script src="yz2.js?v=1.21.0"></script>
+<script src="yz3.js?v=1.21.0"></script>
+<script src="yz4.js?v=1.21.0"></script>
+<script src="advice.js?v=1.21.0"></script>
+<script src="anki.js?v=1.21.0"></script>
+<script src="kijutsu.js?v=1.21.0"></script>
+<script src="mondai.js?v=1.21.0"></script>
+<script src="mqinfo.js?v=1.21.0"></script>
+<script src="hsei.js?v=1.21.0"></script>
+<script src="keiken.js?v=1.21.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.20.0";
+var APP_VER="1.21.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1072,7 +1094,7 @@ $("startBtn").addEventListener("click",function(){
 /* ---- 記述：解答文の大事な語句を空欄にして、語句だけ選ぶ ---- */
 var WSTOP="作業,確認,実施,使用,場合,必要,施工,工事,注意,状態,管理,範囲,前後,事前,時間,周囲,十分,適切,所定,方法,内容,実際,現場,箇所,部分,全体,一般,程度,以上,以下,未満,以内,各種,種類,状況,計画,対策,措置,配置,設置,目的,影響,発生,防止,実施,場所,作成,検討,以外".split(",");
 function wsTok(t){var c=[];function f(re,ty,sc){var m;while((m=re.exec(t))){c.push({i:m.index,w:m[0],ty:ty,sc:sc+(m[0].length>=3?1:0)})}}
-  f(/\d+(?:\.\d+)?(?!つ)(?:N\/mm2|kN|m3|m2|mm|cm|m|t|N|％|%|℃|日|時間|回|分|秒|倍|度|kg|本|層|か月|ヶ月|週間|週|年|割|人|名|台|段|枚)?(?:以上|以下|未満|以内|を超える)?/g,"num",5);
+  f(/(?<![A-Za-z0-9.\-])\d+(?:\.\d+)?(?!つ)(?:N\/mm2|kN|m3|m2|mm|cm|m|t|N|％|%|℃|日|時間|回|分|秒|倍|度|kg|本|層|か月|ヶ月|週間|週|年|割|人|名|台|段|枚)?(?:以上|以下|未満|以内|を超える)?/g,"num",5);
   f(/[ァ-ヴ][ァ-ヴー・]{2,}/g,"kata",3);
   f(/[一-龥々]{2,}/g,"kanji",2);
   /* 「又は」「及び」「等」の漢字や、送りがなの付く語（締固め・取付け など）は空欄にしない */
@@ -1334,7 +1356,7 @@ $("shB").addEventListener("click",function(){$("sheet").hidden=true});
 $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 var selT="";
-document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
+document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList","keList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
 $("q-play").addEventListener("click",function(e){var w=e.target.closest(".mqw[data-w]");if(!w)return;if(String(getSelection()).trim())return;openSheet(w.dataset.w,"")});
 $("selS").addEventListener("mousedown",function(e){e.preventDefault()});
 $("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
@@ -1486,6 +1508,44 @@ BAR.forEach(function(b){
   $("kjTest").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("test",on);$("kjList").querySelectorAll(".it.open").forEach(function(r){r.classList.remove("open")})});
   $("kjHide").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("hidedone",on)});
   $("kjPrint").addEventListener("click",function(){window.print()});
+  draw();
+})();
+
+/* ---------- 自分の経験記述を覚える ---------- */
+(function(){
+  var KE=window.KEIKEN;if(!KE)return;
+  var TH=[{k:"gaiyou",n:"工事概要",parts:[{h:"工事概要",g:1,t:KE.gaiyou.map(function(x){return x[1]}),lab:KE.gaiyou.map(function(x){return x[0]})}]}].concat(KE.sets);
+  var MODES=[["read","読む"],["hide","隠す（タップで1文ずつ）"],["head","書き出しだけ"],["fill","穴埋め（語句を選ぶ）"]];
+  var HINT={read:"全文を読んで流れをつかむ。",hide:"文が隠れています。思い出してからタップすると、その文だけ表示されます。",head:"各文の書き出しだけ出ています。続きを思い出してからタップして確認。",fill:"数値や用語が空欄です。選んでから「答え合わせ」。"};
+  var cur=load("d2keT","anzen"),mode=load("d2keM","read"),done=load("d2keik",{}),FB=null;
+  if(!TH.some(function(t){return t.k===cur}))cur="anzen";
+  function chips(box,list,val,fn){$(box).innerHTML="";list.forEach(function(x){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=x[1];b.setAttribute("aria-pressed",x[0]===val);
+    b.addEventListener("click",function(){$(box).querySelectorAll(".chip").forEach(function(y){y.setAttribute("aria-pressed",y===b)});fn(x[0])});$(box).appendChild(b)})}
+  chips("keTheme",TH.map(function(t){return [t.k,t.n]}),cur,function(v){cur=v;save("d2keT",v);draw()});
+  chips("keMode",MODES,mode,function(v){mode=v;save("d2keM",v);draw()});
+  function cnt(){var n=0,all=0;TH.forEach(function(t){t.parts.forEach(function(p,i){all++;if(done[t.k+":"+i])n++})});$("keCount").textContent=n+" / "+all}
+  function draw(){var T=TH.filter(function(t){return t.k===cur})[0],ctx=[];T.parts.forEach(function(p){ctx=ctx.concat(p.t)});
+    FB={S:[],B:[],v:[]};$("keHint").textContent=HINT[mode];var si=0;
+    $("keList").innerHTML=T.parts.map(function(p,pi){var id=T.k+":"+pi,first=si;
+      var body=p.t.map(function(t,ti){var lab=p.lab?'<b class="kelab">'+esc(p.lab[ti])+'</b>':'',h;
+        if(mode==="hide")h='<span class="kes hid" data-ke>'+esc(t)+'</span>';
+        else if(mode==="head"){var n=Math.min(8,Math.max(3,Math.floor(t.length/5)));h='<span class="kes head" data-ke data-full="'+esc(t)+'">'+esc(t.slice(0,n))+'<i>……</i></span>'}
+        else if(mode==="fill"){var B=wsBuild(t,ctx);FB.B[si]=B;FB.v[si]=[];h='<span class="kes">'+wsHTML(B,si,[],false,false)+'</span>';si++}
+        else h='<span class="kes">'+esc(t)+'</span>';
+        return '<p class="kep">'+lab+h+'</p>'}).join("");
+      return '<section class="sec ke'+(done[id]?' kedone':'')+'"><h3 class="keh">'+esc(p.h)+'</h3>'+body+
+        '<div class="kectl">'+(mode==="fill"?'<button class="btn" type="button" data-kechk="'+first+'-'+si+'">答え合わせ</button>':'')+
+        (mode==="hide"||mode==="head"?'<button class="btn ghost" type="button" data-keall>この設問を全部表示</button>':'')+
+        '<label class="kemem"><input type="checkbox" data-kedone="'+id+'"'+(done[id]?' checked':'')+'> 覚えた</label></div><div class="keres"></div></section>'}).join("");
+    cnt()}
+  $("keList").addEventListener("click",function(e){var s=e.target.closest("[data-ke]");
+    if(s){if(s.classList.contains("hid"))s.classList.toggle("open");else if(s.classList.contains("head")){s.innerHTML=esc(s.dataset.full);s.classList.remove("head");s.classList.add("open")}return}
+    var a=e.target.closest("[data-keall]");if(a){a.closest(".ke").querySelectorAll("[data-ke]").forEach(function(x){if(x.classList.contains("hid"))x.classList.add("open");else if(x.classList.contains("head")){x.innerHTML=esc(x.dataset.full);x.classList.remove("head");x.classList.add("open")}});return}
+    var c=e.target.closest("[data-kechk]");if(c){var r=c.dataset.kechk.split("-"),ok=0,n=0,box=c.closest(".ke");
+      for(var i=+r[0];i<+r[1];i++){var B=FB.B[i];B.bl.forEach(function(b,bi){n++;if(FB.v[i][bi]===b.a)ok++});var sp=box.querySelectorAll(".kes")[i-(+r[0])];sp.innerHTML=wsHTML(B,i,FB.v[i],false,true)}
+      c.disabled=true;box.querySelector(".keres").innerHTML='<div class="verdict '+(ok===n?"ok":"ng")+'">'+ok+' / '+n+' 正解</div>'}});
+  $("keList").addEventListener("change",function(e){var w=e.target.closest("[data-wb]");if(w&&FB){var a=w.dataset.wb.split("|");FB.v[+a[0]][+a[1]]=w.value;return}
+    var d=e.target.closest("[data-kedone]");if(d){done[d.dataset.kedone]=d.checked;save("d2keik",done);d.closest(".ke").classList.toggle("kedone",d.checked);cnt()}});
   draw();
 })();
 
