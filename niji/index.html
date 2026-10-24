@@ -298,7 +298,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
 .ps .wsh,.ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ps .wst,.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
-.ks .ksp{margin:0 0 10px;font-size:16px;line-height:1.9}.ks .kslead{color:#fde68a;font-weight:700}.ks .kseg{display:block;margin-bottom:4px}.ks .kshid{color:transparent;background:rgba(255,255,255,.13);border-radius:6px;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}.ks .kshid.open{color:inherit;background:rgba(16,185,129,.12)}.kstap{font:inherit;min-width:3em;padding:0 6px;margin:0 2px;border:1.5px dashed #fde68a;border-radius:6px;background:rgba(245,158,11,.08);color:#fde68a;cursor:pointer;line-height:1.6}.kstap.open{border-style:solid;border-color:var(--success);color:var(--success-hi);background:rgba(16,185,129,.12);font-weight:700}
+.ks .ksp{margin:0 0 10px;font-size:16px;line-height:1.9}.ks .kslead{color:#fde68a;font-weight:700}.ks .kseg{display:block;margin-bottom:4px}.km .kmg{padding:8px 0;border-top:1px dashed rgba(255,255,255,.12)}.km .keh+.kmg{border-top:0}.km .kmg ul{margin:4px 0 0;padding-left:1.2em;font-size:16px;line-height:2}.km .kshid{display:inline-block;min-width:6em;margin:3px 0;padding:0 6px}.ks .kshid{color:transparent;background:rgba(255,255,255,.13);border-radius:6px;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}.ks .kshid.open{color:inherit;background:rgba(16,185,129,.12)}.kstap{font:inherit;min-width:3em;padding:0 6px;margin:0 2px;border:1.5px dashed #fde68a;border-radius:6px;background:rgba(245,158,11,.08);color:#fde68a;cursor:pointer;line-height:1.6}.kstap.open{border-style:solid;border-color:var(--success);color:var(--success-hi);background:rgba(16,185,129,.12);font-weight:700}
 .kesheet{display:grid;gap:10px}.kesum{margin:6px 0 14px;padding:10px 12px;border-radius:10px;background:rgba(2,11,23,.55);border:1px solid var(--border)}.kesumt{display:block;font-size:13px;color:var(--accent-hi);margin-bottom:4px}.kesumq{padding:8px 0;border-top:1px dashed rgba(255,255,255,.12)}.kesumq:first-of-type{border-top:0}.kesumq h4{margin:0 0 4px;font-size:14px;color:#fde68a}.kesumq p{margin:0 0 4px;font-size:15px;line-height:1.8}.kesheet a{display:block;text-decoration:none;color:var(--accent-hi);font-weight:700;font-size:14px}.kesheet img{display:block;width:100%;height:auto;border-radius:8px;background:#fff;margin-bottom:4px}
 .ke .keh{margin:0 0 8px;font-size:15px;color:#fde68a}.ke .kep{margin:0 0 6px;font-size:16px;line-height:1.9}
 .ke .kep{padding:8px 0;border-top:1px dashed rgba(255,255,255,.1)}.ke .keh+.kep{border-top:0;padding-top:0}
@@ -364,6 +364,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="psum" aria-selected="false">要点まとめ</button>
     <button role="tab" data-v="keik" aria-selected="false">経験記述</button>
     <button role="tab" data-v="kesum" aria-selected="false">要約穴埋め</button>
+    <button role="tab" data-v="kmemo" aria-selected="false">メモ穴埋め</button>
     <button role="tab" data-v="mq" aria-selected="false">問題集</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
     <button role="tab" data-v="write" aria-selected="false">記述</button>
@@ -569,6 +570,16 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   <!-- ===== 記述暗記 ===== -->
+  <div class="view" id="v-kmemo" hidden>
+    <section class="sec">
+      <h2><b>MEMO</b>手書きメモを穴埋めで覚える</h2>
+      <p style="margin:0 0 10px;font-size:14px">手書きメモ（A＝設問1(1)、B＝設問1(2)、C＝設問2(1)、D＝設問2(2)）のキーワードです。見出しだけ見えていて、キーワードは隠れています。思い出してからタップで表示、もう一度タップで隠れます。</p>
+      <div class="chips" id="kmTheme"></div>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="kmHide" type="button" aria-pressed="false">全部隠す</button><button class="chip" id="kmShow" type="button" aria-pressed="false">全部表示</button></div>
+    </section>
+    <div id="kmList"></div>
+  </div>
+
   <div class="view" id="v-kesum" hidden>
     <section class="sec">
       <h2><b>FILL</b>経験記述の要約を隠して覚える</h2>
@@ -592,11 +603,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.22.1" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.22.1" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.22.1" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.22.1" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.22.1" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.22.1" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.23.0" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.23.0" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.23.0" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.23.0" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.23.0" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.23.0" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.22.1" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.23.0" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -826,6 +837,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.23.0</b>「メモ穴埋め」タブを追加（手書きメモのキーワードを、安全・工程・品質ごとにA〜D・①〜③の見出しで整理。キーワードを隠してタップで表示／非表示）</li>
         <li><b>v1.22.1</b>要約穴埋めタブを作り直し：「状況は、」「課題は、」「処置は、」「理由は、」などの書き出しだけ見せ、その後ろの文を丸ごと隠す形に。タップで表示／もう一度タップで隠す。「全部隠す」「全部表示」ボタン</li>
         <li><b>v1.22.0</b>「要約穴埋め」タブを追加（経験記述の12項目の要点を穴埋めで練習。分野の切り替え、空欄の多い／少ない、選んで答える／タップで答えを見る、「空欄を変える」で空欄の場所を入れ替え）</li>
         <li><b>v1.21.9</b>安全2(1)の「留意した危険は」を元の「おそれは」に戻した（「留意」を付けるのは「留意した状況は」だけ）</li>
@@ -910,7 +922,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.22.1</div>
+  <div class="ver" aria-label="バージョン">v1.23.0</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -923,28 +935,28 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.22.1"></script>
-<script src="yosou.js?v=1.22.1"></script>
-<script src="yosou2.js?v=1.22.1"></script>
-<script src="yx1.js?v=1.22.1"></script>
-<script src="yx2.js?v=1.22.1"></script>
-<script src="yx3.js?v=1.22.1"></script>
-<script src="yx4.js?v=1.22.1"></script>
-<script src="yz1.js?v=1.22.1"></script>
-<script src="yz2.js?v=1.22.1"></script>
-<script src="yz3.js?v=1.22.1"></script>
-<script src="yz4.js?v=1.22.1"></script>
-<script src="advice.js?v=1.22.1"></script>
-<script src="anki.js?v=1.22.1"></script>
-<script src="kijutsu.js?v=1.22.1"></script>
-<script src="mondai.js?v=1.22.1"></script>
-<script src="mqinfo.js?v=1.22.1"></script>
-<script src="hsei.js?v=1.22.1"></script>
-<script src="keiken.js?v=1.22.1"></script>
+<script src="kaisetsu.js?v=1.23.0"></script>
+<script src="yosou.js?v=1.23.0"></script>
+<script src="yosou2.js?v=1.23.0"></script>
+<script src="yx1.js?v=1.23.0"></script>
+<script src="yx2.js?v=1.23.0"></script>
+<script src="yx3.js?v=1.23.0"></script>
+<script src="yx4.js?v=1.23.0"></script>
+<script src="yz1.js?v=1.23.0"></script>
+<script src="yz2.js?v=1.23.0"></script>
+<script src="yz3.js?v=1.23.0"></script>
+<script src="yz4.js?v=1.23.0"></script>
+<script src="advice.js?v=1.23.0"></script>
+<script src="anki.js?v=1.23.0"></script>
+<script src="kijutsu.js?v=1.23.0"></script>
+<script src="mondai.js?v=1.23.0"></script>
+<script src="mqinfo.js?v=1.23.0"></script>
+<script src="hsei.js?v=1.23.0"></script>
+<script src="keiken.js?v=1.23.0"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.22.1";
+var APP_VER="1.23.0";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1398,7 +1410,7 @@ $("shB").addEventListener("click",function(){$("sheet").hidden=true});
 $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 var selT="";
-document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList","keList","ksList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
+document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList","keList","ksList","kmList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
 $("q-play").addEventListener("click",function(e){var w=e.target.closest(".mqw[data-w]");if(!w)return;if(String(getSelection()).trim())return;openSheet(w.dataset.w,"")});
 $("selS").addEventListener("mousedown",function(e){e.preventDefault()});
 $("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
@@ -1550,6 +1562,20 @@ BAR.forEach(function(b){
   $("kjTest").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("test",on);$("kjList").querySelectorAll(".it.open").forEach(function(r){r.classList.remove("open")})});
   $("kjHide").addEventListener("click",function(){var on=this.getAttribute("aria-pressed")!=="true";this.setAttribute("aria-pressed",on);$("kjList").classList.toggle("hidedone",on)});
   $("kjPrint").addEventListener("click",function(){window.print()});
+  draw();
+})();
+
+/* ---------- メモ穴埋め（手書きメモのキーワード） ---------- */
+(function(){
+  var M=window.KEIKEN&&KEIKEN.memo;if(!M)return;
+  var th=load("d2kmT","all"),TH=[["all","全部"]].concat(M.map(function(x,i){return [String(i),x.n]}));
+  $("kmTheme").innerHTML="";TH.forEach(function(x){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=x[1];b.setAttribute("aria-pressed",x[0]===th);
+    b.addEventListener("click",function(){$("kmTheme").querySelectorAll(".chip").forEach(function(y){y.setAttribute("aria-pressed",y===b)});th=x[0];save("d2kmT",th);draw()});$("kmTheme").appendChild(b)});
+  function draw(){$("kmList").innerHTML=M.map(function(x,i){if(th!=="all"&&+th!==i)return "";
+      return '<section class="sec ks km"><h3 class="keh">'+esc(x.n)+'</h3>'+x.g.map(function(g){return '<div class="kmg"><b class="kslead">'+esc(g[0])+'</b><ul>'+g[1].map(function(t){return '<li><span class="kshid" role="button" tabindex="0">'+esc(t)+'</span></li>'}).join("")+'</ul></div>'}).join("")+'</section>'}).join("")}
+  $("kmList").addEventListener("click",function(e){var h=e.target.closest(".kshid");if(h)h.classList.toggle("open")});
+  $("kmHide").addEventListener("click",function(){$("kmList").querySelectorAll(".kshid").forEach(function(x){x.classList.remove("open")})});
+  $("kmShow").addEventListener("click",function(){$("kmList").querySelectorAll(".kshid").forEach(function(x){x.classList.add("open")})});
   draw();
 })();
 
