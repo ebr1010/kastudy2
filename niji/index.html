@@ -298,7 +298,8 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ws .wsq{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.ws .wsq:first-of-type{border-top:0}
 .ps .wsh,.ws .wsh{display:flex;gap:8px;align-items:center;margin-bottom:4px}.ps .wst,.ws .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
-.ks .ksp{margin:0 0 10px;font-size:16px;line-height:1.9}.ks .kslead{color:#fde68a;font-weight:700}.ks .kseg{display:block;margin-bottom:4px}.r8 .r8t{font-size:16px;color:var(--text)}.r8 .tag.r8hot{background:rgba(248,113,113,.2);color:#fca5a5}.r8 .r8lead{margin:8px 0;font-size:15px;line-height:1.8}.r8 .r8it{margin:0 0 8px;padding-left:1.2em;font-size:15px}.r8 .r8ans{margin-top:8px}.r8 .r8g{padding:6px 0;border-top:1px dashed rgba(255,255,255,.12)}.r8 .r8gl{display:block;color:var(--accent-hi);font-size:14px;margin-bottom:2px}.r8 ul{margin:2px 0 0;padding-left:1.2em;font-size:15px;line-height:1.9}.r8 li{margin:3px 0}.r8 .r8p{margin:2px 0 8px;font-size:15px;line-height:1.8}.r8 .kslead{display:block;margin-top:8px}
+.ks .ksp{margin:0 0 10px;font-size:16px;line-height:1.9}.ks .kslead{color:#fde68a;font-weight:700}.ks .kseg{display:block;margin-bottom:4px}.r8 .r8min{margin:8px 0;padding:8px 10px;border-radius:10px;border:1.5px solid rgba(16,185,129,.55);background:rgba(16,185,129,.07)}.r8 .r8min .kslead{margin-top:0;color:var(--success-hi)}
+.r8 .r8t{font-size:16px;color:var(--text)}.r8 .tag.r8hot{background:rgba(248,113,113,.2);color:#fca5a5}.r8 .r8lead{margin:8px 0;font-size:15px;line-height:1.8}.r8 .r8it{margin:0 0 8px;padding-left:1.2em;font-size:15px}.r8 .r8ans{margin-top:8px}.r8 .r8g{padding:6px 0;border-top:1px dashed rgba(255,255,255,.12)}.r8 .r8gl{display:block;color:var(--accent-hi);font-size:14px;margin-bottom:2px}.r8 ul{margin:2px 0 0;padding-left:1.2em;font-size:15px;line-height:1.9}.r8 li{margin:3px 0}.r8 .r8p{margin:2px 0 8px;font-size:15px;line-height:1.8}.r8 .kslead{display:block;margin-top:8px}
 .km .kmg{padding:8px 0;border-top:1px dashed rgba(255,255,255,.12)}.km .keh+.kmg{border-top:0}.km .kmg ul{margin:4px 0 0;padding-left:1.2em;font-size:16px;line-height:2}.km .kshid{display:inline-block;min-width:6em;margin:3px 0;padding:0 6px}.ks .kshid{color:transparent;background:rgba(255,255,255,.13);border-radius:6px;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}.ks .kshid.open{color:inherit;background:rgba(16,185,129,.12)}.kstap{font:inherit;min-width:3em;padding:0 6px;margin:0 2px;border:1.5px dashed #fde68a;border-radius:6px;background:rgba(245,158,11,.08);color:#fde68a;cursor:pointer;line-height:1.6}.kstap.open{border-style:solid;border-color:var(--success);color:var(--success-hi);background:rgba(16,185,129,.12);font-weight:700}
 .kesheet{display:grid;gap:10px}.kesum{margin:6px 0 14px;padding:10px 12px;border-radius:10px;background:rgba(2,11,23,.55);border:1px solid var(--border)}.kesumt{display:block;font-size:13px;color:var(--accent-hi);margin-bottom:4px}.kesumq{padding:8px 0;border-top:1px dashed rgba(255,255,255,.12)}.kesumq:first-of-type{border-top:0}.kesumq h4{margin:0 0 4px;font-size:14px;color:#fde68a}.kesumq p{margin:0 0 4px;font-size:15px;line-height:1.8}.kesheet a{display:block;text-decoration:none;color:var(--accent-hi);font-weight:700;font-size:14px}.kesheet img{display:block;width:100%;height:auto;border-radius:8px;background:#fff;margin-bottom:4px}
 .ke .keh{margin:0 0 8px;font-size:15px;color:#fde68a}.ke .kep{margin:0 0 6px;font-size:16px;line-height:1.9}
@@ -627,11 +628,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.24.0" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.24.0" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.24.0" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.24.0" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.24.0" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.24.0" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.24.1" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.24.1" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.24.1" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.24.1" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.24.1" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.24.1" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.24.0" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.24.1" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -861,6 +862,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.24.1</b>R8予想問題・R8予想解説の各問題に「最低でもこれは書く」短い答えを2つずつ追加（隠してタップで表示）</li>
         <li><b>v1.24.0</b>「R8予想問題」タブ（過去10年の流れから予想した問3・5・8・9の13問。本命／次点つき。解答例を隠してタップで表示、または穴埋めで答え合わせ）と「R8予想解説」タブ（覚えるキーワード・覚え方・減点されやすい書き方）を追加</li>
         <li><b>v1.23.1</b>メモ穴埋め：品質管理を新しい手書きメモの内容に差し替え（状況・課題を①軌道 ②道床 ③再利用材の3つに対応させた形）</li>
         <li><b>v1.23.0</b>「メモ穴埋め」タブを追加（手書きメモのキーワードを、安全・工程・品質ごとにA〜D・①〜③の見出しで整理。キーワードを隠してタップで表示／非表示）</li>
@@ -948,7 +950,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.24.0</div>
+  <div class="ver" aria-label="バージョン">v1.24.1</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -961,29 +963,29 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.24.0"></script>
-<script src="yosou.js?v=1.24.0"></script>
-<script src="yosou2.js?v=1.24.0"></script>
-<script src="yx1.js?v=1.24.0"></script>
-<script src="yx2.js?v=1.24.0"></script>
-<script src="yx3.js?v=1.24.0"></script>
-<script src="yx4.js?v=1.24.0"></script>
-<script src="yz1.js?v=1.24.0"></script>
-<script src="yz2.js?v=1.24.0"></script>
-<script src="yz3.js?v=1.24.0"></script>
-<script src="yz4.js?v=1.24.0"></script>
-<script src="advice.js?v=1.24.0"></script>
-<script src="anki.js?v=1.24.0"></script>
-<script src="kijutsu.js?v=1.24.0"></script>
-<script src="mondai.js?v=1.24.0"></script>
-<script src="mqinfo.js?v=1.24.0"></script>
-<script src="hsei.js?v=1.24.0"></script>
-<script src="keiken.js?v=1.24.0"></script>
-<script src="r8.js?v=1.24.0"></script>
+<script src="kaisetsu.js?v=1.24.1"></script>
+<script src="yosou.js?v=1.24.1"></script>
+<script src="yosou2.js?v=1.24.1"></script>
+<script src="yx1.js?v=1.24.1"></script>
+<script src="yx2.js?v=1.24.1"></script>
+<script src="yx3.js?v=1.24.1"></script>
+<script src="yx4.js?v=1.24.1"></script>
+<script src="yz1.js?v=1.24.1"></script>
+<script src="yz2.js?v=1.24.1"></script>
+<script src="yz3.js?v=1.24.1"></script>
+<script src="yz4.js?v=1.24.1"></script>
+<script src="advice.js?v=1.24.1"></script>
+<script src="anki.js?v=1.24.1"></script>
+<script src="kijutsu.js?v=1.24.1"></script>
+<script src="mondai.js?v=1.24.1"></script>
+<script src="mqinfo.js?v=1.24.1"></script>
+<script src="hsei.js?v=1.24.1"></script>
+<script src="keiken.js?v=1.24.1"></script>
+<script src="r8.js?v=1.24.1"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.24.0";
+var APP_VER="1.24.1";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1607,6 +1609,7 @@ BAR.forEach(function(b){
   function draw(){var ctx=[];Q.forEach(function(k){(k.ans||[]).forEach(function(g){ctx=ctx.concat(g[1])})});S={B:[],v:[]};var si=0;
     $("r8List").innerHTML=Q.map(function(k,i){if(num!=="all"&&num!==k.q)return "";var first=si,h='<section class="sec ks r8">'+head(k,i)+'<p class="r8lead">'+esc(k.lead)+'</p>';
       if(k.items&&k.items.length)h+='<ul class="r8it">'+k.items.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>';
+      if(window.R8MIN&&R8MIN[i])h+='<div class="r8min"><b class="kslead">最低でもこれは書く</b><ul>'+R8MIN[i].map(function(t){return '<li>'+hid(t)+'</li>'}).join("")+'</ul></div>';
       if(k.type==="bar"){h+='<p class="r8lead">'+esc(k.cond)+'</p><div class="r8ans"><b class="kslead">解答例</b><ul>'+k.rows.map(function(r){return '<li>'+esc(r[0])+'：'+hid((r[1]===r[2]?r[1]:r[1]+'〜'+r[2])+'日目')+'</li>'}).join("")+'</ul><p>全所要日数：'+hid(k.total+'日（'+k.calc+'）')+'</p></div>'}
       else{h+='<div class="r8ans"><b class="kslead">解答例</b>'+k.ans.map(function(g){return '<div class="r8g"><b class="r8gl">'+esc(g[0])+'</b><ul>'+g[1].map(function(t){if(mode==="fill"){var B=wsBuild(t,ctx);S.B[si]=B;S.v[si]=[];var x='<li class="ksp">'+wsHTML(B,si,[],false,false)+'</li>';si++;return x}return '<li>'+hid(t)+'</li>'}).join("")+'</ul></div>'}).join("")+'</div>';
         if(mode==="fill")h+='<div class="kectl"><button class="btn" type="button" data-r8chk="'+first+'-'+si+'">答え合わせ</button></div><div class="keres"></div>'}
@@ -1623,7 +1626,7 @@ BAR.forEach(function(b){
   if(!X)return;var xn=load("d2r8xN","all");
   chips("r8xNum",NUMS,xn,function(v){xn=v;save("d2r8xN",v);xdraw()});
   function xdraw(){$("r8xList").innerHTML=Q.map(function(k,i){if(xn!=="all"&&xn!==k.q)return "";var x=X[i]||{};
-      return '<section class="sec ks r8">'+head(k,i)+'<b class="kslead">覚えるキーワード</b><ul class="r8kw">'+(x.kw||[]).map(function(t){return '<li>'+hid(t)+'</li>'}).join("")+'</ul>'+
+      return '<section class="sec ks r8">'+head(k,i)+(window.R8MIN&&R8MIN[i]?'<div class="r8min"><b class="kslead">最低でもこれは書く</b><ul>'+R8MIN[i].map(function(t){return '<li>'+hid(t)+'</li>'}).join("")+'</ul></div>':'')+'<b class="kslead">覚えるキーワード</b><ul class="r8kw">'+(x.kw||[]).map(function(t){return '<li>'+hid(t)+'</li>'}).join("")+'</ul>'+
         '<b class="kslead">覚え方</b><p class="r8p">'+esc(x.how||"")+'</p><b class="kslead" style="color:#fca5a5">減点されやすい書き方</b><p class="r8p">'+esc(x.ng||"")+'</p><p class="hint" style="margin:6px 0 0">'+esc(k.pt)+'</p></section>'}).join("")}
   $("r8xList").addEventListener("click",function(e){var h=e.target.closest(".kshid");if(h)h.classList.toggle("open")});
   $("r8xHide").addEventListener("click",function(){$("r8xList").querySelectorAll(".kshid").forEach(function(x){x.classList.remove("open")})});
