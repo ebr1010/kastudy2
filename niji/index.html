@@ -301,7 +301,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
 .ws ul{margin:4px 0 0;padding-left:1.2em;font-size:15px;line-height:1.8}.ws li b{color:#fde68a}
 .ks .ksp{margin:0 0 10px;font-size:16px;line-height:1.9}.ks .kslead{color:#fde68a;font-weight:700}.ks .kseg{display:block;margin-bottom:4px}.r8 .r8min{cursor:pointer;margin:8px 0;padding:8px 10px;border-radius:10px;border:1.5px solid rgba(16,185,129,.55);background:rgba(16,185,129,.07)}.r8 .r8min .kslead{margin-top:0;color:var(--success-hi)}
 .ktq .mqopts{display:grid;gap:6px;margin-top:6px}.ktq .mqopts button{text-align:left;font:700 15px var(--f-jp);color:var(--text);background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:10px;padding:10px}.ktq .mqopts button.ok{border-color:var(--success);background:rgba(16,185,129,.15)}.ktq .mqopts button.ng{border-color:var(--danger);background:rgba(248,113,113,.12)}.ktq .ktqr .verdict{margin-top:8px}
-.chk ol{margin:0;padding-left:1.4em;font-size:16px;line-height:2.1}.chk li{margin:0 0 8px}.chk .chkm{font:700 12px var(--f-jp);color:var(--muted);background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;padding:1px 8px;margin-right:6px;vertical-align:2px;cursor:pointer}.chk .chkx .chkm{color:#fff;background:#b91c1c;border-color:#f87171}.chk li.chkx{background:rgba(248,113,113,.08);border-radius:8px}.chk li.chkx::marker{color:#f87171;font-weight:700}
+.chk ol{margin:0;padding-left:1.4em;font-size:16px;line-height:2.1}.chk li{margin:0 0 8px}.chk .chkm{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;font:900 17px/1 var(--f-jp);color:var(--muted);background:rgba(255,255,255,.06);border:1.5px solid var(--border);border-radius:8px;padding:0;margin-right:6px;vertical-align:-6px;cursor:pointer}.chk .chk1 .chkm{color:#facc15;border-color:#facc15;background:rgba(250,204,21,.12)}.chk .chk2 .chkm{color:#ef4444;border-color:#ef4444;background:rgba(239,68,68,.14)}.chk li.chk1{background:rgba(250,204,21,.07);border-radius:8px}.chk li.chk2{background:rgba(239,68,68,.09);border-radius:8px}.chk li.chk1::marker{color:#facc15;font-weight:700}.chk li.chk2::marker{color:#ef4444;font-weight:700}
 .chk .chkb{display:inline-block;min-width:3.5em;padding:0 6px;margin:0 2px;line-height:1.6;text-align:center}
 .kte .kteb{padding:10px 0;border-top:1px dashed rgba(255,255,255,.12)}.kte .keh+.kteb{border-top:0}.kte h4{margin:0 0 6px;font-size:16px;color:#fde68a}.kte dl{margin:0;display:grid;grid-template-columns:7.5em 1fr;gap:4px 8px;font-size:15px;line-height:1.7}.kte dt{color:var(--accent-hi);font-size:13px;padding-top:2px}.kte dd{margin:0}.kte dt.kts{color:var(--success-hi)}.kte p{margin:0;font-size:15px;line-height:1.8}.kte .ktep{margin:0;padding-left:1.2em;font-size:15px;line-height:2}.kte .ktep .wst{background:none;border:0;padding:0;font:700 15px var(--f-jp);color:var(--accent-hi);text-decoration:underline dotted;cursor:pointer}
 .r8 .kscol{color:var(--accent-hi);font-weight:700}
@@ -376,6 +376,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="chk" aria-selected="false">直前穴埋め</button>
     <button role="tab" data-v="kte" aria-selected="false">工程表まとめ</button>
     <button role="tab" data-v="kteq" aria-selected="false">工程表問題</button>
+    <button role="tab" data-v="env" aria-selected="false">環境リサイクル</button>
     <button role="tab" data-v="r8min" aria-selected="false">最低限これだけ</button>
     <button role="tab" data-v="r8q" aria-selected="false">R8予想問題</button>
     <button role="tab" data-v="r8x" aria-selected="false">R8予想解説</button>
@@ -587,10 +588,10 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <div class="view" id="v-chk" hidden>
     <section class="sec">
       <h2><b>LAST CHECK</b>試験直前　絶対に覚えておくこと</h2>
-      <p style="margin:0 0 10px;font-size:14px">二次検定で何度も出ている数値・用語を、穴埋めにしました。空欄をタップすると答えが出て、もう一度タップで隠れます。まちがえた問題は、文頭の「✓」を押すと「✗ まちがえた」になり、記録が残ります。「まちがえた問題だけ」で、その問題だけを解き直せます。文字は長押しで選ぶと検索できます。</p>
+      <p style="margin:0 0 10px;font-size:14px">二次検定で何度も出ている数値・用語を、穴埋めにしました。空欄をタップすると答えが出て、もう一度タップで隠れます。文頭の四角を押すたびに、黄色の「△」（あやしい）→赤の「✗」（まちがえた）→マークなし、と切り替わり、記録が残ります。「△と✗だけ」「✗だけ」で、その問題だけを解き直せます。「シャッフル」でカテゴリーの中の順番を入れ替えます（押すたびに入れ替え。番号は元の番号のまま）。文字は長押しで選ぶと検索できます。</p>
       <div class="chips" id="chkCat"></div>
-      <div class="chips" style="margin-top:8px"><button class="chip" id="chkHide" type="button" aria-pressed="false">全部隠す</button><button class="chip" id="chkShow" type="button" aria-pressed="false">全部表示</button></div>
-      <div class="chips" style="margin-top:8px"><button class="chip" id="chkOnly" type="button" aria-pressed="false">まちがえた問題だけ</button><button class="chip" id="chkClear" type="button" aria-pressed="false">マークを全部消す</button></div>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="chkHide" type="button" aria-pressed="false">全部隠す</button><button class="chip" id="chkShow" type="button" aria-pressed="false">全部表示</button><button class="chip" id="chkShuf" type="button" aria-pressed="false">シャッフル</button><button class="chip" id="chkOrd" type="button" aria-pressed="true">元の順番</button></div>
+      <div class="chips" style="margin-top:8px"><button class="chip" id="chkOnly" type="button" aria-pressed="false">△と✗だけ</button><button class="chip" id="chkOnlyX" type="button" aria-pressed="false">✗だけ</button><button class="chip" id="chkClear" type="button" aria-pressed="false">マークを全部消す</button></div>
       <p id="chkCount" class="hint" style="margin:8px 0 0"></p>
     </section>
     <div id="chkList"></div>
@@ -603,6 +604,16 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <div class="chips"><button class="chip" id="ktqHide" type="button" aria-pressed="false">全部隠す</button><button class="chip" id="ktqShow" type="button" aria-pressed="false">全部表示</button></div>
     </section>
     <div id="ktqList"></div>
+  </div>
+
+  <div class="view" id="v-env" hidden>
+    <section class="sec">
+      <h2><b>ENVIRONMENT</b>環境・リサイクルまとめ</h2>
+      <p style="margin:0 0 10px;font-size:14px">建設リサイクル法・資源有効利用促進法・廃棄物処理法・騒音規制法／振動規制法と、記述でそのまま書ける対策、過去の出題をまとめました。「内容を隠す」で見出しだけ残して暗記できます（隠れた所はタップで表示）。文字は長押しで選ぶと検索できます。下の入力欄で絞り込めます。</p>
+      <input id="envQ" type="search" placeholder="絞り込み（例：7日前、路盤材、85dB）" style="width:100%;font:16px var(--f-jp);color:var(--text);background:rgba(2,11,23,.7);border:1.5px solid var(--border);border-radius:10px;padding:10px">
+      <div class="chips" style="margin-top:8px"><button class="chip" id="envHide" type="button" aria-pressed="false">内容を隠す（暗記用）</button></div>
+    </section>
+    <div id="envList"></div>
   </div>
 
   <div class="view" id="v-kte" hidden>
@@ -682,11 +693,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.25.4" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.4" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.25.4" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.4" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.25.4" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.4" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.25.5" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.5" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.25.5" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.5" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.25.5" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.5" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.4" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.5" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -916,6 +927,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.25.5</b>「環境リサイクル」タブを追加（建設リサイクル法・資源有効利用促進法・廃棄物処理法・騒音振動規制法・対策・過去の出題）。直前穴埋めを92問に増やし、マークを黄色の△・赤の✗の2段階にした。カテゴリー内の順番のシャッフルを追加</li>
         <li><b>v1.25.4</b>直前穴埋め：問題ごとに「まちがえた」マークを付けられるようにした（記録が残る）。「まちがえた問題だけ」表示、「マークを全部消す」を追加</li>
         <li><b>v1.25.3</b>「直前穴埋め」タブを追加（試験直前に絶対覚えておく数値・用語56問：コンクリート・生コン受入れ・土工・安全・工程・環境。空欄をタップで表示／非表示）</li>
         <li><b>v1.25.2</b>工程表の短い答えの問題を、新しい「工程表問題」タブに作り直し（本番と同じ形の問題6つ。答えは緑の枠に隠して、タップで表示／非表示）。工程表まとめタブの問題欄は削除</li>
@@ -1016,7 +1028,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.25.4</div>
+  <div class="ver" aria-label="バージョン">v1.25.5</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -1029,31 +1041,32 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.25.4"></script>
-<script src="yosou.js?v=1.25.4"></script>
-<script src="yosou2.js?v=1.25.4"></script>
-<script src="yx1.js?v=1.25.4"></script>
-<script src="yx2.js?v=1.25.4"></script>
-<script src="yx3.js?v=1.25.4"></script>
-<script src="yx4.js?v=1.25.4"></script>
-<script src="yz1.js?v=1.25.4"></script>
-<script src="yz2.js?v=1.25.4"></script>
-<script src="yz3.js?v=1.25.4"></script>
-<script src="yz4.js?v=1.25.4"></script>
-<script src="advice.js?v=1.25.4"></script>
-<script src="anki.js?v=1.25.4"></script>
-<script src="kijutsu.js?v=1.25.4"></script>
-<script src="mondai.js?v=1.25.4"></script>
-<script src="mqinfo.js?v=1.25.4"></script>
-<script src="hsei.js?v=1.25.4"></script>
-<script src="keiken.js?v=1.25.4"></script>
-<script src="r8.js?v=1.25.4"></script>
-<script src="koutei.js?v=1.25.4"></script>
-<script src="chokuzen.js?v=1.25.4"></script>
+<script src="kaisetsu.js?v=1.25.5"></script>
+<script src="yosou.js?v=1.25.5"></script>
+<script src="yosou2.js?v=1.25.5"></script>
+<script src="yx1.js?v=1.25.5"></script>
+<script src="yx2.js?v=1.25.5"></script>
+<script src="yx3.js?v=1.25.5"></script>
+<script src="yx4.js?v=1.25.5"></script>
+<script src="yz1.js?v=1.25.5"></script>
+<script src="yz2.js?v=1.25.5"></script>
+<script src="yz3.js?v=1.25.5"></script>
+<script src="yz4.js?v=1.25.5"></script>
+<script src="advice.js?v=1.25.5"></script>
+<script src="anki.js?v=1.25.5"></script>
+<script src="kijutsu.js?v=1.25.5"></script>
+<script src="mondai.js?v=1.25.5"></script>
+<script src="mqinfo.js?v=1.25.5"></script>
+<script src="hsei.js?v=1.25.5"></script>
+<script src="keiken.js?v=1.25.5"></script>
+<script src="r8.js?v=1.25.5"></script>
+<script src="koutei.js?v=1.25.5"></script>
+<script src="kankyo.js?v=1.25.5"></script>
+<script src="chokuzen.js?v=1.25.5"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.25.4";
+var APP_VER="1.25.5";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1510,7 +1523,7 @@ $("shB").addEventListener("click",function(){$("sheet").hidden=true});
 $("shC").addEventListener("click",function(){$("sheet").hidden=true});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("sheet").hidden=true});
 var selT="";
-document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList","keList","ksList","kmList","r8List","r8xList","rmList","kteList","ktqList","chkList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
+document.addEventListener("selectionchange",function(){var s=getSelection(),t=String(s).replace(/\s+/g," ").trim();var ok=!!(t&&t.length<=60&&s.anchorNode&&["kList","ykList","v-mq","v-yq","q-play","akList","kjList","wsList","psList","keList","ksList","kmList","r8List","r8xList","rmList","kteList","ktqList","chkList","envList"].some(function(id){return $(id)&&$(id).contains(s.anchorNode)}));selT=ok?t:"";$("selS").hidden=!ok;if(ok)$("selS").textContent="「"+t+"」を検索"});
 $("q-play").addEventListener("click",function(e){var w=e.target.closest(".mqw[data-w]");if(!w)return;if(String(getSelection()).trim())return;openSheet(w.dataset.w,"")});
 $("selS").addEventListener("mousedown",function(e){e.preventDefault()});
 $("selS").addEventListener("click",function(){if(selT)openSheet(selT)});
@@ -1667,22 +1680,43 @@ BAR.forEach(function(b){
 
 /* ---------- 直前穴埋め ---------- */
 (function(){
-  var C=window.CHOKU;if(!C)return;var cat=load("d2chkC","all"),mk=load("d2chkM",{}),only=false;
+  var C=window.CHOKU;if(!C)return;var MS=["　","△","✗"],ORD=null;var cat=load("d2chkC","all"),mk=load("d2chkM2",{}),only=0;
   $("chkCat").innerHTML="";[["all","全部"]].concat(C.map(function(c,i){return [String(i),c.n]})).forEach(function(x){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=x[1];b.setAttribute("aria-pressed",x[0]===cat);
     b.addEventListener("click",function(){cat=x[0];save("d2chkC",cat);$("chkCat").querySelectorAll(".chip").forEach(function(y){y.setAttribute("aria-pressed",y===b)});draw()});$("chkCat").appendChild(b)});
-  function cnt(){var a=$("chkList").querySelectorAll(".kshid"),o=$("chkList").querySelectorAll(".kshid.open"),m=Object.keys(mk).filter(function(k){return mk[k]}).length;$("chkCount").textContent="空欄 "+a.length+"個（表示中 "+o.length+"個）／まちがえた問題 "+m+"問"}
+  function cnt(){var a=$("chkList").querySelectorAll(".kshid"),o=$("chkList").querySelectorAll(".kshid.open"),K=Object.keys(mk),m1=K.filter(function(k){return mk[k]===1}).length,m2=K.filter(function(k){return mk[k]===2}).length;$("chkCount").textContent="空欄 "+a.length+"個（表示中 "+o.length+"個）／△ "+m1+"問・✗ "+m2+"問"}
   function draw(){$("chkList").innerHTML=C.map(function(c,i){if(cat!=="all"&&+cat!==i)return "";
-      var L=c.s.map(function(t,j){var id=c.n+"-"+(j+1);return only&&!mk[id]?"":'<li value="'+(j+1)+'" class="'+(mk[id]?'chkx':'')+'"><button class="chkm" type="button" data-mk="'+esc(id)+'" aria-pressed="'+!!mk[id]+'">'+(mk[id]?'✗ まちがえた':'✓')+'</button>'+
+      var L=(ORD?ORD[i]:c.s.map(function(_,j){return j})).map(function(j){var t=c.s[j],id=t,k=mk[id]||0;return only&&k<only?"":'<li value="'+(j+1)+'" class="chk'+k+'"><button class="chkm" type="button" data-mk="'+esc(id)+'" aria-label="マーク">'+MS[k]+'</button>'+
         esc(t).replace(/\{([^}]+)\}/g,function(_,a){return '<span class="kshid chkb" role="button" tabindex="0">'+a+'</span>'})+'</li>'}).join("");
       if(only&&!L)return "";
-      return '<section class="sec ks chk"><h3 class="keh">'+esc(c.n)+'（'+c.s.length+'）</h3><ol>'+L+'</ol></section>'}).join("")||'<section class="sec"><p class="hint">まちがえた問題はありません。</p></section>';cnt()}
-  $("chkList").addEventListener("click",function(e){var m=e.target.closest("[data-mk]");if(m){var id=m.dataset.mk;mk[id]=!mk[id];if(!mk[id])delete mk[id];save("d2chkM",mk);
-      var li=m.closest("li");li.classList.toggle("chkx",!!mk[id]);m.setAttribute("aria-pressed",!!mk[id]);m.textContent=mk[id]?"✗ まちがえた":"✓";cnt();return}
+      return '<section class="sec ks chk"><h3 class="keh">'+esc(c.n)+'（'+c.s.length+'）</h3><ol>'+L+'</ol></section>'}).join("")||'<section class="sec"><p class="hint">マークした問題はありません。</p></section>';cnt()}
+  $("chkList").addEventListener("click",function(e){var m=e.target.closest("[data-mk]");if(m){var id=m.dataset.mk,k=((mk[id]||0)+1)%3;if(k)mk[id]=k;else delete mk[id];save("d2chkM2",mk);
+      m.closest("li").className="chk"+k;m.textContent=MS[k];cnt();return}
     var h=e.target.closest(".kshid");if(h){h.classList.toggle("open");cnt()}});
-  $("chkOnly").addEventListener("click",function(){only=!only;this.setAttribute("aria-pressed",only);draw()});
-  $("chkClear").addEventListener("click",function(){var b=this;if(b.dataset.arm!=="1"){b.dataset.arm="1";b.textContent="もう一度押すと全部消します";return}b.dataset.arm="";b.textContent="マークを全部消す";mk={};save("d2chkM",mk);draw()});
+  $("chkShuf").addEventListener("click",function(){ORD=C.map(function(c){var a=c.s.map(function(_,j){return j});for(var x=a.length-1;x>0;x--){var y=Math.floor(Math.random()*(x+1)),z=a[x];a[x]=a[y];a[y]=z}return a});this.setAttribute("aria-pressed","true");$("chkOrd").setAttribute("aria-pressed","false");draw()});
+  $("chkOrd").addEventListener("click",function(){ORD=null;this.setAttribute("aria-pressed","true");$("chkShuf").setAttribute("aria-pressed","false");draw()});
+  function setOnly(v){only=only===v?0:v;$("chkOnly").setAttribute("aria-pressed",only===1);$("chkOnlyX").setAttribute("aria-pressed",only===2);draw()}
+  $("chkOnly").addEventListener("click",function(){setOnly(1)});$("chkOnlyX").addEventListener("click",function(){setOnly(2)});
+  $("chkClear").addEventListener("click",function(){var b=this;if(b.dataset.arm!=="1"){b.dataset.arm="1";b.textContent="もう一度押すと全部消します";return}b.dataset.arm="";b.textContent="マークを全部消す";mk={};save("d2chkM2",mk);draw()});
   $("chkHide").addEventListener("click",function(){$("chkList").querySelectorAll(".kshid").forEach(function(x){x.classList.remove("open")});cnt()});
   $("chkShow").addEventListener("click",function(){$("chkList").querySelectorAll(".kshid").forEach(function(x){x.classList.add("open")});cnt()});
+  draw();
+})();
+
+/* ---------- 環境・リサイクルまとめ ---------- */
+(function(){
+  var E=window.KANKYO;if(!E)return;var hide=false;
+  function v(t){return hide?'<span class="kshid" role="button" tabindex="0">'+esc(t)+'</span>':esc(t)}
+  function draw(){var h=E.sec.map(function(c){return '<section class="sec ks kte"><h3 class="keh">'+esc(c.h)+'</h3>'+c.it.map(function(x){return '<div class="kteb" data-s="'+esc(x.join(" "))+'"><h4><span class="mqw" data-w="'+esc(x[0].replace(/（.*$/,""))+'">'+esc(x[0])+'</span></h4><p>'+v(x[1])+'</p></div>'}).join("")+'</section>'}).join("");
+    var P=E.past.map(function(id){return KAISETSU.filter(function(k){return k.y+"-"+k.q===id})[0]}).filter(Boolean);
+    h+='<section class="sec ks kte"><h3 class="keh">過去の出題（環境・リサイクル）</h3>'+P.map(function(k){return '<div class="kteb" data-s="'+esc(k.y+" 問"+k.q+" "+k.t+" "+k.lead+" "+JSON.stringify(k.ans))+'"><h4><button class="jump wst" type="button" data-j="'+k.y+'-'+k.q+'" style="background:none;border:0;padding:0;font:700 16px var(--f-jp);color:var(--accent-hi);text-decoration:underline dotted;cursor:pointer">'+esc(k.y+" 問"+k.q)+'</button> '+esc(k.t)+'</h4><p>'+esc(k.lead)+'</p>'+(k.items&&k.items.length?'<p>'+k.items.map(esc).join("　")+'</p>':'')+
+      '<dl>'+k.ans.map(function(g){return '<dt>'+esc(g[0])+'</dt><dd>'+v(g[1].join("／"))+'</dd>'}).join("")+'</dl></div>'}).join("")+'</section>';
+    $("envList").innerHTML=h;filt()}
+  function filt(){var q=$("envQ").value.trim();$("envList").querySelectorAll("[data-s]").forEach(function(el){el.hidden=!!q&&el.dataset.s.indexOf(q)<0});
+    $("envList").querySelectorAll(".kte").forEach(function(sec){sec.hidden=!!q&&!sec.querySelector("[data-s]:not([hidden])")})}
+  $("envQ").addEventListener("input",filt);
+  $("envHide").addEventListener("click",function(){hide=!hide;this.setAttribute("aria-pressed",hide);draw()});
+  $("envList").addEventListener("click",function(e){var m=e.target.closest(".mqw[data-w]");if(m&&!String(getSelection()).trim()){openSheet(m.dataset.w,"");return}
+    var h=e.target.closest(".kshid");if(h)h.classList.toggle("open")});
   draw();
 })();
 
