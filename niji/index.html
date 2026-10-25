@@ -372,6 +372,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="kesum" aria-selected="false">要約穴埋め</button>
     <button role="tab" data-v="kmemo" aria-selected="false">メモ穴埋め</button>
     <button role="tab" data-v="kte" aria-selected="false">工程表まとめ</button>
+    <button role="tab" data-v="kteq" aria-selected="false">工程表問題</button>
     <button role="tab" data-v="r8min" aria-selected="false">最低限これだけ</button>
     <button role="tab" data-v="r8q" aria-selected="false">R8予想問題</button>
     <button role="tab" data-v="r8x" aria-selected="false">R8予想解説</button>
@@ -580,20 +581,21 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   <!-- ===== 記述暗記 ===== -->
+  <div class="view" id="v-kteq" hidden>
+    <section class="sec">
+      <h2><b>SCHEDULE</b>工程表の問題（短い答え）</h2>
+      <p style="margin:0 0 10px;font-size:14px">「工程表まとめ」の短い答えを、本番と同じ形の問題にしました。答えは緑の枠の中に隠れています。思い出してから枠をタップすると表示／もう一度タップで隠れます。点線の語句はタップで検索、表示した文字は長押しで選んで検索できます。</p>
+      <div class="chips"><button class="chip" id="ktqHide" type="button" aria-pressed="false">全部隠す</button><button class="chip" id="ktqShow" type="button" aria-pressed="false">全部表示</button></div>
+    </section>
+    <div id="ktqList"></div>
+  </div>
+
   <div class="view" id="v-kte" hidden>
     <section class="sec">
       <h2><b>SCHEDULE</b>工程表まとめ</h2>
       <p style="margin:0 0 10px;font-size:14px">工程表の種類と特徴、ネットワークの用語、バーチャートの作り方、過去の出題をまとめました。点線の語句はタップで検索、それ以外の文字も長押しで選ぶと検索できます。下の入力欄に言葉を入れると、その言葉を含む項目だけに絞り込みます。</p>
       <input id="kteQ" type="search" placeholder="絞り込み（例：クリティカルパス、達成度）" style="width:100%;font:16px var(--f-jp);color:var(--text);background:rgba(2,11,23,.7);border:1.5px solid var(--border);border-radius:10px;padding:10px">
       <div class="chips" style="margin-top:8px"><button class="chip" id="kteHide" type="button" aria-pressed="false">特徴を隠す（暗記用）</button></div>
-    </section>
-    <section class="sec ks kte" id="kteQuiz">
-      <h3 class="keh">短い答えの問題</h3>
-      <p class="hint" style="margin:0 0 8px">「そのまま書ける短い答え」を問題にしました。特徴から工程表の名前を選ぶ問題と、短い答えの空欄を埋める問題があります。</p>
-      <div class="chips" id="ktqMode"></div>
-      <div class="chips" style="margin-top:8px"><button class="chip" id="ktqNew" type="button" aria-pressed="false">問題を作り直す（順番・空欄を変える）</button></div>
-      <p id="ktqScore" style="margin:8px 0 0;font-size:14px"></p>
-      <div id="ktqList"></div>
     </section>
     <div id="kteList"></div>
   </div>
@@ -665,11 +667,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.25.1" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.1" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.25.1" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.1" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.25.1" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.1" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.25.2" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.2" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.25.2" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.2" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.25.2" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.2" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.1" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.2" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -899,6 +901,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.25.2</b>工程表の短い答えの問題を、新しい「工程表問題」タブに作り直し（本番と同じ形の問題6つ。答えは緑の枠に隠して、タップで表示／非表示）。工程表まとめタブの問題欄は削除</li>
         <li><b>v1.25.1</b>工程表まとめに「短い答えの問題」を追加（特徴から工程表の名前を選ぶ7問／短い答えの空欄を埋める7問。正答率表示、「問題を作り直す」で順番と空欄を入れ替え）</li>
         <li><b>v1.25.0</b>「工程表まとめ」タブを追加（7種類の工程表の軸・わかること・わからないこと・向いている工事・短い答え、ネットワークの用語、バーチャートの作り方、工程・原価・品質の関係、過去の出題一覧）。点線の語句をタップで検索、入力欄で絞り込み、「特徴を隠す」で暗記</li>
         <li><b>v1.24.8</b>R8予想の3タブに単語検索を追加（テーマ名・工法名・用語・「：」の前の見出しを点線にして、タップで検索。表示した答えは長押しで選んで検索できる）</li>
@@ -996,7 +999,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.25.1</div>
+  <div class="ver" aria-label="バージョン">v1.25.2</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -1009,30 +1012,30 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.25.1"></script>
-<script src="yosou.js?v=1.25.1"></script>
-<script src="yosou2.js?v=1.25.1"></script>
-<script src="yx1.js?v=1.25.1"></script>
-<script src="yx2.js?v=1.25.1"></script>
-<script src="yx3.js?v=1.25.1"></script>
-<script src="yx4.js?v=1.25.1"></script>
-<script src="yz1.js?v=1.25.1"></script>
-<script src="yz2.js?v=1.25.1"></script>
-<script src="yz3.js?v=1.25.1"></script>
-<script src="yz4.js?v=1.25.1"></script>
-<script src="advice.js?v=1.25.1"></script>
-<script src="anki.js?v=1.25.1"></script>
-<script src="kijutsu.js?v=1.25.1"></script>
-<script src="mondai.js?v=1.25.1"></script>
-<script src="mqinfo.js?v=1.25.1"></script>
-<script src="hsei.js?v=1.25.1"></script>
-<script src="keiken.js?v=1.25.1"></script>
-<script src="r8.js?v=1.25.1"></script>
-<script src="koutei.js?v=1.25.1"></script>
+<script src="kaisetsu.js?v=1.25.2"></script>
+<script src="yosou.js?v=1.25.2"></script>
+<script src="yosou2.js?v=1.25.2"></script>
+<script src="yx1.js?v=1.25.2"></script>
+<script src="yx2.js?v=1.25.2"></script>
+<script src="yx3.js?v=1.25.2"></script>
+<script src="yx4.js?v=1.25.2"></script>
+<script src="yz1.js?v=1.25.2"></script>
+<script src="yz2.js?v=1.25.2"></script>
+<script src="yz3.js?v=1.25.2"></script>
+<script src="yz4.js?v=1.25.2"></script>
+<script src="advice.js?v=1.25.2"></script>
+<script src="anki.js?v=1.25.2"></script>
+<script src="kijutsu.js?v=1.25.2"></script>
+<script src="mondai.js?v=1.25.2"></script>
+<script src="mqinfo.js?v=1.25.2"></script>
+<script src="hsei.js?v=1.25.2"></script>
+<script src="keiken.js?v=1.25.2"></script>
+<script src="r8.js?v=1.25.2"></script>
+<script src="koutei.js?v=1.25.2"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.25.1";
+var APP_VER="1.25.2";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1665,26 +1668,27 @@ BAR.forEach(function(b){
   $("kteList").addEventListener("click",function(e){var m=e.target.closest(".mqw[data-w]");if(m&&!String(getSelection()).trim()&&!(m.closest(".kshid")&&!m.closest(".kshid.open"))){openSheet(m.dataset.w,"");return}
     var h=e.target.closest(".kshid");if(h)h.classList.toggle("open")});
   draw();
-  /* 短い答えの問題 */
-  var qm="name",QS=null,sc={};
-  $("ktqMode").innerHTML="";[["name","特徴 → 工程表の名前を選ぶ"],["fill","短い答えの空欄を埋める"]].forEach(function(x){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=x[1];b.setAttribute("aria-pressed",x[0]===qm);
-    b.addEventListener("click",function(){qm=x[0];$("ktqMode").querySelectorAll(".chip").forEach(function(y){y.setAttribute("aria-pressed",y===b)});qdraw()});$("ktqMode").appendChild(b)});
-  function score(){var ok=0,n=0;Object.keys(sc).forEach(function(k){ok+=sc[k][0];n+=sc[k][1]});$("ktqScore").textContent=n?"正解 "+ok+" / "+n+"（"+Math.round(ok/n*100)+"%）":""}
-  function qdraw(){sc={};var T=shuffle(K.types.slice()),names=K.types.map(function(t){return t.n}),ctx=K.types.map(function(t){return t.short});QS={B:[],v:[]};
-    $("ktqList").innerHTML=T.map(function(t,i){
-      if(qm==="name"){var op=shuffle(names.filter(function(n){return n!==t.n})).slice(0,3).concat([t.n]);shuffle(op);
-        return '<div class="kteb ktq" data-a="'+esc(t.n)+'" data-i="'+i+'"><h4>問'+(i+1)+'　次の特徴をもつ工程表は？</h4><p>'+esc(t.short)+'</p><div class="mqopts">'+op.map(function(o){return '<button type="button" data-o="'+esc(o)+'">'+esc(o)+'</button>'}).join("")+'</div><div class="ktqr"></div></div>'}
-      var B=wsBuild(t.short,ctx,{rnd:true,nb:14});QS.B[i]=B;QS.v[i]=[];
-      return '<div class="kteb ktq" data-i="'+i+'"><h4>問'+(i+1)+'　'+w(t.n)+'の特徴（短い答え）</h4><p class="ksp">'+wsHTML(B,i,[],false,false)+'</p><div class="kectl"><button class="btn" type="button" data-kq="'+i+'">答え合わせ</button></div><div class="ktqr"></div></div>'}).join("");score()}
-  $("ktqNew").addEventListener("click",qdraw);
+  /* 工程表問題（新しいタブ） */
+  var T={};K.types.forEach(function(t){T[t.n]=t});var N={};K.net.forEach(function(x){N[x[0].replace(/（.*$/,"")]=x[1]});
+  var QL=[
+   {h:"建設工事において用いられる下記の工程表①〜③から2つ選び、番号とその特徴について、それぞれ解答欄に記述しなさい。",it:["バーチャート","グラフ式工程表","出来高累計曲線"],src:"R7問3と同じ形"},
+   {h:"建設工事において用いられる下記の①、②の工程表の特徴について、それぞれ1つずつ解答欄に記述しなさい。",it:["バーチャート","ネットワーク式工程表"],src:"R6問9・R3問9・R1問9と同じ形"},
+   {h:"建設工事において用いられる下記の工程表①〜③から2つ選び、番号とその特徴について、それぞれ解答欄に記述しなさい。",it:["ガントチャート","ネットワーク式工程表","斜線式工程表（座標式）"],src:"予想"},
+   {h:"工程管理曲線（バナナ曲線）について、その内容を解答欄に記述しなさい。",it:["工程管理曲線（バナナ曲線）"],src:"予想"},
+   {h:"ネットワーク式工程表に関する下記の用語①〜③から2つ選び、番号とその説明について、それぞれ解答欄に記述しなさい。",nt:["クリティカルパス","フロート","ダミー"],src:"予想"},
+   {h:"横線式工程表（バーチャート）を作成し全所要日数を求める場合の、全所要日数の求め方を解答欄に記述しなさい。",tx:[["全所要日数","各工種の日数の合計から重複日数を引く（同時作業は1回だけ数える）。"]],src:"R7・R5・R2・H30・H28問9の計算"}
+  ];
+  var MK="①②③④";
+  function hid2(t){return '<span class="kshid" role="button" tabindex="0">'+esc(t)+'</span>'}
+  $("ktqList").innerHTML=QL.map(function(q,qi){var items=q.it||q.nt||q.tx.map(function(x){return x[0]});
+      var ans=q.it?q.it.map(function(n){return [n,T[n].short]}):q.nt?q.nt.map(function(n){return [n,N[n]]}):q.tx;
+      return '<section class="sec ks r8"><div class="wsh"><span class="tag">問題'+(qi+1)+'</span><span class="tag">'+esc(q.src)+'</span></div><p class="r8lead">'+esc(q.h)+'</p>'+
+        (items.length>1?'<ul class="r8it">'+items.map(function(n,i){return '<li>'+MK.charAt(i)+' '+w(n)+'</li>'}).join("")+'</ul>':'')+
+        '<div class="r8min"><b class="kslead">答え（枠をタップでまとめて表示／非表示）</b><ul>'+ans.map(function(a,i){return '<li><b class="kscol">'+(items.length>1?MK.charAt(i)+' ':'')+w(a[0])+'：</b>'+hid2(a[1])+'</li>'}).join("")+'</ul></div></section>'}).join("");
   $("ktqList").addEventListener("click",function(e){var m=e.target.closest(".mqw[data-w]");if(m&&!String(getSelection()).trim()){openSheet(m.dataset.w,"");return}
-    var o=e.target.closest("[data-o]");if(o){var box=o.closest(".ktq");if(box.dataset.done)return;box.dataset.done=1;var a=box.dataset.a,good=o.dataset.o===a;
-      box.querySelectorAll("[data-o]").forEach(function(b){b.disabled=true;if(b.dataset.o===a)b.classList.add("ok");else if(b===o)b.classList.add("ng")});
-      box.querySelector(".ktqr").innerHTML='<div class="verdict '+(good?"ok":"ng")+'">'+(good?"正解":"不正解：正解は "+esc(a))+'</div>';sc[box.dataset.i]=[good?1:0,1];score();return}
-    var c=e.target.closest("[data-kq]");if(c){var i=+c.dataset.kq,B=QS.B[i],ok=0,n=0;B.bl.forEach(function(b,bi){n++;if(QS.v[i][bi]===b.a)ok++});var box=c.closest(".ktq");
-      box.querySelector(".ksp").innerHTML=wsHTML(B,i,QS.v[i],false,true);c.disabled=true;box.querySelector(".ktqr").innerHTML='<div class="verdict '+(ok===n?"ok":"ng")+'">'+ok+' / '+n+' 正解</div>';sc[i]=[ok,n];score()}});
-  $("ktqList").addEventListener("change",function(e){var x=e.target.closest("[data-wb]");if(x&&QS){var a=x.dataset.wb.split("|");QS.v[+a[0]][+a[1]]=x.value}});
-  qdraw();
+    var box=e.target.closest(".r8min");if(box){var H=box.querySelectorAll(".kshid"),all=[].every.call(H,function(x){return x.classList.contains("open")});[].forEach.call(H,function(x){x.classList.toggle("open",!all)})}});
+  $("ktqHide").addEventListener("click",function(){$("ktqList").querySelectorAll(".kshid").forEach(function(x){x.classList.remove("open")})});
+  $("ktqShow").addEventListener("click",function(){$("ktqList").querySelectorAll(".kshid").forEach(function(x){x.classList.add("open")})});
 })();
 
 /* ---------- R8予想問題・予想解説 ---------- */
