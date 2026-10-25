@@ -582,6 +582,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>MINIMUM</b>最低でもこれだけは書く</h2>
       <p style="margin:0 0 10px;font-size:14px">R8予想問題（問3・5・8・9）の「最低でもこれは書く」短い答えだけを集めました。答えは隠れています。緑の枠をタップすると、その問題の答えがまとめて表示／非表示になります。</p>
       <div class="chips" id="rmNum"></div>
+      <div class="chips r8hm" style="margin-top:8px"></div>
       <div class="chips" style="margin-top:8px"><button class="chip" id="rmHide" type="button" aria-pressed="false">全部隠す</button><button class="chip" id="rmShow" type="button" aria-pressed="false">全部表示</button></div>
     </section>
     <div id="rmList"></div>
@@ -592,6 +593,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>R8</b>今年の予想問題（問3・5・8・9）</h2>
       <p style="margin:0 0 10px;font-size:14px">過去10年（H28〜R7）の出題の流れから予想した問題です。「本命」が一番出やすいもの。解答例は隠れています。思い出してからタップで表示。「穴埋め」にすると、解答例の数値・用語を選んで答え合わせできます。</p>
       <div class="chips" id="r8Num"></div>
+      <div class="chips r8hm" style="margin-top:8px"></div>
       <div class="chips" style="margin-top:8px" id="r8Mode"></div>
       <div class="chips" style="margin-top:8px"><button class="chip" id="r8Hide" type="button" aria-pressed="false">全部隠す</button><button class="chip" id="r8Show" type="button" aria-pressed="false">全部表示</button></div>
     </section>
@@ -603,6 +605,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>R8</b>予想問題を覚えるための解説</h2>
       <p style="margin:0 0 10px;font-size:14px">「R8予想問題」の各問題について、覚えるキーワード・覚え方・減点されやすい書き方だけをまとめました。キーワードは隠れていて、タップで表示します。</p>
       <div class="chips" id="r8xNum"></div>
+      <div class="chips r8hm" style="margin-top:8px"></div>
       <div class="chips" style="margin-top:8px"><button class="chip" id="r8xHide" type="button" aria-pressed="false">キーワードを全部隠す</button><button class="chip" id="r8xShow" type="button" aria-pressed="false">全部表示</button></div>
     </section>
     <div id="r8xList"></div>
@@ -641,11 +644,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.24.6" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.24.6" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.24.6" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.24.6" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.24.6" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.24.6" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.24.7" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.24.7" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.24.7" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.24.7" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.24.7" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.24.7" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.24.6" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.24.7" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -875,6 +878,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.24.7</b>R8予想の3タブに「隠し方」の切り替えを追加：説明を全部隠す／一部だけ隠す（数値・用語などのキーワードだけ隠して、残りは表示）</li>
         <li><b>v1.24.6</b>R8予想の3タブで、「：」の前（工法名・用語・見出し）は表示したまま、後ろの説明だけを隠すようにした</li>
         <li><b>v1.24.5</b>「最低でもこれは書く」の緑の枠をタップすると、中の答えがまとめて表示／非表示になるようにした（最低限これだけ・R8予想問題・R8予想解説）</li>
         <li><b>v1.24.4</b>新しい版に切り替わらないとき（公開サイトの反映待ち）に、画面下にお知らせと「再読み込み」ボタンを出すようにした</li>
@@ -968,7 +972,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.24.6</div>
+  <div class="ver" aria-label="バージョン">v1.24.7</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -981,29 +985,29 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.24.6"></script>
-<script src="yosou.js?v=1.24.6"></script>
-<script src="yosou2.js?v=1.24.6"></script>
-<script src="yx1.js?v=1.24.6"></script>
-<script src="yx2.js?v=1.24.6"></script>
-<script src="yx3.js?v=1.24.6"></script>
-<script src="yx4.js?v=1.24.6"></script>
-<script src="yz1.js?v=1.24.6"></script>
-<script src="yz2.js?v=1.24.6"></script>
-<script src="yz3.js?v=1.24.6"></script>
-<script src="yz4.js?v=1.24.6"></script>
-<script src="advice.js?v=1.24.6"></script>
-<script src="anki.js?v=1.24.6"></script>
-<script src="kijutsu.js?v=1.24.6"></script>
-<script src="mondai.js?v=1.24.6"></script>
-<script src="mqinfo.js?v=1.24.6"></script>
-<script src="hsei.js?v=1.24.6"></script>
-<script src="keiken.js?v=1.24.6"></script>
-<script src="r8.js?v=1.24.6"></script>
+<script src="kaisetsu.js?v=1.24.7"></script>
+<script src="yosou.js?v=1.24.7"></script>
+<script src="yosou2.js?v=1.24.7"></script>
+<script src="yx1.js?v=1.24.7"></script>
+<script src="yx2.js?v=1.24.7"></script>
+<script src="yx3.js?v=1.24.7"></script>
+<script src="yx4.js?v=1.24.7"></script>
+<script src="yz1.js?v=1.24.7"></script>
+<script src="yz2.js?v=1.24.7"></script>
+<script src="yz3.js?v=1.24.7"></script>
+<script src="yz4.js?v=1.24.7"></script>
+<script src="advice.js?v=1.24.7"></script>
+<script src="anki.js?v=1.24.7"></script>
+<script src="kijutsu.js?v=1.24.7"></script>
+<script src="mondai.js?v=1.24.7"></script>
+<script src="mqinfo.js?v=1.24.7"></script>
+<script src="hsei.js?v=1.24.7"></script>
+<script src="keiken.js?v=1.24.7"></script>
+<script src="r8.js?v=1.24.7"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.24.6";
+var APP_VER="1.24.7";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1191,22 +1195,25 @@ var WSTOP="作業,確認,実施,使用,場合,必要,施工,工事,注意,処置
 function wsTok(t){var c=[];function f(re,ty,sc){var m;while((m=re.exec(t))){c.push({i:m.index,w:m[0],ty:ty,sc:sc+(m[0].length>=3?1:0)})}}
   f(/(?<![A-Za-z0-9.,\-])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?!つ)(?:N\/mm2|kN|m3|m2|mm|cm|m|t|N|％|%|℃|日|時間|時|回|分|秒|倍|度|kg|本|層|か月|ヶ月|週間|週|年|割|人|名|台|段|枚)?(?:以上|以下|未満|以内|を超える)?/g,"num",5);
   f(/\d{1,2}月\d{1,2}日/g,"date",7);
+  f(/(?<![A-Za-z0-9.,])\d+(?:\.\d+)?〜\d+(?:\.\d+)?(?:mm|cm|m|t|℃|日|時|%|％)?(?:以上|以下|以内)?/g,"rng",7);
+  f(/[ァ-ヴ][ァ-ヴー]{2,}[一-龥]{0,2}工(?:法)?/g,"kata",4);
   f(/[ァ-ヴ][ァ-ヴー・]{2,}/g,"kata",3);
   f(/[一-龥々]{2,}/g,"kanji",2);
   /* 「又は」「及び」「等」の漢字や、送りがなの付く語（締固め・取付け など）は空欄にしない */
   return c.filter(function(x){
-    if(x.ty==="date")return true;
+    if(x.ty==="date"||x.ty==="rng")return true;
     if(x.ty==="num"){if(x.i===0||/^\.(?!\d)/.test(t.slice(x.i+x.w.length)))return false;return true}
     if(x.ty==="kata"){x.w=x.w.replace(/・+$/,"");return x.w.length>=3}
     var pc=t.charAt(x.i-1);if(/[A-Za-z0-9]/.test(pc)||(/[ぁ-ゖ]/.test(pc)&&"をにはがでとのへやもかよまなてりし".indexOf(pc)<0))return false;
     var a=x.w.match(/^[等及又並]*/)[0].length,b=x.w.match(/[等及又並]*$/)[0].length;if(a){x.i+=a;x.w=x.w.slice(a)}if(b)x.w=x.w.slice(0,x.w.length-b);
+    if(/^後/.test(x.w)&&t.charAt(x.i-1)==="の"&&x.w.length>2){x.i+=1;x.w=x.w.slice(1)}
     if(x.w.length<2||WSTOP.indexOf(x.w)>=0)return false;
     var nx=t.charAt(x.i+x.w.length),pv=t.charAt(x.i-1);
     if(!b&&/[ぁ-ゖ]/.test(nx)&&"をにはがでとのへやもかよまな".indexOf(nx)<0)return false;
     if(pv==="ん")return false;
     x.sc=2+(x.w.length>=3?1:0);return true})}
 var WSPOOL=null;
-function wsPool(){if(WSPOOL)return WSPOOL;WSPOOL={num:[],kata:[],kanji:[],date:[]};var all=[];
+function wsPool(){if(WSPOOL)return WSPOOL;WSPOOL={num:[],kata:[],kanji:[],date:[],rng:[]};var all=[];
   KAISETSU.forEach(function(k){if(k.type!=="fill"&&k.type!=="bar"&&k.ans)k.ans.forEach(function(g){g[1].forEach(function(x){all.push(x)})})});
   if(typeof KIJ!=="undefined")KIJ.forEach(function(g){g[4].forEach(function(it){all.push(it[1])})});
   all.forEach(function(t){wsTok(t).forEach(function(x){if(WSPOOL[x.ty].indexOf(x.w)<0)WSPOOL[x.ty].push(x.w)})});return WSPOOL}
@@ -1619,7 +1626,11 @@ BAR.forEach(function(b){
   function chips(box,list,val,fn){$(box).innerHTML="";list.forEach(function(x){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=x[1];b.setAttribute("aria-pressed",x[0]===val);
     b.addEventListener("click",function(){$(box).querySelectorAll(".chip").forEach(function(y){y.setAttribute("aria-pressed",y===b)});fn(x[0])});$(box).appendChild(b)})}
   /* 「：」の前（見出し）は見せたまま、後ろだけ隠す */
-  function hid(t){var m=String(t).match(/^([^：]{1,30})：([\s\S]+)$/);if(m)return '<b class="kscol">'+esc(m[1])+'：</b><span class="kshid" role="button" tabindex="0">'+esc(m[2])+'</span>';return '<span class="kshid" role="button" tabindex="0">'+esc(t)+'</span>'}
+  var hmode=load("d2r8H","all");
+  function hspan(t){if(hmode!=="part")return '<span class="kshid" role="button" tabindex="0">'+esc(t)+'</span>';
+    /* 一部だけ隠す：数値・用語などのキーワードだけを隠す */
+    var B=wsBuild(t,[],{nb:12});return B.parts.map(function(x){return typeof x==="string"?esc(x):'<span class="kshid" role="button" tabindex="0">'+esc(B.bl[x.b].a)+'</span>'}).join("")}
+  function hid(t){var m=String(t).match(/^([^：]{1,30})：([\s\S]+)$/);if(m)return '<b class="kscol">'+esc(m[1])+'：</b>'+hspan(m[2]);return hspan(t)}
   /* 緑の枠（最低でもこれは書く）はタップで中の答えをまとめて表示／非表示 */
   function minBox(e){var m=e.target.closest(".r8min");if(!m)return false;var H=m.querySelectorAll(".kshid"),allOpen=[].every.call(H,function(x){return x.classList.contains("open")});[].forEach.call(H,function(x){x.classList.toggle("open",!allOpen)});return true}
   function head(k,i){return '<div class="wsh"><span class="tag">問'+k.q+'</span><span class="tag'+(k.r==="本命"?' r8hot':'')+'">'+k.r+'</span><b class="r8t">'+esc(k.t)+'</b></div>'}
@@ -1643,6 +1654,10 @@ BAR.forEach(function(b){
   $("r8Hide").addEventListener("click",function(){$("r8List").querySelectorAll(".kshid").forEach(function(x){x.classList.remove("open")})});
   $("r8Show").addEventListener("click",function(){$("r8List").querySelectorAll(".kshid").forEach(function(x){x.classList.add("open")})});
   draw();
+  /* 隠し方の切り替え（3つのタブ共通） */
+  function hchips(){document.querySelectorAll(".r8hm").forEach(function(box){box.innerHTML="";[["all","説明を全部隠す"],["part","一部だけ隠す（キーワード）"]].forEach(function(x){var b=document.createElement("button");b.className="chip";b.type="button";b.textContent=x[1];b.setAttribute("aria-pressed",x[0]===hmode);
+    b.addEventListener("click",function(){hmode=x[0];save("d2r8H",hmode);hchips();draw();if(window.__r8m)__r8m();if(window.__r8x)__r8x()});box.appendChild(b)})})}
+  hchips();
   /* 最低限これだけ */
   if(window.R8MIN){var mn=load("d2rmN","all");
     chips("rmNum",NUMS,mn,function(v){mn=v;save("d2rmN",v);mdraw()});
@@ -1652,7 +1667,7 @@ BAR.forEach(function(b){
     $("rmList").addEventListener("click",function(e){if(minBox(e))return;var h=e.target.closest(".kshid");if(h)h.classList.toggle("open")});
     $("rmHide").addEventListener("click",function(){$("rmList").querySelectorAll(".kshid").forEach(function(x){x.classList.remove("open")})});
     $("rmShow").addEventListener("click",function(){$("rmList").querySelectorAll(".kshid").forEach(function(x){x.classList.add("open")})});
-    mdraw()}
+    window.__r8m=mdraw;mdraw()}
   /* 解説 */
   if(!X)return;var xn=load("d2r8xN","all");
   chips("r8xNum",NUMS,xn,function(v){xn=v;save("d2r8xN",v);xdraw()});
@@ -1662,7 +1677,7 @@ BAR.forEach(function(b){
   $("r8xList").addEventListener("click",function(e){if(minBox(e))return;var h=e.target.closest(".kshid");if(h)h.classList.toggle("open")});
   $("r8xHide").addEventListener("click",function(){$("r8xList").querySelectorAll(".kshid").forEach(function(x){x.classList.remove("open")})});
   $("r8xShow").addEventListener("click",function(){$("r8xList").querySelectorAll(".kshid").forEach(function(x){x.classList.add("open")})});
-  xdraw();
+  window.__r8x=xdraw;xdraw();
 })();
 
 /* ---------- メモ穴埋め（手書きメモのキーワード） ---------- */
