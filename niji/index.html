@@ -395,6 +395,12 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <div class="view" id="v-home">
     <a class="btn ghost" href="https://ebr1010.github.io/kastudy2/" target="_blank" rel="noopener" style="display:block;text-align:center;margin-bottom:12px;text-decoration:none">一次検定 過去問クイズを開く</a>
     <section class="sec">
+      <h2><b>EXPORT</b>学習記録を書き出す</h2>
+      <p style="margin:0 0 10px;font-size:14px">この端末に保存されている二次の学習記録（穴埋めの結果、△・✗のマーク、問題集の結果など）を1つにまとめます。「ファイルで保存」が使えないときは「コピー」を押して、そのまま貼り付けて送ってください。</p>
+      <div class="chips"><button class="chip" id="expFile" type="button" aria-pressed="false">ファイルで保存</button><button class="chip" id="expCopy" type="button" aria-pressed="false">コピー</button></div>
+      <p class="hint" id="expMsg" style="margin:8px 0 0"></p>
+    </section>
+    <section class="sec">
       <h2><b>STATUS</b>学習状況</h2>
       <div class="stats">
         <div class="stat"><b id="s-ans">0</b><span>穴埋め 解答数</span></div>
@@ -696,11 +702,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.25.8" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.8" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.25.8" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.8" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.25.8" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.8" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.25.9" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.9" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.25.9" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.9" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.25.9" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.9" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.8" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.9" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -930,6 +936,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.25.9</b>ホームに「学習記録を書き出す」を追加（ファイルで保存／コピー）</li>
         <li><b>v1.25.8</b>ホームの一番上に「一次検定 過去問クイズを開く」ボタンを追加</li>
         <li><b>v1.25.7</b>使ってないタブ9つ（暗記・記述暗記・短い答え・要点まとめ・要約穴埋め・記述練習・数値・バーチャート計算・経験記述（下書き））を隠した。タブの列の最後の「使ってないタブ（9）を表示」で表示／非表示を切り替え</li>
         <li><b>v1.25.6</b>同じ名前・似た名前のタブを改名：経験記述→「経験記述（解答）」「経験記述（下書き）」、直前→「直前1週間」、工程表→「バーチャート計算」、記述→「記述練習」、予想→「R8出題予想」</li>
@@ -1034,7 +1041,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.25.8</div>
+  <div class="ver" aria-label="バージョン">v1.25.9</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -1047,32 +1054,32 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.25.8"></script>
-<script src="yosou.js?v=1.25.8"></script>
-<script src="yosou2.js?v=1.25.8"></script>
-<script src="yx1.js?v=1.25.8"></script>
-<script src="yx2.js?v=1.25.8"></script>
-<script src="yx3.js?v=1.25.8"></script>
-<script src="yx4.js?v=1.25.8"></script>
-<script src="yz1.js?v=1.25.8"></script>
-<script src="yz2.js?v=1.25.8"></script>
-<script src="yz3.js?v=1.25.8"></script>
-<script src="yz4.js?v=1.25.8"></script>
-<script src="advice.js?v=1.25.8"></script>
-<script src="anki.js?v=1.25.8"></script>
-<script src="kijutsu.js?v=1.25.8"></script>
-<script src="mondai.js?v=1.25.8"></script>
-<script src="mqinfo.js?v=1.25.8"></script>
-<script src="hsei.js?v=1.25.8"></script>
-<script src="keiken.js?v=1.25.8"></script>
-<script src="r8.js?v=1.25.8"></script>
-<script src="koutei.js?v=1.25.8"></script>
-<script src="kankyo.js?v=1.25.8"></script>
-<script src="chokuzen.js?v=1.25.8"></script>
+<script src="kaisetsu.js?v=1.25.9"></script>
+<script src="yosou.js?v=1.25.9"></script>
+<script src="yosou2.js?v=1.25.9"></script>
+<script src="yx1.js?v=1.25.9"></script>
+<script src="yx2.js?v=1.25.9"></script>
+<script src="yx3.js?v=1.25.9"></script>
+<script src="yx4.js?v=1.25.9"></script>
+<script src="yz1.js?v=1.25.9"></script>
+<script src="yz2.js?v=1.25.9"></script>
+<script src="yz3.js?v=1.25.9"></script>
+<script src="yz4.js?v=1.25.9"></script>
+<script src="advice.js?v=1.25.9"></script>
+<script src="anki.js?v=1.25.9"></script>
+<script src="kijutsu.js?v=1.25.9"></script>
+<script src="mondai.js?v=1.25.9"></script>
+<script src="mqinfo.js?v=1.25.9"></script>
+<script src="hsei.js?v=1.25.9"></script>
+<script src="keiken.js?v=1.25.9"></script>
+<script src="r8.js?v=1.25.9"></script>
+<script src="koutei.js?v=1.25.9"></script>
+<script src="kankyo.js?v=1.25.9"></script>
+<script src="chokuzen.js?v=1.25.9"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.25.8";
+var APP_VER="1.25.9";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1177,6 +1184,17 @@ function repBox(id){var S=SIMS[id];if(!S)return "";var by={},ord=[];
 
 /* ---------- タブ ---------- */
 var tabs=document.querySelectorAll(".tabs button[role=tab]");
+(function(){
+  function dump(){var o={app:"niji",ver:APP_VER,at:new Date().toISOString(),url:location.href.split("?")[0],data:{}};
+    try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^d2/.test(k))o.data[k]=localStorage.getItem(k)}}catch(e){o.err=String(e)}
+    return o}
+  function msg(t){$("expMsg").textContent=t}
+  $("expFile").addEventListener("click",function(){var o=dump(),t=JSON.stringify(o),n=Object.keys(o.data).length;
+    try{var a=document.createElement("a"),d=new Date();a.href=URL.createObjectURL(new Blob([t],{type:"application/json"}));a.download="niji-kiroku-"+d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2)+".json";document.body.appendChild(a);a.click();a.remove();msg("記録 "+n+"件をファイルにしました。保存されない場合は「コピー」を使ってください。")}catch(e){msg("ファイルにできませんでした。「コピー」を使ってください。")}});
+  $("expCopy").addEventListener("click",function(){var o=dump(),t=JSON.stringify(o),n=Object.keys(o.data).length;
+    function fb(){var ta=document.createElement("textarea");ta.value=t;ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}ta.remove();msg(ok?"記録 "+n+"件をコピーしました（"+t.length+"文字）。そのまま貼り付けて送ってください。":"コピーできませんでした。")}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){msg("記録 "+n+"件をコピーしました（"+t.length+"文字）。そのまま貼り付けて送ってください。")},fb);else fb()});
+})();
 (function(){var all=load("d2tabAll",false),n=document.querySelector(".tabs"),b=$("tabMore");
   function set(){n.classList.toggle("hideun",!all);b.setAttribute("aria-pressed",all);b.textContent=all?"使ってないタブを隠す":"使ってないタブ（9）を表示"}
   b.addEventListener("click",function(){all=!all;save("d2tabAll",all);set()});set()})();
