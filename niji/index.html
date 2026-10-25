@@ -43,6 +43,7 @@ h1 .sep{color:rgba(6,182,212,.5);-webkit-text-fill-color:rgba(6,182,212,.5);font
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:rgba(8,18,36,.92)}
 .tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:6px;margin-bottom:16px;background:rgba(8,18,36,.78);backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);border:1px solid rgba(255,255,255,.10);border-radius:16px;box-shadow:0 6px 28px rgba(0,0,0,.5)}
 .tabs button{flex:1 0 auto;font:700 13px var(--f-jp);color:var(--muted);background:none;border:0;padding:8px 12px;border-radius:11px;cursor:pointer;white-space:nowrap}
+.tabs.hideun button[data-unused]:not([aria-selected="true"]){display:none}.tabs .tabmore{color:var(--accent-hi);border:1px dashed rgba(255,255,255,.25)}.tabs button[data-unused]{opacity:.75}
 .tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(135deg,rgba(59,130,246,.55),rgba(6,182,212,.45));box-shadow:0 0 14px rgba(6,182,212,.35),inset 0 1px 0 rgba(255,255,255,.25)}
 .view{display:grid;gap:14px}
 .view[hidden]{display:none!important}
@@ -366,12 +367,12 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="yq" aria-selected="false">予想穴埋め</button>
     <button role="tab" data-v="yk" aria-selected="false">予想解説</button>
     <button role="tab" data-v="yosou" aria-selected="false">R8出題予想</button>
-    <button role="tab" data-v="anki" aria-selected="false">暗記</button>
-    <button role="tab" data-v="kij" aria-selected="false">記述暗記</button>
-    <button role="tab" data-v="wsum" aria-selected="false">短い答え</button>
-    <button role="tab" data-v="psum" aria-selected="false">要点まとめ</button>
+    <button role="tab" data-v="anki" data-unused="1" aria-selected="false">暗記</button>
+    <button role="tab" data-v="kij" data-unused="1" aria-selected="false">記述暗記</button>
+    <button role="tab" data-v="wsum" data-unused="1" aria-selected="false">短い答え</button>
+    <button role="tab" data-v="psum" data-unused="1" aria-selected="false">要点まとめ</button>
     <button role="tab" data-v="keik" aria-selected="false">経験記述（解答）</button>
-    <button role="tab" data-v="kesum" aria-selected="false">要約穴埋め</button>
+    <button role="tab" data-v="kesum" data-unused="1" aria-selected="false">要約穴埋め</button>
     <button role="tab" data-v="kmemo" aria-selected="false">メモ穴埋め</button>
     <button role="tab" data-v="chk" aria-selected="false">直前穴埋め</button>
     <button role="tab" data-v="kte" aria-selected="false">工程表まとめ</button>
@@ -382,11 +383,12 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <button role="tab" data-v="r8x" aria-selected="false">R8予想解説</button>
     <button role="tab" data-v="mq" aria-selected="false">問題集</button>
     <button role="tab" data-v="pdf" aria-selected="false">PDF</button>
-    <button role="tab" data-v="write" aria-selected="false">記述練習</button>
-    <button role="tab" data-v="nums" aria-selected="false">数値</button>
-    <button role="tab" data-v="bar" aria-selected="false">バーチャート計算</button>
-    <button role="tab" data-v="exp" aria-selected="false">経験記述（下書き）</button>
+    <button role="tab" data-v="write" data-unused="1" aria-selected="false">記述練習</button>
+    <button role="tab" data-v="nums" data-unused="1" aria-selected="false">数値</button>
+    <button role="tab" data-v="bar" data-unused="1" aria-selected="false">バーチャート計算</button>
+    <button role="tab" data-v="exp" data-unused="1" aria-selected="false">経験記述（下書き）</button>
     <button role="tab" data-v="plan" aria-selected="false">直前1週間</button>
+    <button type="button" id="tabMore" class="tabmore" aria-pressed="false">使ってないタブ（9）を表示</button>
   </nav>
 
   <!-- ===== HOME ===== -->
@@ -693,11 +695,11 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
       <h2><b>SHEET</b>記入した解答用紙</h2>
       <p style="margin:0 0 10px;font-size:14px">解答用紙そのものです。画像をタップすると別タブで大きく開きます。</p>
       <div class="kesheet">
-        <a href="keiken/p1.jpg?v=1.25.6" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.6" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
-        <a href="keiken/p2.jpg?v=1.25.6" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.6" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
-        <a href="keiken/p3.jpg?v=1.25.6" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.6" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
+        <a href="keiken/p1.jpg?v=1.25.7" target="_blank" rel="noopener"><img src="keiken/p1.jpg?v=1.25.7" alt="経験記述 解答用紙（安全）" loading="lazy"><span>安全管理 ↗</span></a><div class="kesum" id="keSum0"></div>
+        <a href="keiken/p2.jpg?v=1.25.7" target="_blank" rel="noopener"><img src="keiken/p2.jpg?v=1.25.7" alt="経験記述 解答用紙（工程）" loading="lazy"><span>工程管理 ↗</span></a><div class="kesum" id="keSum1"></div>
+        <a href="keiken/p3.jpg?v=1.25.7" target="_blank" rel="noopener"><img src="keiken/p3.jpg?v=1.25.7" alt="経験記述 解答用紙（品質）" loading="lazy"><span>品質管理 ↗</span></a><div class="kesum" id="keSum2"></div>
       </div>
-      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.6" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
+      <a class="srcbtn" href="pdf/keiken.pdf?v=1.25.7" target="_blank" rel="noopener" style="margin-top:10px">PDFファイルを開く ↗</a>
     </section>
     <div id="keList"></div>
   </div>
@@ -927,6 +929,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
     <section class="sec">
       <h2><b>CHANGELOG</b>更新履歴</h2>
       <ul class="log">
+        <li><b>v1.25.7</b>使ってないタブ9つ（暗記・記述暗記・短い答え・要点まとめ・要約穴埋め・記述練習・数値・バーチャート計算・経験記述（下書き））を隠した。タブの列の最後の「使ってないタブ（9）を表示」で表示／非表示を切り替え</li>
         <li><b>v1.25.6</b>同じ名前・似た名前のタブを改名：経験記述→「経験記述（解答）」「経験記述（下書き）」、直前→「直前1週間」、工程表→「バーチャート計算」、記述→「記述練習」、予想→「R8出題予想」</li>
         <li><b>v1.25.5</b>「環境リサイクル」タブを追加（建設リサイクル法・資源有効利用促進法・廃棄物処理法・騒音振動規制法・対策・過去の出題）。直前穴埋めを92問に増やし、マークを黄色の△・赤の✗の2段階にした。カテゴリー内の順番のシャッフルを追加</li>
         <li><b>v1.25.4</b>直前穴埋め：問題ごとに「まちがえた」マークを付けられるようにした（記録が残る）。「まちがえた問題だけ」表示、「マークを全部消す」を追加</li>
@@ -1029,7 +1032,7 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   </div>
 
   
-  <div class="ver" aria-label="バージョン">v1.25.6</div>
+  <div class="ver" aria-label="バージョン">v1.25.7</div>
   <button id="selS" type="button" hidden>選択した語句を検索</button>
   <div class="sheet" id="sheet" hidden role="dialog" aria-label="Webで調べる">
     <div class="w" id="shW"></div>
@@ -1042,32 +1045,32 @@ a.ylink{color:var(--accent-hi);font-weight:700;text-decoration:underline;text-un
   <p class="foot">解答はCIC日本建設情報センター・九州建設専門学院の解答試案によるもので、公式の解答ではありません。</p>
 </div>
 
-<script src="kaisetsu.js?v=1.25.6"></script>
-<script src="yosou.js?v=1.25.6"></script>
-<script src="yosou2.js?v=1.25.6"></script>
-<script src="yx1.js?v=1.25.6"></script>
-<script src="yx2.js?v=1.25.6"></script>
-<script src="yx3.js?v=1.25.6"></script>
-<script src="yx4.js?v=1.25.6"></script>
-<script src="yz1.js?v=1.25.6"></script>
-<script src="yz2.js?v=1.25.6"></script>
-<script src="yz3.js?v=1.25.6"></script>
-<script src="yz4.js?v=1.25.6"></script>
-<script src="advice.js?v=1.25.6"></script>
-<script src="anki.js?v=1.25.6"></script>
-<script src="kijutsu.js?v=1.25.6"></script>
-<script src="mondai.js?v=1.25.6"></script>
-<script src="mqinfo.js?v=1.25.6"></script>
-<script src="hsei.js?v=1.25.6"></script>
-<script src="keiken.js?v=1.25.6"></script>
-<script src="r8.js?v=1.25.6"></script>
-<script src="koutei.js?v=1.25.6"></script>
-<script src="kankyo.js?v=1.25.6"></script>
-<script src="chokuzen.js?v=1.25.6"></script>
+<script src="kaisetsu.js?v=1.25.7"></script>
+<script src="yosou.js?v=1.25.7"></script>
+<script src="yosou2.js?v=1.25.7"></script>
+<script src="yx1.js?v=1.25.7"></script>
+<script src="yx2.js?v=1.25.7"></script>
+<script src="yx3.js?v=1.25.7"></script>
+<script src="yx4.js?v=1.25.7"></script>
+<script src="yz1.js?v=1.25.7"></script>
+<script src="yz2.js?v=1.25.7"></script>
+<script src="yz3.js?v=1.25.7"></script>
+<script src="yz4.js?v=1.25.7"></script>
+<script src="advice.js?v=1.25.7"></script>
+<script src="anki.js?v=1.25.7"></script>
+<script src="kijutsu.js?v=1.25.7"></script>
+<script src="mondai.js?v=1.25.7"></script>
+<script src="mqinfo.js?v=1.25.7"></script>
+<script src="hsei.js?v=1.25.7"></script>
+<script src="keiken.js?v=1.25.7"></script>
+<script src="r8.js?v=1.25.7"></script>
+<script src="koutei.js?v=1.25.7"></script>
+<script src="kankyo.js?v=1.25.7"></script>
+<script src="chokuzen.js?v=1.25.7"></script>
 <script>
 (function(){
 "use strict";
-var APP_VER="1.25.6";
+var APP_VER="1.25.7";
 function $(id){return document.getElementById(id)}
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -1171,7 +1174,10 @@ function repBox(id){var S=SIMS[id];if(!S)return "";var by={},ord=[];
 });
 
 /* ---------- タブ ---------- */
-var tabs=document.querySelectorAll(".tabs button");
+var tabs=document.querySelectorAll(".tabs button[role=tab]");
+(function(){var all=load("d2tabAll",false),n=document.querySelector(".tabs"),b=$("tabMore");
+  function set(){n.classList.toggle("hideun",!all);b.setAttribute("aria-pressed",all);b.textContent=all?"使ってないタブを隠す":"使ってないタブ（9）を表示"}
+  b.addEventListener("click",function(){all=!all;save("d2tabAll",all);set()});set()})();
 function show(v){
   tabs.forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===v)});
   document.querySelectorAll(".app>.view").forEach(function(el){el.hidden=el.id!=="v-"+v});
